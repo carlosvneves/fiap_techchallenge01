@@ -61,6 +61,7 @@ Nota Final > 70
 ## TechChallenge é em grupo de 5 pessoas
 - É obrigatório 
 - Se sozinho, formalizar por e-mail para:
--- Coordenador: profmatheus.pavani@fiap.com.br 
--- Professor: profthiago.generoso@fiap.com.br
+  -- atendimento.postech@fiap.com.br
+  -- Coordenador: profmatheus.pavani@fiap.com.br 
+  -- Professor: profthiago.generoso@fiap.com.br
 
