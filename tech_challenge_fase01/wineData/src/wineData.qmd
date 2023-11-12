@@ -1,0 +1,110 @@
+---
+title: "Relatório sobre Vinhos"
+format: 
+    html:
+        code-fold: true
+jupyter: python3
+editor:
+  render-on-save: false
+---
+
+
+
+
+
+
+# Introdução
+
+Descrição da atividade.
+
+Imagine agora, que você vai atuar como Expert em Data Analytics em uma empresa que exporta vinhos do Brasil para o mundo todo.
+
+Sua área é recém-criada dentro da empresa, e você será responsável pelos relatórios iniciais a serem apresentados em uma reunião de investidores e acionistas, explicando a quantidade de vinhos exportados e os fatores externos que podem vir a surgir e que interferem nas análises:
+
+- 	Dados climáticos.
+- 	Dados demográficos.
+- 	Dados econômicos.
+- 	Dados de avaliações de vinhos.
+  
+O Head de Dados pediu para que você construísse uma tabela contendo as seguintes informações:
+-   País de origem (Brasil).
+- 	País de destino.
+- 	Quantidade em litros de vinho exportado (utilize: 1KG =1L).
+- 	Valor em US$.
+
+Os dados que lhe forneceram são de uma vinícola parceira, e podem ser encontrados  [aqui](http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_01).
+   
+
+# Análise de Dados
+
+## Carregamento dos dados
+
+
+```{python}
+import pandas as pd
+import plotly.express as px
+
+
+exp_vinho = pd.read_csv("../data/ExpVinho.csv", sep=";")
+exp_vinho.drop("Id", axis=1, inplace=True)
+exp_vinho.index = exp_vinho["País"]
+exp_vinho.drop("País", axis=1, inplace=True)
+exp_vinho.head()
+
+```
+
+
+### Quantitativo de vinho exportado em litros
+
+
+```{python}
+exp_vinho_qty = exp_vinho.loc[:, ~exp_vinho.columns.str.endswith(".1")].T
+exp_vinho_qty.tail(20)
+
+
+```
+
+### Valor de vinho exportado em US$
+
+```{python}
+
+exp_vinho_val = exp_vinho.loc[:, exp_vinho.columns.str.endswith(".1")]
+exp_vinho_val.columns = exp_vinho_val.columns.str.replace(".1", "")
+exp_vinho_val = exp_vinho_val.T
+exp_vinho_val.tail(20)
+
+```
+
+## Tabela solicitada pelo Head de Dados:
+
+| país de origem | país de destino | quantidade em litros | valor em US$ |
+| --- | --- | --- | --- |
+
+```{python}
+
+df = px.data.gapminder()
+
+  
+df[["iso_alpha", "continent", "pop", "year"]]
+
+
+
+
+
+
+```
+
+
+```{python}
+exp_vinho_val.T.head(10)
+```
+
+```{python}
+fig = px.scatter_geo(df, locations="iso_alpha", color="continent",
+                     hover_name="country", size="pop",
+                     animation_frame="year",
+                     projection="natural earth")
+fig.show()
+
+```
+
