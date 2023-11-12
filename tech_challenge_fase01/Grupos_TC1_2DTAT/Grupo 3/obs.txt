@@ -1,0 +1,5 @@
+Eu fiz um "dash" usando o streamlit, polars e plotly e tbm montei uma apresentação, como se fosse um "relatório a ser entregue" com as análises e conclusões...
+
+Repositório com os códigos: https://github.com/z-fab/postech-data-analytics/tree/master/tech-challenge/f1-exportacao-vinho
+
+Link para ver o dash: http://postech.zfab.me/tc-f1
