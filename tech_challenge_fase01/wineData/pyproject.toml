@@ -14,7 +14,10 @@ notebook = ">=7.0.6"
 plotly = ">=5.17.0"
 pyarrow = ">=13.0.0"
 statsmodels = ">=0.14.0"
-
+seaborn = ">=0.13.0"
+scikit-learn = ">=1.2.2"
+matplotlib = ">=3.7.1"
+itables = ">=0.8.0"
 
 [build-system]
 requires = ["poetry-core"]
