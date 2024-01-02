@@ -1,0 +1,23 @@
+project:
+  type: book
+  output-dir: _output
+
+toc: true 
+number-sections: true
+
+book:
+  title: "Análise das Exportações de Vinhos do Brasil - Techchallenge 01 - 3DTAT - FIAP"
+  author: "Carlos Eduardo Veras Neves"
+  date: "1/29/2024"
+  chapters:
+    - index.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreport
+  epub:
+    cover-image: cover.jpg
