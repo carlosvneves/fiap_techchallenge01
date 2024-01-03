@@ -1,0 +1,4 @@
+"0","ts_total |> plot_acf_diagnostics(date, value, .interactive = T, .lags = 1:48,"
+"0","                                 .title = 'Valor total exportado - ACF e PACF.')"
+"2","Max lag exceeds data available. Using max lag: 22
+"

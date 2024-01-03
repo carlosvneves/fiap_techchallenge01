@@ -1,0 +1,191 @@
+---
+code-fold: true
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+# Análise da série em  frequência anual
+
+```{r import_libs}
+#| echo: false
+#| message: false
+#| warning: false
+
+source('utils.R')
+
+```
+
+```{r, read_data_yearly}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-ts_input_yearly
+#| tbl-cap: "Série dos dados anuais de volume e valor de vinho exportado pelo Brasil - 2000 a 2022."
+
+
+# Lê os dados de entrada
+
+ts_tbl <-
+    readr::read_delim(
+        "../../data/EXP_VINHO_2000_2022_20231118_anual.csv",
+        delim = ";",
+        escape_double = FALSE,
+        trim_ws = TRUE,
+        show_col_types = F
+    )
+
+
+# Transformação do dataframe original para padronizar e facilitar a manipulação
+# Foi criada uma coluna `date` no formato correspondente a partir das colunas `Ano` e `Mês`      
+ts_tbl <-
+    ts_tbl |> mutate(date = lubridate::make_date(Ano,12,1)) |>
+    rename(value = `Valor FOB (US$)`) |>
+    rename(volume = `Quilograma Líquido`) |>
+    rename(country = `Países`) |>
+    select(c(date, country, value, volume))  
+
+
+tbl_render(ts_tbl)
+```
+## Séries anuais em valores totais (corte longitudinal)
+
+
+```{r transform_data}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-ts_total
+#| tbl-cap: "Série dos dados agregados por ano (corte longitudinal em termos totais)."
+
+
+ts_total <- ts_tbl |> group_by(date) |> 
+            summarise(value = sum(value), 
+                      volume = sum(volume)) |> 
+            arrange(desc(date))
+
+tbl_render(ts_total)
+```
+
+### Visualização
+
+Primeiramente visualizamos a série temporal do valor total exportado por ano entre 2000 e 2022.
+
+```{r}
+
+ts_total |> 
+    plot_time_series(date, value, .smooth = T, 
+                     .interactive = T, 
+                     .smooth_span = 0.3,
+                     .title = 'Valor Total exportado (anual) em US$',
+                     .plotly_slider = T)
+
+```
+
+Em seguida, podemos visualizar a série de volume total exportado em base anual, considerando 1L=1Kg.
+
+```{r}
+
+ts_total |> 
+    plot_time_series(date, volume, .smooth = T, 
+                     .interactive = T, 
+                     .smooth_span = 0.3,
+                     .title = 'Volume Total exportado (anual) em L',
+                     .plotly_slider = T)
+
+
+```
+
+## Autocorrelação e Autorrelação parcial
+
+A autocorrelação e a autocorrelação parcial são medidas de associação entre valores de séries atuais e anteriores.
+Elas indicam quais valores de série anteriores são mais úteis para prever valores futuros.
+
+A autocorrelação parcial é a correlação entre as observações em uma série temporal que não é contabilizada por todos os intervalos mais curtos entre essas observações.
+Por exemplo, a autocorrelação parcial para um lag de 6 é apenas a correlação que não é contabilizada por lags de 1 a 5.
+
+A autocorrelação é quando comparamos o valor do presente com valores do passado da mesma série.
+A autocorrelação é um tipo de dependência temporal.
+É comum quando os valores podem ser ordenados no tempo (com dados de séries temporais) ou no espaço (com dados espaciais)
+
+Para a série de *valor total exportado* temos os seguintes gráficos de ACF e PACF:
+
+```{r}
+ts_total |> plot_acf_diagnostics(date, value, .interactive = T, .lags = 1:48,
+                                 .title = 'Valor total exportado - ACF e PACF.')
+
+```
+
+Para a série de *volume total exportado* temos os seguintes gráficos de ACF e PACF:
+
+```{r}
+ts_total |> plot_acf_diagnostics(date, volume, .interactive = T, .lags = 1:48,
+                                 .title = 'Volume total exportado - ACF e PACF.')
+
+```
+
+
+## Decomposição sazonal
+
+A decomposição da série de *valor total exportado* em suas componentes de tendência, sazonalidade e resíduos demonstra que existe uma queda expressiva no valor total exportado nos meses de janeiro, a qual corresponde a um fenômeno sazonal.
+Por outro lado, a tendência desde o ano 2000 é de *crescimento no valor total exportado em US\$*.
+
+```{r, echo=FALSE}
+
+ts_total |> 
+    plot_stl_diagnostics(
+        date, value,
+        .feature_set = c("observed", "season", "trend", "remainder"),
+        .trend = "auto",
+        .frequency = "auto",
+        .interactive = T,
+        .title = 'Decomposição da série de valor total exportado (em US$)'
+    )
+
+```
+
+A análise da decomposição da série de *volume total exportado*, como esperado, acompanha a retração no volume exportado nos mês de janeiro.
+Por outro lado, é interessante notar que, em termos de volume total exportado, existiu uma mudança de tendência.
+Entre o início de 2000 e o final de 2014 a tendência no volume total exportado era de queda.
+Contudo, houve reversão dessa tendência em 2015.
+*O que explica a reversão de tendência?*
+
+```{r, echo=FALSE}
+
+ts_total |> 
+    plot_stl_diagnostics(
+        date, volume,
+        .feature_set = c("observed", "season", "trend", "remainder"),
+        .trend = "auto",
+        .frequency = "auto",
+        .interactive = T,
+        .title = 'Decomposição da série de volume total exportado (em L)'
+    )
+
+```
+
+Para avaliar melhor o comportamento observado no mês de janeiro, podemos realizar ainda uma avaliação mais precisa do "efeito calendário".
+
+Primeiramente observamos a série de *volume total exportado*.
+
+```{r, echo=FALSE}
+ts_total |> 
+    plot_seasonal_diagnostics(date, volume, 
+                              .interactive = T, 
+                              .feature_set = c("quarter","year"),
+                              .geom_outlier_color="#fc3503",
+                              .title = 'Volume total exportado (em L) - diagnóstico sazonal.')
+```
+
+Em seguida, observamos a série de *valor total exportado*.
+
+```{r, echo=FALSE}
+ts_total |> 
+    plot_seasonal_diagnostics(date, value, 
+                              .interactive = T, 
+                              .feature_set = c("quarter","year"),
+                              .geom_outlier_color="#fc3503",
+                              .title = 'Volume total exportado (em L) - diagnóstico sazonal.')
+```
+
+

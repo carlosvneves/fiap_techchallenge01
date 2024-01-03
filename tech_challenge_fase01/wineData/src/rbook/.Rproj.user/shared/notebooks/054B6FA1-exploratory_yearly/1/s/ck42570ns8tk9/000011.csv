@@ -1,0 +1,14 @@
+"0",""
+"0","ts_total |> "
+"0","    plot_stl_diagnostics("
+"0","        date, value,"
+"0","        .feature_set = c(""observed"", ""season"", ""trend"", ""remainder""),"
+"0","        .trend = ""auto"","
+"0","        .frequency = ""auto"","
+"0","        .interactive = T,"
+"0","        .title = 'Decomposição da série de valor total exportado (em US$)'"
+"0","    )"
+"2","frequency = 5 observations per 5 years
+"
+"2","trend = 10 observations per 10 years
+"

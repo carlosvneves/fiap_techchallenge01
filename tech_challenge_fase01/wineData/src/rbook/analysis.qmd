@@ -1,0 +1,13 @@
+# Análise
+
+-   O que explica o comportamento sazonal?
+    -   Temperatura?
+    -   Pluviometria?
+    -   Outros climáticos
+-   O que explica a tendência de alta em termos de valor em contraposição à tendência de queda em termos de volume? 
+    - Questões relacionadas à economia global? 
+    - Câmbio? 
+    - O comportamento de outros grandes exportadores?
+    
+    
+## TODO

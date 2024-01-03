@@ -1,0 +1,6 @@
+"0","ts_total |> "
+"0","    plot_seasonal_diagnostics(date, value, "
+"0","                              .interactive = T, "
+"0","                              .feature_set = c(""quarter"",""year""),"
+"0","                              .geom_outlier_color=""#fc3503"","
+"0","                              .title = 'Volume total exportado (em L) - diagnóstico sazonal.')"

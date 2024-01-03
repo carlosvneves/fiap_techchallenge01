@@ -1,3 +1,0 @@
-"0","ts_total |> "
-"0","    plot_seasonal_diagnostics(date, volume, .interactive = T, "
-"0","                              .title = 'Volume total exportado (em L) - diagnóstico sazonal.')"

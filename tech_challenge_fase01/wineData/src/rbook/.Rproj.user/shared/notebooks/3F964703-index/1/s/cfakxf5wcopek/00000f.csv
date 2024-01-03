@@ -1,7 +1,0 @@
-"0",""
-"0","ts_total |> "
-"0","    plot_time_series(date, volume, .smooth = T, "
-"0","                     .interactive = T, "
-"0","                     .smooth_span = 0.3,"
-"0","                     .title = 'Volume Total exportado (mensal) em L',"
-"0","                     .plotly_slider = T)"
