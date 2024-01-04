@@ -52,11 +52,11 @@ Cada linha corresponde aos dados de data (yy-mm-dd), valor exportado (em US\$) e
 
 O primeiro recorte para análise será considerando um recorte longitudinal, agregando os valores como a soma do valor exportado por todos os países naquele determinado mês, tanto em termos de valor monetário, como em termos de volume.
 
-```{r transform_data}
+```{r tbl-ts_total_corrected}
 #| echo: false
 #| message: false
 #| warning: false
-#| label: tbl-ts_total
+#| label: tbl-ts_total_corrected
 #| tbl-cap: "Série dos dados agregados por mês (corte longitudinal em termos totais)."
 
 
@@ -74,8 +74,11 @@ tbl_render(ts_total)
 
 Primeiramente visualizamos a série temporal do valor total exportado por mês entre janeiro de 2000 e dezembro de 2022.
 
-```{r}
-
+```{r tbl-ts_total}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-ts_total
 ts_total |> 
     plot_time_series(date, value, .smooth = T, 
                      .interactive = T, 
