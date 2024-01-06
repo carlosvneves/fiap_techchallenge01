@@ -1,0 +1,512 @@
+#| label: tbl-agg_by_country
+#| fig-cap: "Dados agregados por país entre 2000 e 2022."
+ts_agg_by_country <- ts_tbl |>
+group_by(country) |>
+summarise(value = sum(value),
+volume = sum(volume)) |>
+arrange(desc(value))
+tbl_render(ts_agg_by_country,"")
+source("C:/projects/alura_postech/tech_challenge_fase01/wineData/src/rbook/utils.R")
+source("C:/projects/alura_postech/tech_challenge_fase01/wineData/src/rbook/utils.R")
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-agg_by_country
+#| fig-cap: "Dados agregados por país entre 2000 e 2022."
+ts_agg_by_country <- ts_tbl |>
+group_by(country) |>
+summarise(value = sum(value),
+volume = sum(volume)) |>
+arrange(desc(value))
+tbl_render(ts_agg_by_country,"")
+source("C:/projects/alura_postech/tech_challenge_fase01/wineData/src/rbook/utils.R")
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-agg_by_country
+#| fig-cap: "Dados agregados por país entre 2000 e 2022."
+ts_agg_by_country <- ts_tbl |>
+group_by(country) |>
+summarise(value = sum(value),
+volume = sum(volume)) |>
+arrange(desc(value))
+tbl_render(ts_agg_by_country,"")
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-agg_by_country
+#| fig-cap: "Dados agregados por país entre 2000 e 2022."
+ts_agg_by_country <- ts_total |>
+group_by(country) |>
+summarise(value = sum(value),
+volume = sum(volume)) |>
+arrange(desc(value))
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-agg_by_country
+#| fig-cap: "Dados agregados por país entre 2000 e 2022."
+ts_agg_by_country <- ts_tbl |>
+group_by(country) |>
+summarise(value = sum(value),
+volume = sum(volume)) |>
+arrange(desc(value))
+tbl_render(ts_agg_by_country,"")
+correction
+range(2000, 2022, 1)
+range(2000, 2022)
+arrange(2000, 2022)
+c(2000:2022)
+desc(c(2000:2022))
+c(2000:2022)
+correction
+c(2022:2000)
+tibble(c(correction, c(2022:2000)))
+help(tibble)
+tibble(correction, c(2022:2000))
+tibble( idx = correction, year= c(2022:2000))
+tibble( idx = correction, date = c(2022:2000)) |> mutate( date = lubridate::make_date(date))
+cpi <-  tibble( cpi = correction,
+date = c(2022:2000)) |>
+mutate( date = lubridate::make_date(date))
+ts_tbl
+ts_tbl |> join_by(date, cpi)
+ts_tbl |> dplyr::join(date, cpi)
+ts_tbl |> dplyr::full_join(date, cpi)
+ts_tbl |> dplyr::full_join(cpi)
+cpi <-  tibble( cpi = correction,
+date = c(2022:2000)) |>
+mutate( date = lubridate::make_date(date))
+cpi
+ts_tbl
+cpi <-  tibble( cpi = correction,
+date = c(2022:2000)) |>
+mutate( date = lubridate::make_date(date,12,1))
+cpi
+ts_tbl
+ts_tbl |> dplyr::full_join(cpi)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-agg_by_country
+#| fig-cap: "Dados agregados por país entre 2000 e 2022."
+# dataframe com os índices de correção
+cpi <-  tibble( cpi = correction,
+date = c(2022:2000)) |>
+mutate( date = lubridate::make_date(date,12,1))
+# dataframe com os valores corrigidos pela inflação (valores de US$ de 2022)
+ts_tbl_corr <- ts_tbl |>
+dplyr::full_join(cpi) |>
+dplyr::mutate(value_corr = value * cpi) |>
+dplyr::select(date, country, value_corr, volume) |>
+dplyr::mutate(value = value_corr)
+# dataframe com os valores corrigidos agregados por país
+ts_agg_by_country <- ts_tbl_corr |>
+group_by(country) |>
+summarise(value = sum(value),
+volume = sum(volume)) |>
+arrange(desc(value))
+tbl_render(ts_agg_by_country,"")
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-agg_by_country
+#| fig-cap: "Dados agregados por país entre 2000 e 2022."
+# dataframe com os índices de correção
+cpi <-  tibble( cpi = correction,
+date = c(2022:2000)) |>
+mutate( date = lubridate::make_date(date,12,1))
+# dataframe com os valores corrigidos pela inflação (valores de US$ de 2022)
+ts_tbl_corr <- ts_tbl |>
+dplyr::full_join(cpi) |>
+dplyr::mutate(value_corr = value * cpi) |>
+dplyr::select(date, country, value_corr, volume) |>
+dplyr::mutate(value = value_corr)
+# dataframe com os valores corrigidos agregados por país
+ts_agg_by_country <- ts_tbl_corr |>
+group_by(country) |>
+summarise(value = sum(value),
+volume = sum(volume)) |>
+arrange(desc(value))
+tbl_render(ts_agg_by_country,"")
+install.packages("d3treeR")
+install.packages(c("plotly", "treemapify"))
+library(plotly, warn.conflicts = FALSE)
+library(treemapify)
+library(timetk)
+library(tidyverse)
+library(readr)
+library(lubridate)
+library(knitr)
+library(kableExtra)
+library(tseries)
+library(dplyr)
+library(ggplot2)
+library(strucchange)
+library(urca)
+library(ggthemes)
+library(plotly, warn.conflicts = FALSE)
+library(treemapify)
+p <- ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+geom_treemap()
+ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+geom_treemap()
+fig <- plot_ly(
+type = "treemap",
+labels = country,
+#parents = parents,
+values = value,
+#marker = list(colorscale='Reds')
+)
+ts_agg_by_country |>  plot_ly(
+type = "treemap",
+labels = country,
+#parents = parents,
+values = value,
+#marker = list(colorscale='Reds')
+)
+ts_agg_by_country
+ts_agg_by_country |>  plot_ly(
+type = "treemap",
+#labels = country,
+#parents = parents,
+values = value,
+#marker = list(colorscale='Reds')
+)
+clear
+plot_ly(
+type = "treemap",
+labels = ts_agg_by_country$country,
+#parents = parents,
+values = ts_agg_by_country$value,
+#marker = list(colorscale='Reds')
+)
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+fig <- plot_ly(
+type = "treemap",
+labels = ts_agg_by_country$country,
+#parents = parents,
+values = ts_agg_by_country$value,
+#marker = list(colorscale='Reds')
+)
+fig
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+fig <- plot_ly(
+type = "treemap",
+ids = ts_agg_by_country$country,
+#labels = ts_agg_by_country$country,
+#parents = parents,
+values = ts_agg_by_country$value,
+#marker = list(colorscale='Reds')
+)
+fig
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+fig <- plot_ly(
+type = "treemap",
+ids = ts_agg_by_country$country,
+#labels = ts_agg_by_country$country,
+#parents = parents,
+values = ts_agg_by_country$value,
+#marker = list(colorscale='Reds')
+)
+fig
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+fig <- plot_ly(ts_agg_by_country,
+type = "treemap",
+ids = ts_agg_by_country$country,
+#labels = ts_agg_by_country$country,
+#parents = parents,
+values = ts_agg_by_country$value,
+#marker = list(colorscale='Reds')
+)
+fig <- plot_ly(ts_agg_by_country,
+type = "treemap")
+fig
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+fig <- plot_ly(
+type = "treemap",
+ids = ts_agg_by_country$country,
+)
+fig
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+fig <- plot_ly(
+type = "treemap",
+ids = ts_agg_by_country$country,
+labels = ts_agg_by_country$country,
+)
+fig
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+fig
+fig <- plot_ly(
+type = "treemap",
+ids = ts_agg_by_country$value,
+labels = ts_agg_by_country$country,
+)
+fig
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+fig <- plot_ly(
+type = "treemap",
+ids = ts_agg_by_country$value,
+labels = ts_agg_by_country$value,
+)
+fig
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+install.packages("treemapify")
+install.packages("treemapify")
+install.packages("treemapify")
+library(treemapify)
+library(treemapify)
+ggplot(ts_agg_by_country, aes(area = value, fill = value)) +
+geom_treemap()
+library(ggplot2)
+ggplot(ts_agg_by_country, aes(area = value, fill = value)) +
+geom_treemap()
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+ggplot(ts_agg_by_country, aes(area = value, fill = value, label = country) +
+geom_treemap()
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+ggplot(ts_agg_by_country, aes(area = value, fill = value) +
+geom_treemap()
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+ggplot(ts_agg_by_country, aes(area = value, fill = value) +
+geom_treemap()
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+ggplot(ts_agg_by_country, aes(area = value, fill = value) )+
+geom_treemap()
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+ggplot(ts_agg_by_country, aes(area = value, fill = value, label=country))+
+geom_treemap()
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+ggplot(ts_agg_by_country, aes(area = value, fill = value, label=country))+
+geom_treemap() +  geom_treemap_text()
+# ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +
+#   geom_treemap()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume, fill = country, label = country))+
+geom_treemap() +  geom_treemap_text()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume, fill = volume, label = country))+
+geom_treemap() +  geom_treemap_text()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume, fill = volume, label = country))+
+geom_treemap() +  geom_treemap_text() + scale_fill_viridis_c()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume, fill = volume, label = country))+
+geom_treemap() +  geom_treemap_text()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value, label=country))+
+geom_treemap() +  geom_treemap_text()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
+geom_treemap() +  geom_treemap_text()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() + geom_treemap_text(colour = "white",
+place = "centre",
+size = 15) +
+scale_fill_brewer(palette = "Blues")
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() + geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15, grow = TRUE)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| label: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)+scale_fill_viridis_c()
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_vol
+#| fig-cap: "treemap"
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+#| echo: false
+#| message: false
+#| warning: false
+options(warnPartialMatchArgs = TRUE)
+source('utils.R')
+#| echo: false
+#| message: false
+#| warning: false
+options(warnPartialMatchArgs = TRUE)
+source('utils.R')
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| fig-cap: "treemap"
+p1 <- ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+p2 <- ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+multiplot(p1,p2)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| fig-cap: "treemap"
+p1 <- ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+p2 <- ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+par(mfrow=c(1,2))
+p1
+p2
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| fig-cap: "treemap"
+par(mfrow=c(1,2))
+ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| fig-cap: "treemap"
+treemap1 <- ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+treemap2 <- ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+gridExtra::grid.arrange(treemap1, treemap2, ncol=2)
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| fig-cap: "treemap"
+treemap1 <- ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+treemap2 <- ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+geom_treemap() +  geom_treemap_text(colour = "white",
+place = "centre",
+size = 15)
+gridExtra::grid.arrange(treemap1, treemap2, ncol = 1, nrow = 2)
+install.packages(c("cli", "data.table", "DiceDesign", "fansi", "jsonlite", "Matrix", "vctrs"))
+install.packages(c("cluster", "foreign", "Matrix", "mgcv", "nlme", "rpart"), lib="C:/Users/carlo/scoop/apps/r/4.3.2/library")
+install.packages(c("cli", "data.table", "DiceDesign", "fansi", "jsonlite", "Matrix", "vctrs"))

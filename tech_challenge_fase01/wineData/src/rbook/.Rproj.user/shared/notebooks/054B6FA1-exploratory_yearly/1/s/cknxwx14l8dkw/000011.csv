@@ -1,0 +1,8 @@
+"0","#| echo: false"
+"0","#| message: false"
+"0","#| warning: false"
+"0","#| label: fig-acf_pacf_total_vol"
+"0","#| fig-cap: 'Volume total exportado - ACF e PACF.'"
+"0",""
+"0","ts_total |> plot_acf_diagnostics(date, volume, .interactive = T, .lags = 0:48,"
+"0","                                 .title = 'Volume total exportado - ACF e PACF.')"

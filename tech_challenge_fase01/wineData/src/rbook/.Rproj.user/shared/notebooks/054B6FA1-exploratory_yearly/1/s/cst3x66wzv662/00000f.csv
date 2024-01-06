@@ -1,0 +1,50 @@
+"0","#| echo: true"
+"0","#| message: false"
+"0","#| warning: false"
+"0","#| label: unit_root_lval"
+"0","ts <- ts(ts_total |> "
+"0","           dplyr::select(value) |> "
+"0","           dplyr::mutate(value = log(value)),"
+"0","         frequency = 1, "
+"0","         start = c(2000), "
+"0","         end = c(2022)"
+"0","         ) "
+"0",""
+"0","ur_test(ts, type_adf = ""trend"", type_kpss = ""tau"")"
+"1","############################
+    Resultado do Teste ADF
+    ############################
+
+    p-valor: 0.024"
+"1","
+
+Estatísticas do teste ADF (5% de significância):
+
+"
+"1","     "
+"1","      tau3"
+"1","     phi2"
+"1","     phi3"
+"1","
+cvals"
+"1"," -3.600000"
+"1"," 5.680000"
+"1"," 7.240000"
+"1","
+stats"
+"1"," -3.965557"
+"1"," 5.372124"
+"1"," 8.033277"
+"1","
+"
+"1","
+
+"
+"1","############################
+    Resultado do Teste KPSS
+    ############################
+
+    Valor crítico a 5% de significância: 0.146"
+"1","
+
+Estatística do teste KPSS: 0.089"

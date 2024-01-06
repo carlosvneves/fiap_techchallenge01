@@ -1,0 +1,7 @@
+"0","#| echo: false"
+"0","#| message: false"
+"0","#| warning: false"
+"0","#| label: fig-breakpoints_ts_val"
+"0","#| fig-cap: ""Identificação gráfica de quebras estruturais - valor total exportado em US$."""
+"0",""
+"0","plot(fs)"

@@ -1,0 +1,7 @@
+"0","#| echo: false"
+"0","#| message: false"
+"0","#| warning: false"
+"0","#| label: fig-efp_ts_vol"
+"0","#| fig-cap: ""Teste de flutuação empírica para quebras estruturais - volume total exportado em L."""
+"0",""
+"0","plot(efp(ts_vol ~ 1, data = ts_vol, type=""fluctuation""))"
