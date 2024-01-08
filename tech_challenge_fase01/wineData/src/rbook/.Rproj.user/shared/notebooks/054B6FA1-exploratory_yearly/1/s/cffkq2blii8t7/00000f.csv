@@ -1,3 +1,0 @@
-"0",""
-"0","p <- ggplot(G20, aes(area = gdp_mil_usd, fill = hdi)) +"
-"0","  geom_treemap()"

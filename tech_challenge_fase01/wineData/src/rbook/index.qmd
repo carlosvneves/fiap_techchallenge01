@@ -36,6 +36,34 @@ O Head de Dados pediu para que você construísse uma tabela contendo as seguint
 -   Valor em US\$.
 :::
 
+# Contexto
+
+## Produção de Vinho na Região Sul do Brasil
+::: {style="text-align:justify"}
+
+Segundo a Emprapa^[https://www.embrapa.br/agencia-de-informacao-tecnologica/cultivos/uva-para-processamento/pre-producao/caracteristicas-da-especie-e-relacoes-com-o-ambiente/clima/zoneamento-vitivinicola], a videira é cultivada nos cinco continentes, embora o seu cultivo econômico esteja concentrado em climas onde as condições heliotérmicas e hídricas permitem adequadas condições para a maturação das uvas.
+
+Com grande diversidade de tipos de clima, a viticultura mundial é encontrada nos climas temperados (oceânico, oceânico quente, temperado de transição, continental, continental frio), mediterrâneo, subtropical (subtropical, subtropical continental), tropical (atenuado, tropical), semi-árido (margens de climas áridos), árido e hiperárido.
+
+Contudo, a maior área vitícola destinada à elaboração de vinhos do mundo está concentrada em regiões de clima do tipo temperado e mediterrâneo. Tendo em vista que a videira necessita de condições particulares de clima para o seu desenvolvimento e obtenção de produtos de qualidade, o zoneamento climático constitui-se num importante instrumento de definição do potencial das regiões.
+
+No estudo do potencial das regiões, o zoneamento de risco climático é essencial. Ele permite identificar riscos de produção que estejam associados à ocorrência de geadas durante o período vegetativo da planta, à ocorrência de granizo, à incidência de doenças fúngicas (míldio, podridões do cacho), às condições de estresse térmico ou hídrico, bem como à identificação da necessidade de irrigação dos vinhedos. O zoneamento climático para uma região específica ganha maior qualidade quando associado ao zoneamento dos solos, já que clima e solo formam o principal conjunto dos fatores naturais a definir o potencial de adaptação da videira de uma região.
+
+Outro zoneamento climático importante é aquele associado ao potencial de adaptação das variedades de videira, à qualidade potencial das uvas e às características e qualidades dos vinhos e outros produtos da agroindústria. Com este foco, o clima vitícola de uma região produtora pode ser caracterizado através do Sistema de Classificação Climática Multicritérios Geovitícola (Sistema CCM), baseado em índices climáticos vitícolas. O sistema utiliza três índices sintéticos e complementares sendo um térmico de ciclo, outro nictotérmico e outro hídrico: a) Índice Heliotérmico (IH); b) Índice de Frio Noturno (IF); e, c) Índice de Seca (IS). Segundo o sistema, algumas das principais regiões produtoras brasileiras apresentam o seguinte clima vitícola: a Serra Gaúcha e a Serra do Sudeste no Rio Grande do Sul tem o clima classificado como Temperado Quente, de Noites Temperadas, Úmido; na região da Campanha, no mesmo estado o clima vitícola é Quente, de Noites Temperadas e Subúmido e nos Campos de Cima da Serra o clima é Temperado, de Noites Frias e Úmido. Nas regiões vitícolas de Santa Catarina o clima é: Quente, de Noites Temperadas e Úmido no Alto Vale do Rio do Peixe e, na região mais fria do país, em São Joaquim no Planalto Catarinense o clima é Frio, de Noites Frias e Úmido. Em zona tropical semi-árida, onde está a vitivinicultura do Vale do Submédio São Francisco, o clima vitícola possui variabilidade intra-anual (situação que ocorre onde o clima vitícola da região, sob condições naturais, muda de classe de clima vitícola em função do período do ano no qual a uva pode ser produzida), sendo Muito Quente, de Noites Quentes, variando de Subúmido a de Seca Forte em função do período do ano.
+
+
+O clima do Rio Grande do Sul é Temperado do tipo Subtropical, classificado como Mesotérmico Úmido (classificação de Köppen). Devido à sua posição geográfica, entre os paralelos 27°03'42" e 33°45'09" de latitude sul, e 49°42'41" e 57°40'57" de longitude oeste, o clima no Rio Grande do Sul apresenta grandes diferenças em relação ao Brasil. A latitude reforça as influências das massas de ar oriundas da região polar e da área tropical continental e atlântica. A movimentação e os encontros destas massas definem muitas de nossas características climáticas.
+
+As temperaturas apresentam grande variação sazonal, com verões quentes e invernos bastante rigorosos, com a ocorrência de geadas e precipitação eventual de neve. As temperaturas médias variam entre 15°C e 18°C, com mínimas de até -10°C e máximas de 40°C. 
+
+Com relação às precipitações, o Estado apresenta uma distribuição relativamente equilibrada das chuvas ao longo de todo o ano, em decorrência das massas de ar oceânicas que penetram no território. O volume de chuvas, no entanto, é diferenciado. Ao sul a precipitação média situa-se entre 1.299 e 1.500 milímetros e, ao norte a média está entre 1.500 e 1.800 milímetros, com intensidade maior de chuvas a nordeste do Estado, especialmente na encosta do planalto Meridional.^[https://atlassocioeconomico.rs.gov.br/clima-temperatura-e-precipitacao].
+
+https://www.embrapa.br/busca-de-publicacoes/-/publicacao/105625/identificacao-da-regiao-com-condicoes-climaticas-para-producao-de-vinhos-finos-no-rio-grande-do-sul
+
+
+:::
+
+
 # Metodologia
 
 ## Dados
@@ -43,6 +71,9 @@ O Head de Dados pediu para que você construísse uma tabela contendo as seguint
 ::: {style="text-align: justify"}
 Os dados que lhe forneceram são de uma vinícola parceira, e podem ser encontrados [aqui](http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_01).
 Tomando como referência o [relatório](https://ainfo.cnptia.embrapa.br/digital/bitstream/item/215377/1/COMUNICADO-TECNICO-214-Publica-602-versao-2020-08-14.pdf), sabemos que os valores exportados constantes das bases de dados estão em US\$ 1.000,00 (FOB).
+
+https://ainfo.cnptia.embrapa.br/digital/bitstream/item/227610/1/ComTec-223-21.pdf
+
 
 Com o intuito de confirmar tal informação, ainda extraímos os dados diretamente da plataforma [Comexstat](http://comexstat.mdic.gov.br/pt/geral/97910) de responsabilidade do Ministério da Indústria, Comércio Exterior e Serviços (MDIC).
 Nesta caso, os vinhos de mesa correspondem ao produto de Código CUCI 11217 - "Vinhos de uvas frescas (exceto vinho espumante); mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool".
@@ -96,3 +127,6 @@ A partir dos dados,
     -   https://ipyvizzu-story.vizzuhq.com/latest/
     -   http://gsap.com/
 :::
+
+
+

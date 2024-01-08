@@ -1,7 +1,0 @@
-"0","#| echo: false"
-"0","#| message: false"
-"0","#| warning: false"
-"0","#| label: fig-efp_ts_val"
-"0","#| fig-cap: ""Teste de flutuação empírica para quebras estruturais - valor total exportado em US$."""
-"0",""
-"0","plot(efp(ts_val ~ 1, data = ts_val, type=""fluctuation""))"

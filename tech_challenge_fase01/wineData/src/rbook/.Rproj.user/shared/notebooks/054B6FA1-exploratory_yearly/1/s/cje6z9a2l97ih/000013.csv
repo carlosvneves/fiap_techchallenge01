@@ -1,8 +1,0 @@
-"0","#| echo: false"
-"0","#| message: false"
-"0","#| warning: false"
-"0","#| label: fig-breakpoints_ts_vol"
-"0","#| fig-cap: ""Identificação gráfica de quebras estruturais - volume total exportado em L."""
-"0",""
-"0",""
-"0","plot(fs)"

@@ -10,7 +10,7 @@ library(ggplot2)
 library(strucchange)
 library(urca)
 library(ggthemes)
-library(plotly, warn.conflicts = FALSE)
+# library(plotly, warn.conflicts = FALSE)
 library(treemapify)
 
 # helper functions

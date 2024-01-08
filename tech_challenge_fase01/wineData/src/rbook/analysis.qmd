@@ -12,3 +12,80 @@
     
 ## Correlações espúrias, estacionariedade e teste de raiz unitária 
 
+
+## 
+
+
+## Produção mundial de uva e consumo de vinho
+::: {style="text-align:justify"}
+
+```{r}
+#| warning: false
+#| echo: false
+#| layout-nrow:  2
+#| layout-ncol:  1
+#| label: fig-climate-data
+#| fig-cap: "Produção de uva em toneladas^[https://ourworldindata.org/grapher/grapes-production] e Consumo de vinho per-capita em litros^[https://ourworldindata.org/grapher/wine-consumption-per-person]." 
+#| fig-subcap:
+#|  - "Produção de uva em toneladas"
+#|  - "Consumo de vinho per-capita em litros"
+
+wine_consumption <- readr::read_delim("../../data/wine-consumption-per-person.csv", delim = ",",
+                                      escape_double = FALSE,
+                                      trim_ws = TRUE,
+                                      show_col_types = F ) |> filter(Year > 1999) |> 
+  rename(Consumption = `Indicator:Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol) - Beverage Types:Wine`)
+
+grape_production <- readr::read_delim("../../data/grapes-production.csv", delim = ",",
+                                      escape_double = FALSE,
+                                      trim_ws = TRUE,
+                                      show_col_types = F ) |> filter(Year > 1999) |> 
+    rename(Production = "Grapes | 00000560 || Production | 005510 || tonnes")
+
+# grape_production plot_time_series(date, precip)
+# climate_data_monthly |> plot_time_series(date, precip)
+# 
+# climate_data_monthly |> plot_time_series(date, temp)
+```   
+:::
+
+
+## Produção mundial de vinho
+::: {style="text-align:justify"}
+```{r}
+
+```
+
+:::
+
+## Dados climáticos da região produtora de vinhos
+::: {style="text-align:justify"}
+```{r}
+#| warning: false
+#| echo: false
+#| layout-nrow:  3
+#| layout-ncol:  1
+#| label: fig-climate-data
+#| fig-cap: "Dados climáticos da região produtora de vinhos no Rio Grande do Sul (estação automática de Bento Gonçalves - INMET)." 
+#| fig-subcap:
+#|  - "Precipitação"
+#|  - "Temperatura"
+#|  - "Vento"
+climate_data_monthly <- readr::read_delim("../../data/dadosclima/dados_A840_M_2006-11-30_2022-12-31.csv", 
+                                 delim = ";", escape_double = FALSE, 
+                                 na = "null", trim_ws = TRUE, 
+                                 skip = 9, show_col_types = FALSE) |> 
+                                 select(-5) |> rename(date = "Data Medicao", precip = "PRECIPITACAO TOTAL, MENSAL (AUT)(mm)",
+                                                       temp = "TEMPERATURA MEDIA, MENSAL (AUT)(°C)",
+                                                       wind = "VENTO, VELOCIDADE MEDIA MENSAL (AUT)(m/s)") |> 
+                                mutate(date = lubridate::as_date(date)) |> 
+                                mutate_at(vars(-1), ~na.approx(., na.rm = FALSE)) |> drop_na()
+
+climate_data_monthly |> plot_time_series(date, precip)
+
+climate_data_monthly |> plot_time_series(date, temp)
+
+climate_data_monthly |> plot_time_series(date, wind)
+
+```
+:::

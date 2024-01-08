@@ -75,6 +75,83 @@ Série dos dados anuais de volume e valor de vinho exportado pelo Brasil - 2000 
 :::
 :::
 
+## Séries anuais - agregação por país (recorte transversal)
+::: {style="text-align: justify"}
+
+Em que pese a tabela @tbl-ts_input_yearly cumprir o principal requisito da demanda, para uma visão mais completa dos dados é importante realizar recortes específicos.
+
+O primeiro recorte interessante é uma análise transversal, ou seja, considerando os dados agregados por ano.
+Desta forma é possível obter *insights* sobre o mercado de um modo geral e de longo-prazo.
+
+Ao agregagar os de valor exportado (em US$ de 2022) e volume exportado (em litros) por país (@tbl-agg_by_country), é possível verificar que o Paraguai é o primeiro lugar em termos de valor exportado, enquanto que a Rússia é o primeiro colocado em termos de volume. Os Estados Unidos aparece em terceiro lugar em ambos os indicadores.  
+
+::: {#tbl-agg_by_country}
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-agg_by_country
+
+cpi_us <-  readr::read_delim(
+        "../../data/cpi_brazil_us/cpi_series.csv",
+        delim = ";",
+        escape_double = FALSE,
+        trim_ws = TRUE,
+        show_col_types = F
+    ) |> arrange(desc(year))
+correction <- (1./(cpi_us$cpi/cpi_us$cpi[1]))
+
+
+# dataframe com os índices de correção
+cpi <-  tibble( cpi = correction, 
+        date = c(2022:2000)) |> 
+        mutate( date = lubridate::make_date(date,12,1))
+
+# dataframe com os valores corrigidos pela inflação (valores de US$ de 2022)
+ts_tbl_corr <- ts_tbl |> 
+  dplyr::full_join(cpi) |> 
+  dplyr::mutate(value_corr = value * cpi) |> 
+  dplyr::select(date, country, value_corr, volume) |> 
+  dplyr::mutate(value = value_corr)
+
+# dataframe com os valores corrigidos agregados por país
+ts_agg_by_country <- ts_tbl_corr |> 
+   group_by(country) |> 
+   summarise(value = sum(value), 
+             volume = sum(volume)) |> 
+   arrange(desc(value))
+ 
+tbl_render(ts_agg_by_country,"")
+```
+Dados agregados por país entre 2000 e 2022.
+
+:::
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-treemap_agg_by_country_val
+#| fig-cap: "Valor exportado e volume exportado agregado por país."
+
+treemap1 <- ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
+  geom_treemap() +  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15) + ggtitle("Valor exportado em milhões US$.")
+
+treemap2 <- ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
+  geom_treemap() +  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15) + ggtitle("Volume exportado em milhões de litros.")
+
+
+gridExtra::grid.arrange(treemap1, treemap2, ncol = 1, nrow = 2)
+```
+
+
+:::
+
+
 ## Séries anuais - agregação por ano (recorte longitudinal)
 
 ::: {style="text-align: justify"}
@@ -731,67 +808,4 @@ forecast::checkresiduals(fit)
 A estatística do teste é $Q=6,6192$ e o p-valor é $0,1574$, que é muito maior que 0,05. Portanto, $H_0$ do teste não é rejeitada e os resíduos do modelo são independentes. Neste caso, o modelo $ARIMA(0,0,1)$ gerado automaticamente vai ao encontro dos testes realizados na seções anteriores.
 
 :::
-
-## Séries anuais - agregação por país (recorte transversal)
-::: {style="text-align: justify"}
-
-Ao agregagar os de valor exportado (em US$ de 2022) e volume exportado (em litros) por país (@tbl-agg_by_country), é possível verificar que o Paraguai é o primeiro lugar em termos de valor exportado, enquanto que a Rússia é o primeiro colocado em termos de volume.   
-
-::: {#tbl-agg_by_country}
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: tbl-agg_by_country
-
-# dataframe com os índices de correção
-cpi <-  tibble( cpi = correction, 
-        date = c(2022:2000)) |> 
-        mutate( date = lubridate::make_date(date,12,1))
-
-
-# dataframe com os valores corrigidos pela inflação (valores de US$ de 2022)
-ts_tbl_corr <- ts_tbl |> 
-  dplyr::full_join(cpi) |> 
-  dplyr::mutate(value_corr = value * cpi) |> 
-  dplyr::select(date, country, value_corr, volume) |> 
-  dplyr::mutate(value = value_corr)
-
-# dataframe com os valores corrigidos agregados por país
-ts_agg_by_country <- ts_tbl_corr |> 
-   group_by(country) |> 
-   summarise(value = sum(value), 
-             volume = sum(volume)) |> 
-   arrange(desc(value))
- 
-tbl_render(ts_agg_by_country,"")
-```
-Dados agregados por país entre 2000 e 2022.
-
-:::
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-treemap_agg_by_country_val
-#| fig-cap: "Valor exportado e volume exportado agregado por país."
-
-treemap1 <- ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
-  geom_treemap() +  geom_treemap_text(colour = "white",
-                    place = "centre",
-                    size = 15) + ggtitle("Valor exportado em milhões US$.")
-
-treemap2 <- ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
-  geom_treemap() +  geom_treemap_text(colour = "white",
-                    place = "centre",
-                    size = 15) + ggtitle("Volume exportado em milhões de litros.")
-
-
-gridExtra::grid.arrange(treemap1, treemap2, ncol = 1, nrow = 2)
-```
-
-
-:::
-
 
