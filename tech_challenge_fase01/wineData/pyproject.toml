@@ -16,6 +16,9 @@ seaborn = ">=0.13.0"
 scikit-learn = ">=1.2.2"
 matplotlib = ">=3.7.1"
 itables = ">=0.8.0"
+streamlit = "^1.29.0"
+pytimetk = "^0.2.1"
+python-bcb = "^0.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
