@@ -19,6 +19,10 @@ itables = ">=0.8.0"
 streamlit = "^1.29.0"
 pytimetk = "^0.2.1"
 python-bcb = "^0.2.0"
+pylyzer = "^0.0.51"
+pmdarima = "^2.0.4"
+prophet = "^1.1.5"
+gluonts = {extras = ["torch"], version = "^0.14.3"}
 
 
 [tool.poetry.group.dev.dependencies]
