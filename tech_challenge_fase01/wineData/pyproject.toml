@@ -22,7 +22,7 @@ python-bcb = "^0.2.0"
 pylyzer = "^0.0.51"
 pmdarima = "^2.0.4"
 prophet = "^1.1.5"
-gluonts = {extras = ["torch"], version = "^0.14.3"}
+mxnet = "^1.9.1"
 
 
 [tool.poetry.group.dev.dependencies]
