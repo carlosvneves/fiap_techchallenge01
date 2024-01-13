@@ -10,8 +10,9 @@ library(ggplot2)
 library(strucchange)
 library(urca)
 library(ggthemes)
-# library(plotly, warn.conflicts = FALSE)
+library(plotly, warn.conflicts = FALSE)
 library(treemapify)
+
 
 # helper functions
 tbl_render <- function(tbl, header){
@@ -29,7 +30,9 @@ tbl_render <- function(tbl, header){
             name = "Valor FOB (US$)"
         } else if (name == 'volume'){
             name = "Quilograma Líquido (1L=1Kg)"
-        } else {
+        } else if (name == 'kpi'){
+            name = "KPI"
+        } else{
             name = NULL
         }
 
@@ -38,7 +41,7 @@ tbl_render <- function(tbl, header){
         }
         
     }
-    
+
     return(
         if( 'date' %in% colnames(tbl)) {
             DT::datatable(tbl, filter = "bottom", 
@@ -55,6 +58,24 @@ tbl_render <- function(tbl, header){
             DT::formatRound(columns = c('volume'),
                             mark = ".",
                             dec.mark = ",")  
+        } else if('kpi' %in% colnames(tbl)){
+            DT::datatable(tbl, filter = "bottom", 
+                          colnames = tbl_col_names,
+                          caption = header, 
+                          extensions = 'Buttons', 
+                          options = list(
+                              dom = 'Bfrtip',
+                              buttons = c('copy','excel', 'csv', 'pdf')
+                          )) |>
+                DT::formatCurrency(columns = c('value'), "$") |>
+                DT::formatDate(columns = c('date'),
+                               'toLocaleDateString') |>
+                DT::formatRound(columns = c('volume'),
+                                mark = ".",
+                                dec.mark = ",")   |> 
+                DT::formatRound(columns = c('kpi'),
+                                mark = ".",
+                                dec.mark = ",")
         } else {
             DT::datatable(tbl, filter = "bottom", 
                           colnames = tbl_col_names,
@@ -67,7 +88,8 @@ tbl_render <- function(tbl, header){
                 DT::formatCurrency(columns = c('value'), "$") |>
                 DT::formatRound(columns = c('volume'),
                                 mark = ".",
-                                dec.mark = ",")
+                                dec.mark = ",", digits = 3)
+            
         }
     )
     

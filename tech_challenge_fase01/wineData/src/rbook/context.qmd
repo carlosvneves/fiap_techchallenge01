@@ -1,0 +1,134 @@
+---
+code-fold: true
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r import_libs}
+#| echo: false  
+#| message: false
+#| warning: false
+
+source('utils.R')
+
+```
+
+# Contextualização
+
+[![](sunrise-landscape-wet-on-wet-watercolor-technique-vine-trees-laden-with-grapes-leading-to-the-hori.png){fig-align="center"}](playground.com)
+
+## História da produção de vinhos na Região Sul do Brasil
+
+::: {style="text-align: justify"}
+
+
+Conforme o artigo [Você conhece a história do vinho durante a colonização?](https://www.vinicolacampestre.com.br/blog/voce-conhece-a-historia-do-vinho-durante-a-colonizacao/)[^context-1]
+
+-----------------------------------------------------------------------
+
+[A chegada]{.underline}
+
+É atribuído ao português Brás Cubas o crédito por ter sido o primeiro produtor de vinho brasileiro. Segundo os registros históricos, ele trouxe as primeiras mudas de parreira na expedição do também lusitano e donatário de terras Martim Afonso de Souza, no ano de 1532. As plantadas foram cultivadas, inicialmente, em regiões próximas ao litoral paulista. Com o passar do tempo, porém, as primeiras plantações foram subindo a serra em busca de condições climáticas mais favoráveis.
+
+Todavia, as plantas trazidas (originárias da Ilha da Madeira) não se adaptaram ao clima tropical e passaram a produzir melhor apenas quando encontraram um clima mais frio na região da Serra do Mar, localidade do atual município de Taubaté. Obviamente, as dimensões continentais do Brasil propiciariam outras introduções, dessa vez mais esparsas, em seu território.(...)                                                     
+
+Por volta de 1640, na Ata da Sessão de Implantação da Câmara de São Paulo, buscou-se regularizar as condições de produção, qualidade e padronização da produção do vinho, assim como a regulamentação do seu preço de comercialização. Fato que, por si só, evidencia o crescimento do consumo e do interesse dos primeiros colonizadores.
+
+Contudo, motivos políticos atrapalhariam a difusão da produção de vinho em nosso país. O crescimento da produção local passou a suprir o consumo da colônia. Consequentemente, não era mais necessário importar a bebida de Portugal, o que levou a corte portuguesa a proibir a produção do vinho brasileiro.                                                                                                                
+
+(...)                                                                                                                                         
+
+[O vinho brasileiro]{.underline}                                                                                                            
+
+As videiras de origem europeia apresentavam grande dificuldade de adaptação ao clima brasileiro. Naquele período, era um processo bastante dispendioso trazer mudas do velho continente até o novo mundo.                                                                                
+
+A solução encontrada pelos produtores foi trazer as videiras da variedade Izabel de outras partes do continente americano, uma vez que elas se adaptavam melhor e, assim, aumentavam o nível de produtividade do trabalho realizado para a fabricação do vinho brasileiro.                  
+
+É importante, ademais, relembrar o papel do catolicismo na história do vinho no Brasil. Pelo fato de a bebida ser objeto de culto em algumas celebrações e ritos religiosos, a Igreja Católica tencionava garantir que o vinho chegasse a todas as colônias portuguesas.                   
+
+Foi, portanto, a partir da região sul que se iniciou o desenvolvimento da produção nacional de vinho. Não surgiram novos obstáculos políticos para deter sua evolução em direção ao atual status, qual seja, ser considerado um dos melhores vinhos de todo o mundo. Seja para celebrar alguma data especial ou, simplesmente, para harmonizar uma boa refeição, o vinho passou a ser um componente intrínseco à cultura brasileira.(...)                                                        
+
+------------------------------------------------------------------------
+
+De acordo com o artigo [História do Vinho no Brasil](https://reserva85.com.br/vinho/historia-do-vinho/historia-vinho-brasil/)[^context-2]:
+
+------------------------------------------------------------------------
+
+[Evolução da produção de vinho no Brasil]{.underline}
+
+A produção de vinho no Brasil cresceu consideravelmente desde que implantada no século XVI.
+No entanto, em 5 de janeiro de 1785, a rainha Dona Maria I, a Louca proibiu toda e qualquer atividade manufatureira na colônia.
+Incluindo a viticultura.
+A lei caiu apenas em 1808, por Dom João VI, com a chegada da família real portuguesa ao Brasil.
+
+Noventa e um anos depois, em 1899, desembarcava em Garibaldi, no Sul do País, o imigrante Manuel Peterlongo.
+O italiano foi responsável pela criação do primeiro espumante brasileiro.
+Em 1915, ele fundava a vinícola Peterlongo.
+Em 1929, depois da Grande Depressão que assolou o mundo, produtores se unirão para fortalecer a indústria do vinho e criaram cooperativas.
+Em 1931, surgem duas das mais importantes cooperativas vinícolas, a Aurora e a Garibaldi.
+Ambas seguem em atuação até os dias de hoje.
+
+Atentos a evolução do setor, grupos internacionais passam a apostar no País a partir de 1951.
+As produtoras Georges Aubert, Almadém, Chandon, Martini e Cinzano se instalam em terras sulistas e com isso ajudaram a consolidar a história da indústria vitivinícola no Brasil.
+A década seguinte foi marcada pela entrada do Nordeste no cenário viticultor.
+A Vinícola Vale do São Francisco produzindo o primeiro vinho fino fora da região Sul do Brasil.
+
+Após quase cinco séculos de história, só em 2012 o Brasil conquistou sua Primeira Denominação de Origem: D.O. Vale dos Vinhedos.
+Classificação para espumantes e vinhos tranquilos produzidos nos municípios de Bento Gonçalves, Garibaldi e Monte Belo do Sul, no Rio Grande do Sul, que seguem uma série de exigências pré-estabelecidas.
+
+------------------------------------------------------------------------
+
+Sobre a história da produção de vinho no Rio Grande do Sul especificamente, o artigo [História do Vinho no Brasil](https://www.enologia.org.br/curiosidade/a-historia-do-vinho-no-brasil) esclarece que[^context-3]:
+
+------------------------------------------------------------------------
+
+No Rio Grande do Sul a videira chegou em 1626, trazida pelo jesuíta Roque Gonzáles que plantou videiras européias em São Nicolau, nos Sete Povos das Missões. Embora houvesse necessidade da produção de vinho para utilização na missa, a dificuldade de adaptação de variedades viníferas em nossas terras impediu a disseminação da vitivinicultura no Brasil. Em 1742, assinala-se o renascimento da vitivinicultura rio-grandense com a chegada de sessenta casais açorianos e madeirenses radicados em rio grande e porto alegre.                                
+
+No ano de 1813, D. João VI reconhece oficialmente a primazia de Manoel de Macedo Brum da Silveira no plantio de videiras e produção de vinho no Rio Grande. Por volta de 1840, a introdução da variedade americana Isabel, por Thomas Master, na ilha dos Marinheiros, foi sucedida de grande sucesso. Sua resistência e rusticidade fizeram que ela se implantasse preferencialmente na região em detrimento das cepas viníferas, mais frágeis. A uva Isabel foi-se disseminando nas áreas de colonização alemã, como São Leopoldo.                                                                                                                                                                                          
+A partir de 1875 desponta o grande surto do crescimento da vitivinicultura gaúcha, graças á chegada da colonização italiana, pois os italianos traziam na bagagem além das cepas de uva européias da região de Vêneto, o hábito do consumo do vinho como um alimento, e o ainda chamado espírito vitivinícola. As cepas com o passar do tempo começaram a morrer por causa de doenças fúngicas, mas a força italiana e a vontade de manter sua tradição permitiram aos imigrantes que encontrasse uma cultivar que se adaptasse a região. A variedade de origem americana chamada de Isabel (vitis labrusca) foi encontrada na região no vale do rio dos Sinos, onde os imigrantes levaram para a encosta Superior do Nordeste, sendo que essa cultivar se adaptou muito bem aquelas condições, e permitiu a continuidade da produção de uvas e vinho.
+
+Há algumas décadas a preocupação com a melhoria de qualidade e as melhorias das técnicas agronômicas fizeram com que, novamente, se iniciasse o plantio de variedades viníferas. A partir de 1970, vinícolas multinacionais, como a Moet & Chandon, a Martini & Rossi e a Heublein estabeleceram-se na Serra Gaúcha trazendo equipamentos de alta tecnologia e técnicas viticulturais modernas. Essas empresas implementaram, também, junto aos calouros da Serra, um programa de estímulo à modificação do sistema de plantio, passando da latada à espaldeira. Estimularam, igualmente, a produção de cepas viníferas. Essas medidas tiveram como conseqüência um grande salto qualitativo no vinho brasileiro que hoje, a despeito das dificuldades de solo e clima, ostenta padrão internacional de qualidade.                                  
+
+
+
+------------------------------------------------------------------------
+
+:::
+
+[^context-1]: https://www.vinicolacampestre.com.br/blog/voce-conhece-a-historia-do-vinho-durante-a-colonizacao/
+
+[^context-2]: https://reserva85.com.br/vinho/historia-do-vinho/historia-vinho-brasil/
+
+[^context-3]: https://www.enologia.org.br/curiosidade/a-historia-do-vinho-no-brasil)
+
+## Estado atual da produção de vinhos na Região Sul do Brasil
+
+::: {style="text-align: justify"}
+A região sul do Brasil é a principal região produtora de vinhos do país, com o Rio Grande do Sul sendo o estado líder em produção de uvas e vinhos.
+A viticultura no Brasil ocupa uma área de aproximadamente 78 mil hectares, com vinhedos estabelecidos desde o extremo sul do país, em latitude de 30º 56’ 15’’S, até regiões situadas muito próximas ao equador, em latitude de 5º 11’ 15’’S[^context-4].
+
+Em função da diversidade ambiental, existem polos com viticultura característica de regiões temperadas, com um período de repouso hibernal; polos em áreas subtropicais, onde a videira é cultivada com dois ciclos anuais, definidos em função de um período de temperaturas mais baixas, no qual há risco de geadas; e, polos de viticultura tropical, onde é possível a realização de podas sucessivas, com a realização de dois e meio a três ciclos vegetativos por ano[^context-4].
+
+A produção de uvas é da ordem de 1,5 milhões de toneladas/ano.
+Deste volume, cerca de 50% é destinado ao processamento, para a elaboração de vinhos, sucos e outros derivados, e 50% comercializado como uvas de mesa.
+
+Do total de produtos industrializados, 42% são vinhos de mesa e 49% são sucos de uva, ambos elaborados a partir de uvas de origem americana, especialmente cultivares de Vitis labrusca, Vitis bourquina e híbridos interespecíficos diversos. Cerca de 7% são vinhos finos, elaborados com castas de Vitis vinifera; o restante dos produtos industrializados, 2% são outros derivados da uva e do vinho[^context-4].
+
+:::
+## Premiações
+
+::: {style="text-align: justify"}
+Em praticamente todos os concursos internacionais de vinhos, há brasileiros na lista dos melhores. 
+
+No final de abril de 2023, 31 distinções foram alcançadas no 47º Challenge International du Vin, realizado entre os dias 21 e 22 em Bordeaux, capital mundial do vinho. Organizado pela Asociación CDV – Concours Des Vins, o concurso é tido como a mais antiga competição de vinhos e destilados organizada na França[^context-5].
+
+Dos 31 prêmios alcançados pelos vinhos e espumantes nacionais, dois são especiais de categoria, 23 são Medalhas de Ouro e seis de Prata – os prêmios especiais destacam a melhor pontuação de Medalha de Ouro de cada categoria, registrando de 95,33 a 100 pontos. Os exemplares são da Serra Gaúcha e de Campos de Cima da Serra. Ambos os prêmios especiais do Brasil foram para produtos da Vinícola Campestre, localizada em Vacaria, no Rio Grande do Sul. O Zanotto Espumante Moscatel levou o Prêmio Especial Espumante Branco, já o Zanotto Espumante Moscatel Rosé recebeu o Prêmio Especial Espumante Rosé[^context-5].
+
+No concurso Mondial des Vins Extrêmes (mundial de vinhos extremos, em tradução livre) edição 2023 não foi diferente. O país teve 13 rótulos premiados, entre brancos, tintos e espumantes[^context-6].
+
+:::
+
+[^context-4]: https://www.embrapa.br/cim-uva-e-vinho/a-viticultura-no-brasil 
+[^context-5]: https://www.cnnbrasil.com.br/viagemegastronomia/noticias/vinhos-brasileiros-sao-premiados-com-ouro-e-prata-em-competicao-na-franca/
+[^context-6]: https://exame.com/casual/melhores-vinhos-brasileiros-segundo-mondial-des-vins-extremes/

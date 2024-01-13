@@ -41,7 +41,9 @@ Existem várias fontes onde você pode encontrar dados sobre a exportação de v
 Essas fontes podem fornecer uma visão geral dos dados de exportação de vinho do Brasil. No entanto, para uma análise mais detalhada, você pode precisar acessar bancos de dados específicos ou realizar sua própria pesquisa.
 
 Origem: conversa com o Bing, 09/12/2023
-(1) Exportação de vinho brasileiro bate recorde de janeiro a setembro de .... https://www.cnnbrasil.com.br/economia/exportacao-de-vinho-brasileiro-bate-recorde-de-janeiro-a-setembro-de-2021/.
+(1) Exportação de vinho brasileiro bate recorde de janeiro a setembro de 
+
+# https://www.cnnbrasil.com.br/economia/exportacao-de-vinho-brasileiro-bate-recorde-de-janeiro-a-setembro-de-2021/.
 (2) Acesse os Dados - Ministério do Desenvolvimento, Indústria, Comércio .... http://comexstat.mdic.gov.br/pt/home.
 (3) Exportação de vinhos brasileiros fecha 2021 em alta. https://revistaoeste.com/economia/exportacao-de-vinhos-brasileiros-fecha-2021-em-alta/.
 

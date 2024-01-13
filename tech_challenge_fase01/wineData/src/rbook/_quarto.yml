@@ -11,7 +11,8 @@ book:
   date: "1/29/2024"
   chapters:
     - index.qmd
-    - exploratory_yearly.qmd
+    - context.qmd
+    #- exploratory_yearly.qmd
     # - exploratory_monthly.qmd
     # - analysis.qmd
     # - conclusion.qmd

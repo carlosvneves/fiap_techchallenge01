@@ -17,84 +17,62 @@ source('utils.R')
 # Introdução
 
 ::: {style="text-align: justify"}
-Descrição da atividade.
+## Apresentação
 
-Imagine agora, que você vai atuar como Expert em Data Analytics em uma empresa que exporta vinhos do Brasil para o mundo todo.
+Bem-vindo(a)
 
-Sua área é recém-criada dentro da empresa, e você será responsável pelos relatórios iniciais a serem apresentados em uma reunião de investidores e acionistas, explicando a quantidade de vinhos exportados e os fatores externos que podem vir a surgir e que interferem nas análises:
+------------------------------------------------------------------------
 
--   Dados climáticos;
--   Dados demográficos;
--   Dados econômicos;
--   Dados de avaliações de vinhos.
+**Este relatório tem por objetivo apresentar um análise sobre a exportação de vinhos do Brasil.**
 
-O Head de Dados pediu para que você construísse uma tabela contendo as seguintes informações:
+O relatório deverá fornecer informações que permitam ao interessado ter uma compreensão sobre o processo de exportação de vinhos do Brasil, por meio de gráficos e tabelas interativas.
 
--   País de origem (Brasil);
--   País de destino;
--   Quantidade em litros de vinho exportado (utilize: 1KG =1L);
--   Valor em US\$.
+A análise parte dos seguintes dados:
+
+-   Países de destinatários dos vinhos produzidos no Brasil 🌎
+-   Quantidade em litros de vinho exportado (1KG =1L) 🍷
+-   Valor exportado em US\$ 💸
+
+Aleḿ dos dados acima, também fornecemos *insights* sobre a relação entre a exportação de vinhos e os dados abaixo:
+
+-   Dados climáticos 🌦️
+-   Dados demográficos 🧑‍🤝‍🧑
+-   Dados econômicos 📈
+-   Dados de avaliações de vinhos 🏅
+
+------------------------------------------------------------------------
 :::
-
-# Contexto
-
-## Produção de Vinho na Região Sul do Brasil
-::: {style="text-align:justify"}
-
-Segundo a Emprapa^[https://www.embrapa.br/agencia-de-informacao-tecnologica/cultivos/uva-para-processamento/pre-producao/caracteristicas-da-especie-e-relacoes-com-o-ambiente/clima/zoneamento-vitivinicola], a videira é cultivada nos cinco continentes, embora o seu cultivo econômico esteja concentrado em climas onde as condições heliotérmicas e hídricas permitem adequadas condições para a maturação das uvas.
-
-Com grande diversidade de tipos de clima, a viticultura mundial é encontrada nos climas temperados (oceânico, oceânico quente, temperado de transição, continental, continental frio), mediterrâneo, subtropical (subtropical, subtropical continental), tropical (atenuado, tropical), semi-árido (margens de climas áridos), árido e hiperárido.
-
-Contudo, a maior área vitícola destinada à elaboração de vinhos do mundo está concentrada em regiões de clima do tipo temperado e mediterrâneo. Tendo em vista que a videira necessita de condições particulares de clima para o seu desenvolvimento e obtenção de produtos de qualidade, o zoneamento climático constitui-se num importante instrumento de definição do potencial das regiões.
-
-No estudo do potencial das regiões, o zoneamento de risco climático é essencial. Ele permite identificar riscos de produção que estejam associados à ocorrência de geadas durante o período vegetativo da planta, à ocorrência de granizo, à incidência de doenças fúngicas (míldio, podridões do cacho), às condições de estresse térmico ou hídrico, bem como à identificação da necessidade de irrigação dos vinhedos. O zoneamento climático para uma região específica ganha maior qualidade quando associado ao zoneamento dos solos, já que clima e solo formam o principal conjunto dos fatores naturais a definir o potencial de adaptação da videira de uma região.
-
-Outro zoneamento climático importante é aquele associado ao potencial de adaptação das variedades de videira, à qualidade potencial das uvas e às características e qualidades dos vinhos e outros produtos da agroindústria. Com este foco, o clima vitícola de uma região produtora pode ser caracterizado através do Sistema de Classificação Climática Multicritérios Geovitícola (Sistema CCM), baseado em índices climáticos vitícolas. O sistema utiliza três índices sintéticos e complementares sendo um térmico de ciclo, outro nictotérmico e outro hídrico: a) Índice Heliotérmico (IH); b) Índice de Frio Noturno (IF); e, c) Índice de Seca (IS). Segundo o sistema, algumas das principais regiões produtoras brasileiras apresentam o seguinte clima vitícola: a Serra Gaúcha e a Serra do Sudeste no Rio Grande do Sul tem o clima classificado como Temperado Quente, de Noites Temperadas, Úmido; na região da Campanha, no mesmo estado o clima vitícola é Quente, de Noites Temperadas e Subúmido e nos Campos de Cima da Serra o clima é Temperado, de Noites Frias e Úmido. Nas regiões vitícolas de Santa Catarina o clima é: Quente, de Noites Temperadas e Úmido no Alto Vale do Rio do Peixe e, na região mais fria do país, em São Joaquim no Planalto Catarinense o clima é Frio, de Noites Frias e Úmido. Em zona tropical semi-árida, onde está a vitivinicultura do Vale do Submédio São Francisco, o clima vitícola possui variabilidade intra-anual (situação que ocorre onde o clima vitícola da região, sob condições naturais, muda de classe de clima vitícola em função do período do ano no qual a uva pode ser produzida), sendo Muito Quente, de Noites Quentes, variando de Subúmido a de Seca Forte em função do período do ano.
-
-
-O clima do Rio Grande do Sul é Temperado do tipo Subtropical, classificado como Mesotérmico Úmido (classificação de Köppen). Devido à sua posição geográfica, entre os paralelos 27°03'42" e 33°45'09" de latitude sul, e 49°42'41" e 57°40'57" de longitude oeste, o clima no Rio Grande do Sul apresenta grandes diferenças em relação ao Brasil. A latitude reforça as influências das massas de ar oriundas da região polar e da área tropical continental e atlântica. A movimentação e os encontros destas massas definem muitas de nossas características climáticas.
-
-As temperaturas apresentam grande variação sazonal, com verões quentes e invernos bastante rigorosos, com a ocorrência de geadas e precipitação eventual de neve. As temperaturas médias variam entre 15°C e 18°C, com mínimas de até -10°C e máximas de 40°C. 
-
-Com relação às precipitações, o Estado apresenta uma distribuição relativamente equilibrada das chuvas ao longo de todo o ano, em decorrência das massas de ar oceânicas que penetram no território. O volume de chuvas, no entanto, é diferenciado. Ao sul a precipitação média situa-se entre 1.299 e 1.500 milímetros e, ao norte a média está entre 1.500 e 1.800 milímetros, com intensidade maior de chuvas a nordeste do Estado, especialmente na encosta do planalto Meridional.^[https://atlassocioeconomico.rs.gov.br/clima-temperatura-e-precipitacao].
-
-https://www.embrapa.br/busca-de-publicacoes/-/publicacao/105625/identificacao-da-regiao-com-condicoes-climaticas-para-producao-de-vinhos-finos-no-rio-grande-do-sul
-
-
-:::
-
 
 # Metodologia
 
 ## Dados
 
+### Exportação de vinhos
+
 ::: {style="text-align: justify"}
-Os dados que lhe forneceram são de uma vinícola parceira, e podem ser encontrados [aqui](http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_01).
-Tomando como referência o [relatório](https://ainfo.cnptia.embrapa.br/digital/bitstream/item/215377/1/COMUNICADO-TECNICO-214-Publica-602-versao-2020-08-14.pdf), sabemos que os valores exportados constantes das bases de dados estão em US\$ 1.000,00 (FOB).
+Os dados inicialmente fornecidos são de uma vinícola parceira, e podem ser encontrados [aqui](http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_01).
+Tomando como referência os relatórios produzidos pela Emprapa em [2020](https://ainfo.cnptia.embrapa.br/digital/bitstream/item/215377/1/COMUNICADO-TECNICO-214-Publica-602-versao-2020-08-14.pdf) e [2021](https://ainfo.cnptia.embrapa.br/digital/bitstream/item/227610/1/ComTec-223-21.pdf), sabemos que a origem dos dados incialmente fornecidos é a Secretaria de Comércio Exterior do do Ministério da Indústria, Comércio Exterior e Serviços (MDIC).
 
-https://ainfo.cnptia.embrapa.br/digital/bitstream/item/227610/1/ComTec-223-21.pdf
+Com o intuito de confirmar tal informação, ainda extraímos os dados diretamente da plataforma [Comexstat](http://comexstat.mdic.gov.br/pt/geral/97910) de responsabilidade do MDIC.
+Neste caso, os vinhos de mesa correspondem ao produto de Código CUCI 11217 - "Vinhos de uvas frescas (exceto vinho espumante); mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool".
+Ao compararmos os dados da Comexstat com os dados da Vitibrasil, vemos que o valor exportado está expresso em US\$ 1.000,00 (FOB) a preços correntes, ou seja, ao se comparar os dados ao longo do tempo, é necessário considerar o efeito da inflação na moeda norte-americana.
 
-
-Com o intuito de confirmar tal informação, ainda extraímos os dados diretamente da plataforma [Comexstat](http://comexstat.mdic.gov.br/pt/geral/97910) de responsabilidade do Ministério da Indústria, Comércio Exterior e Serviços (MDIC).
-Nesta caso, os vinhos de mesa correspondem ao produto de Código CUCI 11217 - "Vinhos de uvas frescas (exceto vinho espumante); mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool".
-
-Ao compararmos os dados da Comexstat com os dados da Vitibrasil, vemos que o valor exportado está expresso em US\$ 1.000,00 (FOB).
-
-https://balanca.economia.gov.br/balanca/manual/Manual.pdf
-
-https://ourworldindata.org
-
-https://data.worldbank.org
-
-Classificação Uniforme para o Comércio Internacional - CUCI, também conhecida como Standard International Trade Classification - SITC é uma classificação de produto da ONU usada para estatísticas de comércio exterior (valores de exportação e importação e volumes de mercadorias), permitindo comparações internacionais de mercadorias e produtos manufaturados.
+De acordo com o [Manual de utilização dos dados estatísticos do comércio exterior brasileiro](https://balanca.economia.gov.br/balanca/manual/Manual.pdf), a classificação Uniforme para o Comércio Internacional - CUCI, também conhecida como Standard International Trade Classification - SITC é uma classificação de produto da ONU usada para estatísticas de comércio exterior (valores de exportação e importação e volumes de mercadorias), permitindo comparações internacionais de mercadorias e produtos manufaturados.
 
 O valor FOB indica o preço da mercadoria em dólares americanos sob o Incoterm FOB (Free on Board), modalidade na qual o vendedor é responsável por embarcar a mercadoria enquanto o comprador assume o pagamento do frete, seguros e demais custos pós embarque.
 Nesse caso, o valor informado da mercadoria expressa o valor exclusivamente da mercadoria.
 
-Medida que expressa o peso líquido da mercadoria.
-Mesmo produtos com quantidades estatísticas diferentes do quilograma também possuem disponível a medida em quilograma, referindo-se ao peso líquido da mercadoria, ou seja, mercadoria desconsiderando embalagens, caixas ou quaisquer outros adicionais de transporte.
-Vale relembrar que essa informação, bem como as demais informadas nas operações de comércio exterior, é de livre preenchimento e de responsabilidade exclusiva dos operadores de comércio exterior.
+Já o peso líquido da mercadoria permite que mesmo produtos com quqantidades estatísticas diferentes do quilograma também possuam disponível a medida em quilograma, referindo-se ao peso líquido da mercadoria, ou seja, mercadoria desconsiderando embalagens, caixas ou quaisquer outros adicionais de transporte.
+
+[Finalmente, com o intuito de enriquecer o presente, foram extraídas séries **anuais** e **mensais** do Comexstat.]{.underline}
 :::
+
+### Dados socieconômicos, climáticos e de avaliações de vinhos
+
+-   [Our World in Data](https://ourworldindata.org)
+-   [Banco Mundial](https://data.worldbank.org)
+-   [Instituto Nacional de Meteorologia (INMET)](https://www.inmet.gov.br/)
+-   [X-Wines: A Wine Dataset for Recommender Systems and Machine Learning](https://github.com/rogerioxavier/X-Wines/)
 
 ## Métodos
 
@@ -129,4 +107,16 @@ A partir dos dados,
 :::
 
 
+# Estrutura do relatório
+
+
+::: {style="text-align: justify"}
+Este relatório está dividido da seguinte forma:
+
+  -   [Contextualização: produção de vinho no Rio Grande do Sul](): breve discussão sobre a história e o estado atual da produção de vinhos na região;
+  -   [Análise Exploratória de Dados](): principais informações que podem ser extraídas dos dados levantados sobre a exportação de vinhos, inclusive considerando a eventual interferência de fatores externos;
+  -   [Análise detalhada](): explicação mais detalhada sobre as técnicas empregadas para a produção das informações apresentadas na seção [Análise Exploratória de Dados];
+  -   [Conclusões](): apresentação das principais conclusões extraídas da análise de dados.
+
+:::
 
