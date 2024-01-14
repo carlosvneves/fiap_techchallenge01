@@ -285,6 +285,7 @@ Dados em base anual com a inclusão do indicador.
 
 A agregação dos dados por país permite a avaliação de desempenho das exportações para cada destino, o que levará à identificação inclusive de eventuais _outliers_, os quais poderão ser eventualmente excluídos da base de dados. Neste caso, podemos tranquilamente utilizar a base de dados anuais.
 
+:::{#tbl-data-yc-by-country}
 ```{r}
 #| echo: false
 #| warning: false
@@ -296,16 +297,29 @@ data_exp_yc_by_country <- data_exp_yc |>
             mean_kpi = mean(kpi),max_kpi = max(kpi), min_kpi = min(kpi), median_kpi = median(kpi)
             ) |> arrange(desc(mean_val))
 
+cnames <- c('País', 'Valor Médio (US$)', 'Valor Máximo (US$)', 'Valor Mínimo (US$)', 'Valor Mediano (US$)',
+           'Volume Médio (Kg.L)',  'Volume Máximo (Kg.L)', 'Volume Mínimo (Kg.L)', 'Volume Mediano (Kg.L)',
+           'KPI Médio',  'KPI Máximo', 'KPI Mínimo', 'KPI Mediano')
 
-DT::datatable(data_exp_yc_by_country)
+DT::datatable(data_exp_yc_by_country, filter = "bottom", 
+                          colnames =cnames ,
+                          caption = "", 
+                          extensions = 'Buttons', 
+                          options = list(
+                              dom = 'Bfrtip',
+                              buttons = c('copy','excel', 'csv', 'pdf'))
+  ) |>  DT::formatRound(columns = colnames(data_exp_yc_by_country)[2:length(data_exp_yc_by_country)], 
+                        mark=".",dec.mark = ",") |> 
+  DT::formatCurrency(columns = colnames(data_exp_yc_by_country)[2:5])
 
 
 ```
+:::
 
 ```{r}
 #| echo: false
 #| warning: false
-#| fig-cap: 'Boxplot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: log do valor exportado em US\$.'
+#| fig-cap: 'Boxplot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: log do KPI exportado em US\$.'
 #| label: fig-boxplot-val_by_country
 
 plotly::plot_ly(y=~log(data_exp_yc_by_country$mean_val), type = "box", name ='Média') |> 
