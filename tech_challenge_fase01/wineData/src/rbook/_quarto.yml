@@ -12,6 +12,7 @@ book:
   chapters:
     - index.qmd
     - context.qmd
+    #- explore.qmd
     #- exploratory_yearly.qmd
     # - exploratory_monthly.qmd
     # - analysis.qmd

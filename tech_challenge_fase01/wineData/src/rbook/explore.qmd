@@ -267,7 +267,7 @@ data_exp_mc <- data_exp_mc |> mutate(kpi = round(value/volume,2))
 tbl_render(data_exp_yc, "")
 
 ```
-Dados em base anual com a inclusão do indicador. 
+Dados em frequência anual com a inclusão do indicador. 
 :::
 
 
@@ -277,7 +277,7 @@ Dados em base anual com a inclusão do indicador.
 tbl_render(data_exp_mc,"") 
 
 ```
-Dados em base anual com a inclusão do indicador.
+Dados em frequência mensal com a inclusão do indicador.
 :::
 
 
@@ -285,15 +285,203 @@ Dados em base anual com a inclusão do indicador.
 
 A agregação dos dados por país permite a avaliação de desempenho das exportações para cada destino, o que levará à identificação inclusive de eventuais _outliers_, os quais poderão ser eventualmente excluídos da base de dados. Neste caso, podemos tranquilamente utilizar a base de dados anuais.
 
+
+:::{#tbl-data-yc-by-country-sum}
+
+```{r}
+#| echo: false
+#| warning: false
+data_exp_yc_by_country_sum <- data_exp_yc |> 
+  group_by(country) |> 
+  summarise(sum_val = sum(value), sum_vol = sum(volume)) |> 
+  arrange(desc(sum_val)) |> 
+  mutate(perc_val = sum_val/sum(sum_val)*100, 
+         perc_vol = sum_vol/sum(sum_vol)*100,
+         kpi = sum_val/sum_vol)
+
+
+cnames <- c('País', 'Valor Total (US$)', 
+            'Volume Total (Kg.L)', 'Valor Total (%)', 
+            'Volume Total (%)', 'KPI')
+
+DT::datatable(data_exp_yc_by_country_sum, filter = "bottom", 
+                          colnames =cnames,
+                          caption = "", 
+                          extensions = 'Buttons', 
+                          options = list(
+                              dom = 'Bfrtip',
+                              buttons = c('copy','excel', 'csv', 'pdf'))
+  ) |>  DT::formatRound(columns = c('sum_vol', 'perc_val', 'perc_vol', 'kpi') , 
+                        mark = ".",dec.mark = ",") |> 
+  DT::formatCurrency(columns = 'sum_val')
+```
+Exportações agregadas por país em valores totais.
+:::
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| layout-nrow: 2
+#| label: fig-treemap_agg_by_country_val
+#| fig-cap: 
+#| - "Valor exportado exportado agregado por país."
+#| - "Volume exportado agregado por país."
+
+library(treemapify)
+
+ggplot(data_exp_yc_by_country_sum, aes(area = sum_val/10^6, fill = sum_val/10^6, label = country))+
+  geom_treemap() +  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15) + ggtitle("Valor exportado em milhões US$.")
+
+ggplot(data_exp_yc_by_country_sum, aes(area = sum_vol/10^6, fill = sum_vol/10^6, label = country))+
+  geom_treemap() +  geom_treemap_text(colour = "white",
+                    place = "centre",
+                    size = 15) + ggtitle("Volume exportado em milhões de litros.")
+
+
+# gridExtra::grid.arrange(treemap1, treemap2, ncol = 1, nrow = 2)
+```
+
+:::
+
+Se observarmos com cuidado, especialmente a coluna KPI da @tbl-data-yc-by-country-sum possui _outliers_. O gráfico da @fig-boxplot-kpi_by_country_sum mostra que o KPI é bastante afetado por eles. Então poder utilizar a coluna KPI como parâmetro para remoção.
+
+## Remoção de outliers
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-cap: 'Boxplot do KPI calculado para os dados totalizados por país.'
+#| label: fig-boxplot-val_by_country_sum
+
+plotly::plot_ly( y = data_exp_yc_by_country_sum$kpi, type = "box", name = 'KPI') |> 
+  layout(xaxis = list(title='indicador'), yaxis = list(title = 'KPI'))
+
+```
+:::{#tbl-data-yc-by-country-sum-noout}
+
+```{r}
+#| echo: false
+#| warning: false
+data <- data_exp_yc_by_country_sum
+
+quartiles <- quantile(data$kpi, probs=c(.25, .75), na.rm = FALSE)
+IQR <- IQR(data$kpi)
+ 
+Lower <- quartiles[1] - 1.5*IQR
+Upper <- quartiles[2] + 1.5*IQR 
+ 
+data_no_outlier <- subset(data, data$kpi > Lower & data$kpi < Upper)
+
+data_no_outlier <- data_no_outlier |> mutate(perc_val = sum_val/sum(sum_val)*100, 
+                          perc_vol = sum_vol/sum(sum_vol)*100)
+
+DT::datatable(data_no_outlier, filter = "bottom", 
+                          colnames =cnames,
+                          caption = "", 
+                          extensions = 'Buttons', 
+                          options = list(
+                              dom = 'Bfrtip',
+                              buttons = c('copy','excel', 'csv', 'pdf'))
+  ) |>  DT::formatRound(columns = c('sum_vol', 'perc_val', 'perc_vol', 'kpi') , 
+                        mark = ".",dec.mark = ",") |> 
+  DT::formatCurrency(columns = 'sum_val')
+
+```
+
+:::
+
+```{r}
+#| echo: false
+#| warning: false  
+
+#lista de outliers
+list_outliers <- toString(data_exp_yc_by_country_sum$country[-which(data_exp_yc_by_country_sum$country %in% data_no_outlier$country)])
+
+```
+
+Após a remoção dos outliers, restaram 108 observações no conjunto de dados (@tbl-data-yc-by-country-sum-noout). Com base no KPI, os seguintes países foram excluídos da base: {list_outliers}.
+
+```{r}
+#| echo: false
+#| warning: false
+
+data_exp_yc_by_country_sum_no_out <- data_no_outlier
+
+max_val <- round(max(data_exp_yc_by_country_sum_no_out$sum_val/10^6),0)
+max_vol <- round(max(data_exp_yc_by_country_sum_no_out$sum_vol/10^6),0)
+
+max_val_perc <- round(max(data_exp_yc_by_country_sum_no_out$perc_val),0)
+max_vol_perc <- round(max(data_exp_yc_by_country_sum_no_out$perc_vol),0)
+```
+
+
+A @tbl-data-yc-by-country-sum e a @fig-exp-yc-by-country-sum mostram que Paraguai e Rússia foram os principais destinos das exportações de vinhos tanto em termos de valor exportado, como em termos de volume exportado entre 2000 e 2022. O valor exportado para o Paraguai foi de {max_val} milhões de US\$, equivalente a corresponde a aproximadamente {max_val_perc}% do valor total exportado. Por outro lado, a Rússia é a líder em termos de volume exportado com aproximadamente {max_vol} milhões de Kg.L e {max_vol_perc}%. O indicador de US\$/Kg.L mostra que o Paraguai é um destino melhor que a Rússia, pois $ 1,18 > 0,44 $. 
+
+## Os 15 maiores importadores de vinhos do Brasil
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: 'fig-exp-yc-by-country-sum'
+#| layout-nrow: 2
+#| fig-cap: 
+#|   - 'Top 15 maiores importadores de vinhos do Brasil em milhões de US$ totais'
+#|   - 'Top 15 maiores importadores de vinhos do Brasil em milhões de Kg.L totais'  
+
+ggplotly(data_exp_yc_by_country_sum_no_out |> 
+           head(15) |> 
+           ggplot(aes(x = country, y = sum_val/10^6, colour=country, fill=country)) + 
+           geom_bar(stat="identity")+
+            #scale_fill_brewer(palette = "Set3") +           
+            theme_minimal() + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+            labs(
+              title = "Top 15 maiores importadores de vinhos do Brasil em valor total (2000-2022)",
+              caption = "Valor Total em milhões de US$",
+              x = "País",
+              y = "Valor Total em milões de US$",
+              
+            )
+         
+         
+         ) 
+
+
+ggplotly(data_exp_yc_by_country_sum_no_out |> 
+           head(15) |> 
+           ggplot(aes(x = country, y = sum_vol/10^6, colour=country, fill=country)) + 
+           geom_bar(stat="identity")+
+            #scale_fill_brewer(palette = "Set3") +           
+            theme_minimal() + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+            labs(
+              title = "Top 15 maiores importadores de vinhos do Brasil em volume total (2000-2022)",
+              caption = "Valor Total em milhões de Kg.L",
+              x = "País",
+              y = "Valor Total em milões de Kg.L",
+              
+            )
+         
+         
+         ) 
+
+
+
+```
+
+
 :::{#tbl-data-yc-by-country}
 ```{r}
 #| echo: false
 #| warning: false
 
-data_exp_yc_by_country <- data_exp_yc |> 
+# cria o datafram excluindo os outliers identificados na etapa anterior
+data_exp_yc_by_country <-  data_exp_yc |> filter(data_exp_yc$country %notin% lapply(as.list(strsplit(list_outliers, ",")), FUN = str_squish)[[1]]) |> 
   group_by(country) |> 
-  summarise(mean_val = mean(value), max_val = max(value), min_val = min(value), median_val = median(value),
-            mean_vol = mean(volume), max_vol = max(volume), min_vol = min(volume), median_vol = median(volume),
+  summarise(mean_val =  mean(value), max_val = max(value), min_val = min(value), median_val = median(value),
+            mean_vol =  mean(volume), max_vol = max(volume), min_vol = min(volume), median_vol = median(volume),
             mean_kpi = mean(kpi),max_kpi = max(kpi), min_kpi = min(kpi), median_kpi = median(kpi)
             ) |> arrange(desc(mean_val))
 
@@ -314,13 +502,68 @@ DT::datatable(data_exp_yc_by_country, filter = "bottom",
 
 
 ```
+
+Dados agregados por país (análise transversal): medidas estatísticas (média, máximo, mínimo e mediana) para Volume (Kg.L), Valor (US$) e KPI.
 :::
 
 ```{r}
 #| echo: false
 #| warning: false
-#| fig-cap: 'Boxplot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: log do KPI exportado em US\$.'
-#| label: fig-boxplot-val_by_country
+#| layout-nrow: 2
+#| fig-cap: 
+#| - "Top 15 maiores importadores de vinhos do Brasil - valor em milhões de US$"
+#| - "Top 15 maiores importadores de vinhos do Brasil - volume em milhões de Kg.L"
+#| label: fig-data_yc_mean_by_country
+
+ggplotly(data_exp_yc_by_country |> 
+           head(15) |> 
+           ggplot(aes(x = country, y = mean_val/10^6, colour=country, fill=country)) + 
+           geom_bar(stat="identity")+
+            #scale_fill_brewer(palette = "Set3") +           
+            theme_minimal() + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+            labs(
+              title = "Top 15 maiores importadores de vinhos do Brasil - valor(2000-2022)",
+              caption = "Valor médio em milhões de US$",
+              x = "País",
+              y = "milhões de US$",
+              
+            )
+         # 
+         
+         ) 
+
+ggplotly(data_exp_yc_by_country |> 
+           head(15) |> 
+           ggplot(aes(x = country, y = mean_vol/10^6, colour=country, fill=country)) + 
+           geom_bar(stat="identity")+
+            #scale_fill_brewer(palette = "Set3") +           
+            theme_minimal() + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+            labs(
+              title = "Top 15 maiores importadores de vinhos do Brasil - volume (2000-2022)",
+              caption = "Volume médio em milhões de Kg.L",
+              x = "País",
+              y = "milhões de Kg.L",
+              
+            )
+         # 
+         
+         ) 
+
+
+```
+
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| layout-ncol: 3
+#| fig-cap: 
+#| - 'Boxplot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: log do KPI exportado em US\$.'
+#| - 'Box plot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: log do volume exportado em Kg.L.'
+#| - 'Box plot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: indicador'
+#| label: fig-boxplot-stats_by_country
 
 plotly::plot_ly(y=~log(data_exp_yc_by_country$mean_val), type = "box", name ='Média') |> 
   plotly::add_trace(y=~log(data_exp_yc_by_country$max_val), name = 'Máximo') |> 
@@ -328,12 +571,6 @@ plotly::plot_ly(y=~log(data_exp_yc_by_country$mean_val), type = "box", name ='M�
   plotly::add_trace(y=~log(data_exp_yc_by_country$median_val), name = 'Mediana')  |> 
   layout(xaxis = list(title='medida'), yaxis = list(title = 'log(valor)'))
 
-```
-```{r}
-#| echo: false
-#| warning: false
-#| fig-cap: 'Box plot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: log do volume exportado em Kg.L.'
-#| label: fig-boxplot-vol_by_country
 
 plotly::plot_ly(y=~log(data_exp_yc_by_country$mean_vol), type = "box", name ='Média') |> 
   plotly::add_trace(y=~log(data_exp_yc_by_country$max_vol), name ='Máximo') |> 
@@ -341,128 +578,39 @@ plotly::plot_ly(y=~log(data_exp_yc_by_country$mean_vol), type = "box", name ='M�
   plotly::add_trace(y=~log(data_exp_yc_by_country$median_vol), name = 'Mediana')  |> 
   layout(xaxis = list(title='medida'), yaxis = list(title = 'log(volume)'))
 
-```
-```{r}
-#| echo: false
-#| warning: false
-#| fig-cap: 'Box plot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: indicador'
-#| label: fig-boxplot-kpi_by_country
-
 plotly::plot_ly(y=~(data_exp_yc_by_country$mean_kpi), type = "box", name = 'Média') |> 
   plotly::add_trace(y=~(data_exp_yc_by_country$max_kpi), name = 'Máximo') |> 
   plotly::add_trace(y=~(data_exp_yc_by_country$min_kpi), name = 'Mínimo') |> 
   plotly::add_trace(y=~(data_exp_yc_by_country$median_kpi), name = 'Mediana') |> 
   layout(xaxis = list(title='medida'), yaxis = list(title = 'kpi'))
 
-```
-
-## Identificação e exclusão de outliers
-
-Após ajustarmos o valor exportado para considerar o efeito da inflação e também calcularmos um indicador, também é importante identificar _outliers_ de modo que estes não prejudiquem a análise, especialmente porque estes distorcem diversas medidas estatísticas como a média, a qual é extremamente sensível à presença de valores extremos.
-
-Para iniciarmos a identificação de _outliers_ podemos visualizar criar utilizar o gráfico de boxplot. Um critério interessante para identificar os valores extremos, pode ser aqueles países para os quais o Brasil não export
-
-```{r}
-
-plotly::plot_ly(y = ~data_exp_yc$value, type = box)
-
 
 ```
 
+Como podemos perceber na @fig-boxplot-stats_by_country, ainda existem muitos _outliers_ no conjunto de dados, especialmente quando olhamos os valores máximos do KPI. Na verdade, podemos inferir que tal medida, conforme ressaltado anteriormente, deve ser avaliada com bastante cautela.
 
-
-
-
-
-
-## Séries anuais - agregação por país (recorte transversal)
-::: {style="text-align: justify"}
-
-Em que pese a tabela @tbl-ts_input_yearly cumprir o principal requisito da demanda, para uma visão mais completa dos dados é importante realizar recortes específicos.
-
-O primeiro recorte interessante é uma análise transversal, ou seja, considerando os dados agregados por ano.
-Desta forma é possível obter *insights* sobre o mercado de um modo geral e de longo-prazo.
-
-Ao agregagar os de valor exportado (em US$ de 2022) e volume exportado (em litros) por país (@tbl-agg_by_country), é possível verificar que o Paraguai é o primeiro lugar em termos de valor exportado, enquanto que a Rússia é o primeiro colocado em termos de volume. Os Estados Unidos aparece em terceiro lugar em ambos os indicadores.  
-
-::: {#tbl-agg_by_country}
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: tbl-agg_by_country
-
-cpi_us <-  readr::read_delim(
-        "../../data/cpi_brazil_us/cpi_series.csv",
-        delim = ";",
-        escape_double = FALSE,
-        trim_ws = TRUE,
-        show_col_types = F
-    ) |> arrange(desc(year))
-correction <- (1./(cpi_us$cpi/cpi_us$cpi[1]))
-
-
-# dataframe com os índices de correção
-cpi <-  tibble( cpi = correction, 
-        date = c(2022:2000)) |> 
-        mutate( date = lubridate::make_date(date,12,1))
-
-# dataframe com os valores corrigidos pela inflação (valores de US$ de 2022)
-ts_tbl_corr <- ts_tbl |> 
-  dplyr::full_join(cpi) |> 
-  dplyr::mutate(value_corr = value * cpi) |> 
-  dplyr::select(date, country, value_corr, volume) |> 
-  dplyr::mutate(value = value_corr)
-
-# dataframe com os valores corrigidos agregados por país
-ts_agg_by_country <- ts_tbl_corr |> 
-   group_by(country) |> 
-   summarise(value = sum(value), 
-             volume = sum(volume)) |> 
-   arrange(desc(value))
- 
-tbl_render(ts_agg_by_country,"")
-```
-Dados agregados por país entre 2000 e 2022.
-
-:::
 
 ```{r}
 #| echo: false
-#| message: false
 #| warning: false
-#| label: fig-treemap_agg_by_country_val
-#| fig-cap: "Valor exportado e volume exportado agregado por país."
 
-treemap1 <- ggplot(ts_agg_by_country, aes(area = value/10^6, fill = value/10^6, label=country))+
-  geom_treemap() +  geom_treemap_text(colour = "white",
-                    place = "centre",
-                    size = 15) + ggtitle("Valor exportado em milhões US$.")
-
-treemap2 <- ggplot(ts_agg_by_country, aes(area = volume/10^6, fill = volume/10^6, label = country))+
-  geom_treemap() +  geom_treemap_text(colour = "white",
-                    place = "centre",
-                    size = 15) + ggtitle("Volume exportado em milhões de litros.")
+list_countries <- toString(head(data_exp_yc_by_country_sum_no_out$country, 15)[-which(head(data_exp_yc_by_country_sum_no_out$country, 15) %in% head(data_exp_yc_by_country$country, 15))])
 
 
-gridExtra::grid.arrange(treemap1, treemap2, ncol = 1, nrow = 2)
+
 ```
 
+A comparação entre os dados da @fig-data_yc_mean_by_country e da @fig-exp-yc-by-country-sum' demonstra que existem apenas três países que não figuram no "top 15" países em ambos os casos: {list_countries}.
 
-:::
 
-
-## Séries anuais - agregação por ano (recorte longitudinal)
+## Análise longitudinal dos dados - agregação por unidade de tempo
 
 ::: {style="text-align: justify"}
-Em que pese a tabela @tbl-ts_input_yearly cumprir o principal requisito da demanda, para uma visão mais completa dos dados é importante realizar recortes específicos.
+Dando continuidade à análise dos dados,  uma análise longitudinal, ou seja, considerando os dados agregados por ano pode ser interessante. Desta forma é possível obter *insights* sobre o mercado de um modo geral e pensando em tendências de curto, médio e longo-prazo.
 
-O primeiro recorte interessante é uma análise longitudinal, ou seja, considerando os dados agregados por ano.
-Desta forma é possível obter *insights* sobre o mercado de um modo geral e de longo-prazo.
+Convém lembrar que análises de sazonalidade e outros efeitos envolvendo principalmente o curto-prazo demandam que a série esteja preferencialmente em base mensal, o que será apresentado na **próxima seção**.
 
-Convém lembrar que análises de sazonalidade e outros efeitos envolvendo médio e curto-prazo, demandam que a série esteja preferencialmente em base mensal, o que será apresentado na **próxima seção**.
-
-::: {#tbl-ts_total}
+::: {#tbl-data_exp_yc_by_date}
 ```{r transform_data}
 #| echo: false
 #| message: false
@@ -470,18 +618,65 @@ Convém lembrar que análises de sazonalidade e outros efeitos envolvendo médio
 #| label: tbl-ts_total
 #| tbl-cap: ""
 
-ts_total <- ts_tbl |> group_by(date) |> 
-            summarise(value = sum(value), 
-                      volume = sum(volume)) |> 
+data_exp_yc_by_date <- data_exp_yc  |> group_by(date) |> 
+            summarise(sum_val = sum(value), 
+                      sum_vol = sum(volume),
+                      mean_val = mean(value),
+                      mean_vol = mean(volume),
+                      mean_kpi = mean(kpi),
+                      ) |> 
             arrange(desc(date))
 
-tbl_render(ts_total, "")
+cnames <- c('Data', 'Valor Total (US$)', 
+            'Volume Total (Kg.L)', 'Valor Médio (US$)', 
+            'Volume Médio (Kg.L)', 'KPI Médio')
+
+DT::datatable(data_exp_yc_by_date, filter = "bottom", 
+                          colnames =cnames,
+                          caption = "", 
+                          extensions = 'Buttons', 
+                          options = list(
+                              dom = 'Bfrtip',
+                              buttons = c('copy','excel', 'csv', 'pdf'))
+  ) |>  DT::formatRound(columns = c('sum_vol', 'mean_vol', 'mean_kpi') , 
+                        mark = ".",dec.mark = ",") |> 
+  DT::formatCurrency(columns = c('sum_val', 'mean_val' )) |> 
+  DT::formatDate(columns = c('date'), method = "toLocaleDateString" )
 ```
 
-Série dos dados agregados por ano (corte longitudinal em termos totais)
+Série dos dados agregados por ano (corte longitudinal).
 
 :::
 
+```{r}
+#| echo: false
+#| warning: false 
+
+# datas em que ocorreram os valores máximos para a tabela anterior
+important_dates <- bind_rows(data_exp_yc_by_date |> 
+            filter(data_exp_yc_by_date$sum_val == max(data_exp_yc_by_date$sum_val)),
+data_exp_yc_by_date |> filter(data_exp_yc_by_date$sum_vol == max(data_exp_yc_by_date$sum_vol)),
+data_exp_yc_by_date |> filter(data_exp_yc_by_date$mean_val == max(data_exp_yc_by_date$mean_val)),
+data_exp_yc_by_date |> filter(data_exp_yc_by_date$mean_vol == max(data_exp_yc_by_date$mean_vol)),
+data_exp_yc_by_date |> filter(data_exp_yc_by_date$mean_kpi == max(data_exp_yc_by_date$mean_kpi))) 
+
+```
+
+A @tbl-data_exp_yc_by_date nos permite verificar que os anos em que ocorreram os máximos para cada uma das colunas. A @tbl-max facilita a visualização.    
+
+| Medida            | Ano |
+|-------------------|-----|
+| Valor Total (US$) | 2013|
+|Volume Total (Kg.L)| 2009|
+|Valor Médio (US$)  | 2000|
+|Volume Médio (Kg.L)| 2009|
+| KPI Médio         | 2012| 
+
+: Valores máximos para as medidas e os respectivos anos em que ocorreram {#tbl-max} 
+
+Interessante notarmos que os anos entre 2009 e 2013 parecem ter sido aqueles mais favoráveis para as exportações de vinho considerando o conjunto dos países. 
+
+Nas próximas seções nos aprofundaremos na evolução das exportações no tempo.
 
 ### Visualização das séries temporais
 
@@ -491,21 +686,36 @@ Após a correção da série de valor exportado, é possível iniciar a análise
 O primeiro passo é a visualização das séries.
 A @fig-ts_total_value mostra a série de valor total exportado por ano entre 2000 e 2022, incluindo a série suavizada.
 
-Notamos a existência de **dois picos**, um em **2009** e outro em **2013**, sendo **o último maior que o primeiro**.
+Notamos a existência de **dois picos**, um em **2009** e outro em **2013**, sendo **o último maior que o primeiro** - como apontamos na seção anterior.
 
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
+#| layout-nrow: 2
 #| label: fig-ts_total_value
-#| fig-cap: "Valor Total exportado (anual) em US$"
+#| fig-cap: 
+#| - "Valor Total exportado (anual) em US$"
+#| - "Valor Médio exportado (anual) em US$"
 
-ts_total |> 
-    plot_time_series(date, value, .smooth = T, 
+data_exp_yc_by_date |> 
+    plot_time_series(date, sum_val, .smooth = T, 
                      .interactive = T, 
                      .smooth_span = 0.3,
+                     .smooth_alpha = 0.8,
                      .title = 'Valor Total exportado (anual) em US$',
                      .plotly_slider = T)
+
+data_exp_yc_by_date |> 
+    plot_time_series(date, mean_val, .smooth = T, 
+                     .interactive = T, 
+                     .smooth_span = 0.3,
+                     .smooth_alpha = 0.8,
+                     .line_color = "red",
+                     .title = 'Valor Médio exportado (anual) em US$',
+                     .plotly_slider = T)
+
+
 
 ```
 
@@ -519,15 +729,27 @@ Contudo, ao contrário do verificado na @fig-ts_total_value, **o de 2009 é maio
 #| message: false
 #| warning: false
 #| label: fig-ts_total_volume
-#| fig-cap: 'Volume Total exportado (anual) em L'
+#| fig-cap: 
+#| - 'Volume Total exportado (anual) em L'
+#| - 'Volume Médio exportado (anual) em L'
 
-ts_total |> 
-    plot_time_series(date, volume, .smooth = T, 
+
+data_exp_yc_by_date |> 
+    plot_time_series(date, sum_vol, .smooth = T, 
                      .interactive = T, 
                      .smooth_span = 0.3,
+                     .smooth_alpha = 0.8,
                      .title = 'Volume Total exportado (anual) em L',
                      .plotly_slider = T)
 
+data_exp_yc_by_date |> 
+    plot_time_series(date, mean_vol, .smooth = T, 
+                     .interactive = T, 
+                     .smooth_alpha = 0.8,
+                     .smooth_span = 0.3,
+                     .line_color = "red",
+                     .title = 'Volume Médio exportado (anual) em L',
+                     .plotly_slider = T)
 
 ```
 

@@ -14,7 +14,31 @@ library(plotly, warn.conflicts = FALSE)
 library(treemapify)
 
 
+# cria o operador de negação
+`%notin%` <- Negate(`%in%`)    
+
+
+
 # helper functions
+
+remove_outliers <- function(data, col){
+    
+    x <- as_vector(data[col])
+    
+    quartiles <- quantile(x, probs=c(.25, .75), na.rm = FALSE)
+    IQR <- IQR(x)
+     
+    Lower <- quartiles[1] - 1.5*IQR
+    Upper <- quartiles[2] + 1.5*IQR 
+     
+    data_no_outlier <- subset(data, x > Lower & x < Upper)
+    
+    outliers <- data[-which( x %in% data_no_outlier[col]),]
+    
+    return(c(data_no_outlier, outliers))
+    
+}
+
 tbl_render <- function(tbl, header){
     
     

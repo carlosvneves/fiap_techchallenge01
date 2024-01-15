@@ -105,15 +105,27 @@ Há algumas décadas a preocupação com a melhoria de qualidade e as melhorias 
 ## Estado atual da produção de vinhos na Região Sul do Brasil
 
 ::: {style="text-align: justify"}
-A região sul do Brasil é a principal região produtora de vinhos do país, com o Rio Grande do Sul sendo o estado líder em produção de uvas e vinhos.
-A viticultura no Brasil ocupa uma área de aproximadamente 78 mil hectares, com vinhedos estabelecidos desde o extremo sul do país, em latitude de 30º 56’ 15’’S, até regiões situadas muito próximas ao equador, em latitude de 5º 11’ 15’’S[^context-4].
+A região sul do Brasil é a principal região produtora de vinhos do país, com o Rio Grande do Sul sendo o estado líder em produção de uvas e vinhos. A viticultura no Brasil ocupa uma área de aproximadamente 78 mil hectares, com vinhedos estabelecidos desde o extremo sul do país, em latitude de 30º 56’ 15’’S, até regiões situadas muito próximas ao equador, em latitude de 5º 11’ 15’’S[^context-4].
 
 Em função da diversidade ambiental, existem polos com viticultura característica de regiões temperadas, com um período de repouso hibernal; polos em áreas subtropicais, onde a videira é cultivada com dois ciclos anuais, definidos em função de um período de temperaturas mais baixas, no qual há risco de geadas; e, polos de viticultura tropical, onde é possível a realização de podas sucessivas, com a realização de dois e meio a três ciclos vegetativos por ano[^context-4].
 
-A produção de uvas é da ordem de 1,5 milhões de toneladas/ano.
-Deste volume, cerca de 50% é destinado ao processamento, para a elaboração de vinhos, sucos e outros derivados, e 50% comercializado como uvas de mesa.
+A produção de uvas é da ordem de 1,5 milhões de toneladas/ano. Deste volume, cerca de 50% é destinado ao processamento, para a elaboração de vinhos, sucos e outros derivados, e 50% comercializado como uvas de mesa.
 
 Do total de produtos industrializados, 42% são vinhos de mesa e 49% são sucos de uva, ambos elaborados a partir de uvas de origem americana, especialmente cultivares de Vitis labrusca, Vitis bourquina e híbridos interespecíficos diversos. Cerca de 7% são vinhos finos, elaborados com castas de Vitis vinifera; o restante dos produtos industrializados, 2% são outros derivados da uva e do vinho[^context-4].
+
+Conforme o artigo "Exportações de vinhos brasileiros - uma pesquisa sobre o crescimento nas exportações de vinhos e espumantes brasileiros para a china"[^context-7], vários aspectos políticos, econômicos, sociais, demográficos, tecnológicos, ambientais e legais favoreceram o comércio internacional de vinhos brasileiros (especialmente para a China).
+
+Por exemplo, do ponto de vista tecnológico, o artigo cita avanços como;
+
+- Introdução de sistemas avançados de gestão de vinhedos e técnicas de agricultura de precisão, como sensoriamento remoto e tecnologia GPS, para otimizar o cultivo de uvas e melhorar o rendimento e a qualidade das uvas;
+
+- Implementação de equipamentos e técnicas modernas de vinificação, incluindo fermentação controlada por temperatura, linhas de engarrafamento automatizadas e sistemas de filtração avançados, para garantir a consistência e a qualidade na produção de vinho;
+
+- Adoção de tecnologias de envelhecimento e armazenamento de vinho de última geração, como tanques de aço inoxidável, barris de carvalho e adegas com controle de temperatura, para realçar o sabor, o aroma e o potencial de envelhecimento dos vinhos;
+
+- Utilização de ferramentas analíticas avançadas e equipamentos de laboratório para controle de qualidade e monitoramento de vários parâmetros durante o processo de vinificação, garantindo a aderência a padrões e regulamentos internacionais;
+
+- Integração de plataformas digitais e soluções de software para gestão de vinhedos, rastreamento de estoque, vendas e marketing, facilitando operações eficientes e aprimorando a comunicação entre vinícolas e consumidores.
 
 :::
 ## Premiações
@@ -132,3 +144,4 @@ No concurso Mondial des Vins Extrêmes (mundial de vinhos extremos, em traduçã
 [^context-4]: https://www.embrapa.br/cim-uva-e-vinho/a-viticultura-no-brasil 
 [^context-5]: https://www.cnnbrasil.com.br/viagemegastronomia/noticias/vinhos-brasileiros-sao-premiados-com-ouro-e-prata-em-competicao-na-franca/
 [^context-6]: https://exame.com/casual/melhores-vinhos-brasileiros-segundo-mondial-des-vins-extremes/
+[^context-7]: https://acertte.org/index.php/acertte/article/view/81/59
