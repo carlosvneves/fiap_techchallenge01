@@ -212,10 +212,14 @@ cpi_us_y |> timetk::plot_time_series(.date_var = date,
                                      .smooth = 'False')
 ```
 
-As tabelas @tbl-data-yc e @tbl-data-mc mostram os dados já reajustados. 
+As tabelas @tbl-data_yc e @tbl-data_mc mostram os dados já reajustados. 
 
-:::{#tbl-data-yc}
+::: {#tbl-data_yc}
+
 ```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-data_yc
 
 tbl_render(data_exp_yc,"") 
 
@@ -223,12 +227,13 @@ tbl_render(data_exp_yc,"")
 Dados anuais com valor exportado em US\$ de 2022.
 :::
 
-:::{#tbl-data-mc}
+::: {#tbl-data_mc}
 ```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-data_mc
 
 tbl_render(data_exp_mc,"")
-
-
 ```
 Dados mensais com valor exportado em US\$ de dez/2022.
 :::
@@ -246,7 +251,7 @@ O indicador deve traduzir quanto cada país paga por quilograma líquido de vinh
 
 Por outro lado, o indicador deve ser visto com cautela, uma vez que determinados países na base compraram muito menos que outros ou ainda muito mais que outros. Ou seja, a existência de _outliers_ pode prejudicar a análise.
 
-As tabelas @tbl-data-yc-kpi e @tbl-data-mc-kpi mostram os dados agora incluindo o indicador calculado.
+As tabelas @tbl-data_yc_kpi e @tbl-data_mc_kpi mostram os dados agora incluindo o indicador calculado.
 
 ```{r}
 #| echo: false
@@ -261,8 +266,13 @@ data_exp_mc <- data_exp_mc |> mutate(kpi = round(value/volume,2))
 
 ```
 
-:::{#tbl-data-yc-kpi}
+::: {#tbl-data_yc_kpi}
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-data_yc_kpi
+#| tbl-cap: ""
 
 tbl_render(data_exp_yc, "")
 
@@ -271,9 +281,12 @@ Dados em frequência anual com a inclusão do indicador.
 :::
 
 
-:::{#tbl-data-mc-kpi}
+::: {#tbl-data_mc_kpi}
 ```{r}
-
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-data_mc_kpi
 tbl_render(data_exp_mc,"") 
 
 ```
@@ -283,14 +296,16 @@ Dados em frequência mensal com a inclusão do indicador.
 
 ## Análise transversal dos dados - agregação por país
 
+::: {style="text-align: justify"}
 A agregação dos dados por país permite a avaliação de desempenho das exportações para cada destino, o que levará à identificação inclusive de eventuais _outliers_, os quais poderão ser eventualmente excluídos da base de dados. Neste caso, podemos tranquilamente utilizar a base de dados anuais.
 
 
-:::{#tbl-data-yc-by-country-sum}
-
+:::{#tbl-data_yc_by_country_sum}
 ```{r}
 #| echo: false
 #| warning: false
+#| label: tbl-data_yc_by_country_sum
+#| tbl-cap: __
 data_exp_yc_by_country_sum <- data_exp_yc |> 
   group_by(country) |> 
   summarise(sum_val = sum(value), sum_vol = sum(volume)) |> 
@@ -345,27 +360,31 @@ ggplot(data_exp_yc_by_country_sum, aes(area = sum_vol/10^6, fill = sum_vol/10^6,
 # gridExtra::grid.arrange(treemap1, treemap2, ncol = 1, nrow = 2)
 ```
 
+Se observarmos com cuidado, especialmente a coluna KPI da @tbl-data_yc_by_country_sum possui _outliers_. Então podemos tentar removê-los para evitar eventual "contaminação" da análise.
+
 :::
-
-Se observarmos com cuidado, especialmente a coluna KPI da @tbl-data-yc-by-country-sum possui _outliers_. O gráfico da @fig-boxplot-kpi_by_country_sum mostra que o KPI é bastante afetado por eles. Então poder utilizar a coluna KPI como parâmetro para remoção.
-
 ## Remoção de outliers
+
+::: {style="text-align: justify"}
+
+O gráfico da @fig-boxplot_kpi_by_country_sum mostra que o KPI é bastante afetado por eles. Então poder utilizar a coluna KPI como parâmetro para remoção.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| fig-cap: 'Boxplot do KPI calculado para os dados totalizados por país.'
-#| label: fig-boxplot-val_by_country_sum
+#| label: fig-boxplot_kpi_by_country_sum 
 
 plotly::plot_ly( y = data_exp_yc_by_country_sum$kpi, type = "box", name = 'KPI') |> 
   layout(xaxis = list(title='indicador'), yaxis = list(title = 'KPI'))
 
 ```
-:::{#tbl-data-yc-by-country-sum-noout}
+:::{#tbl-data_yc_by_country_sum_noout}
 
 ```{r}
 #| echo: false
 #| warning: false
+#| label: tbl-data_yc_by_country_sum_noout
 data <- data_exp_yc_by_country_sum
 
 quartiles <- quantile(data$kpi, probs=c(.25, .75), na.rm = FALSE)
@@ -391,7 +410,7 @@ DT::datatable(data_no_outlier, filter = "bottom",
   DT::formatCurrency(columns = 'sum_val')
 
 ```
-
+Dados após a remoção de _outliers_
 :::
 
 ```{r}
@@ -403,7 +422,7 @@ list_outliers <- toString(data_exp_yc_by_country_sum$country[-which(data_exp_yc_
 
 ```
 
-Após a remoção dos outliers, restaram 108 observações no conjunto de dados (@tbl-data-yc-by-country-sum-noout). Com base no KPI, os seguintes países foram excluídos da base: {list_outliers}.
+Após a remoção dos outliers, restaram 108 observações no conjunto de dados (@tbl-data_yc_by_country_sum_noout). Com base no KPI, os seguintes países foram excluídos da base: Eslováquia, Áustria, Hungria, Letônia, Bulgária, Croácia, Bangladesh, Mauritânia.
 
 ```{r}
 #| echo: false
@@ -419,7 +438,7 @@ max_vol_perc <- round(max(data_exp_yc_by_country_sum_no_out$perc_vol),0)
 ```
 
 
-A @tbl-data-yc-by-country-sum e a @fig-exp-yc-by-country-sum mostram que Paraguai e Rússia foram os principais destinos das exportações de vinhos tanto em termos de valor exportado, como em termos de volume exportado entre 2000 e 2022. O valor exportado para o Paraguai foi de {max_val} milhões de US\$, equivalente a corresponde a aproximadamente {max_val_perc}% do valor total exportado. Por outro lado, a Rússia é a líder em termos de volume exportado com aproximadamente {max_vol} milhões de Kg.L e {max_vol_perc}%. O indicador de US\$/Kg.L mostra que o Paraguai é um destino melhor que a Rússia, pois $ 1,18 > 0,44 $. 
+A @tbl-data_yc_by_country_sum_noout, @fig-treemap_agg_by_country_val-1 e @fig-treemap_agg_by_country_val-2 mostram que Paraguai e Rússia foram os principais destinos das exportações de vinhos tanto em termos de valor exportado, como em termos de volume exportado entre 2000 e 2022. O valor exportado para o Paraguai foi de 58 milhões de US\$, equivalente a corresponde a aproximadamente 37% do valor total exportado. Por outro lado, a Rússia é a líder em termos de volume exportado com aproximadamente 60 milhões de Kg.L e 43%. O indicador de US\$/Kg.L mostra que o Paraguai é um destino melhor que a Rússia, pois 1,18 > 0,44. 
 
 ## Os 15 maiores importadores de vinhos do Brasil
 
@@ -476,6 +495,7 @@ ggplotly(data_exp_yc_by_country_sum_no_out |>
 ```{r}
 #| echo: false
 #| warning: false
+#| label: tbl-data-yc-by-country
 
 # cria o datafram excluindo os outliers identificados na etapa anterior
 data_exp_yc_by_country <-  data_exp_yc |> filter(data_exp_yc$country %notin% lapply(as.list(strsplit(list_outliers, ",")), FUN = str_squish)[[1]]) |> 
@@ -559,10 +579,11 @@ ggplotly(data_exp_yc_by_country |>
 #| echo: false
 #| warning: false
 #| layout-ncol: 3
-#| fig-cap: 
-#| - 'Boxplot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: log do KPI exportado em US\$.'
-#| - 'Box plot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: log do volume exportado em Kg.L.'
-#| - 'Box plot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país: indicador'
+#| fig-cap: 'Boxplot das medidas estatísticas (média, máximo, mínimo, mediana) para os dados anuais agregados por país'
+#| fig-subcap: 
+#|   - 'log do valor exportado em US\$'
+#|   - 'log do volume exportado em Kg.L'
+#|   - 'indicador'
 #| label: fig-boxplot-stats_by_country
 
 plotly::plot_ly(y=~log(data_exp_yc_by_country$mean_val), type = "box", name ='Média') |> 
@@ -602,10 +623,12 @@ list_countries <- toString(head(data_exp_yc_by_country_sum_no_out$country, 15)[-
 
 A comparação entre os dados da @fig-data_yc_mean_by_country e da @fig-exp-yc-by-country-sum' demonstra que existem apenas três países que não figuram no "top 15" países em ambos os casos: {list_countries}.
 
+:::
 
 ## Análise longitudinal dos dados - agregação por unidade de tempo
 
 ::: {style="text-align: justify"}
+
 Dando continuidade à análise dos dados,  uma análise longitudinal, ou seja, considerando os dados agregados por ano pode ser interessante. Desta forma é possível obter *insights* sobre o mercado de um modo geral e pensando em tendências de curto, médio e longo-prazo.
 
 Convém lembrar que análises de sazonalidade e outros efeitos envolvendo principalmente o curto-prazo demandam que a série esteja preferencialmente em base mensal, o que será apresentado na **próxima seção**.
@@ -664,13 +687,13 @@ data_exp_yc_by_date |> filter(data_exp_yc_by_date$mean_kpi == max(data_exp_yc_by
 
 A @tbl-data_exp_yc_by_date nos permite verificar que os anos em que ocorreram os máximos para cada uma das colunas. A @tbl-max facilita a visualização.    
 
-| Medida            | Ano |
-|-------------------|-----|
-| Valor Total (US$) | 2013|
-|Volume Total (Kg.L)| 2009|
-|Valor Médio (US$)  | 2000|
-|Volume Médio (Kg.L)| 2009|
-| KPI Médio         | 2012| 
+| Medida              | Ano    | 
+|:------------------- |--------:|
+| Valor Total (US\$)   | 2014   |
+| Volume Total (Kg.L) | 2009   |
+| Valor Médio (US$)   | 2000   |
+| Volume Médio (Kg.L) | 2009   |
+| KPI Médio           | 2012   | 
 
 : Valores máximos para as medidas e os respectivos anos em que ocorreram {#tbl-max} 
 
@@ -678,13 +701,13 @@ Interessante notarmos que os anos entre 2009 e 2013 parecem ter sido aqueles mai
 
 Nas próximas seções nos aprofundaremos na evolução das exportações no tempo.
 
+:::
+
 ### Visualização das séries temporais
 
 ::: {style="text-align: justify"}
-Após a correção da série de valor exportado, é possível iniciar a análise das séries temporais.
 
-O primeiro passo é a visualização das séries.
-A @fig-ts_total_value mostra a série de valor total exportado por ano entre 2000 e 2022, incluindo a série suavizada.
+Após a correção da série de valor exportado, é possível iniciar a análise das séries temporais. As @fig-ts_total_value-1 e @fig-ts_total_value-2 mostram as séries de valor exportado por ano (médio e total) entre 2000 e 2022, incluindo a série suavizada.
 
 Notamos a existência de **dois picos**, um em **2009** e outro em **2013**, sendo **o último maior que o primeiro** - como apontamos na seção anterior.
 
@@ -692,11 +715,10 @@ Notamos a existência de **dois picos**, um em **2009** e outro em **2013**, sen
 #| echo: false
 #| message: false
 #| warning: false
-#| layout-nrow: 2
 #| label: fig-ts_total_value
 #| fig-cap: 
-#| - "Valor Total exportado (anual) em US$"
-#| - "Valor Médio exportado (anual) em US$"
+#| - 'Valor Total exportado (anual) em US$'
+#| - 'Valor Médio exportado (anual) em US$'
 
 data_exp_yc_by_date |> 
     plot_time_series(date, sum_val, .smooth = T, 
@@ -719,10 +741,11 @@ data_exp_yc_by_date |>
 
 ```
 
-Em seguida, podemos visualizar a série de volume total exportado em base anual, considerando 1L=1Kg (@fig-ts_total_volume).
+Em seguida, podemos visualizar a série de volume total exportado em base anual, considerando 1L=1Kg (@fig-ts_total_volume-1
+e @fig-ts_total_volume-2).
 
 Os **dois picos** existentes na série anterior também foram verficados em **2009** e em **2013**.
-Contudo, ao contrário do verificado na @fig-ts_total_value, **o de 2009 é maior que o de 2013**.
+Contudo, ao contrário do verificado na @fig-ts_total_value-1 e @fig-ts_total_value-2, **o de 2009 é maior que o de 2013**.
 
 ```{r}
 #| echo: false
@@ -758,494 +781,4 @@ Convém também destacar o fato de que, ao comparar as séries suavizadas, perce
 Como a inspeção visual das séries é imprecisa, faz-se necessária a utilização de técnicas específicas, como será mostrado a seguir.
 :::
 
-### Funções de autocorrelação (ACF) e autorrelação parcial (PACF)
-
-::: {style="text-align: justify"}
-A função de autocorrelação (ACF) e a função de autocorrelação parcial (PACF) são medidas de associação entre valores autais e valores pregressos em séries temporais[^exploratory_yearly-1].
-Portanto, indicam em que medida um valor $x_t$ é dependente do valor $x_{t-1}$ e, consequentemente, o passado é últil para prever o futuro.
-A autocorrelação parcial é mais útil durante o processo de especificação de um modelo autoregressivo.
-Ela ajuda a avaliar as propriedades de uma série temporal.
-
-As funções de autocorrelação e autocorrelação parcial também servem para estudar a estacionariedade de uma série temporal[^exploratory_yearly-2].Uma série temporal estacionária tem funções de média, variância e autocorrelação que são essencialmente constantes ao longo do tempo[^exploratory_yearly-3]
-. A função de autocorrelação diminui para quase zero rapidamente para uma série temporal estacionária (decaimento exponencial)
-.
-
-Os modelos matemáticos mais comuns e que têm como premissa apresentar a estacionariedade são modelos auto-regressivos - AR (p), auto-regressivo e de média móvel - ARMA (p,q) - e modelo auto—regressivo integrado e de média móvel - ARIMA (p,d,q)[^exploratory_yearly-4].
-
-Para uma série temporal estacionária, um modelo de média móvel vê o valor de uma variável no tempo $t$ como uma função linear de erros residuais de $q$ defasagens.
-Já um processo auto-regressivo de ordem $p$ é um modelo que utiliza os próprios valores passados como preditores[^exploratory_yearly-5].
-O termo $d$ especifica a ordem de integração da série (ou seja, quantas vezes a série deve ser diferenciada para se tornar estacionária).
-
-As ordens dos processos em termos de $p$ e $q$ são definidas com base na análise das funções de autocorrelação e autocorrelação parcial.
-A ordem $p$ do processo auto-regressivo é determinada pela função de autocorrelação parcial, enquanto a ordem $q$ do processo de média móvel é indicada pelo número de correlações estatisticamente significativas na função de autocorrelação[^exploratory_yearly-6].
-
-Estabelecidos os conceitos e aplicações da ACF e da PACF, passemos à análise das séries de interesse.
-
-Para a série de *valor total exportado* temos os gráficos da @fig-acf_pacf_total_value de ACF e PACF, considerando 48 defasagens.
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-acf_pacf_total_value
-#| fig-cap: 'Valor total exportado - ACF e PACF.'
-
-
-ts_total |> plot_acf_diagnostics(date, value, .interactive = T, .lags = 0:48,
-                                 .title = 'Valor total exportado - ACF e PACF.')
-
-```
-
-Nos gráficos acima, as decomposições mostram que existem autocorrelação e autocorrelação parcial estatisticamente significativas ao menos na primeira defasagem.
-Mais precisamente, ambas as funções são trucadas e decaem a partir de certa defasagem o que pode caracterizar um processo do tipo $ARMA(p,q)$[^exploratory_yearly-7], com $p = 1$ e $q = 2$.
-
-Para a série de *volume total exportado* temos os seguintes gráficos de ACF e PACF, considerando 48 defasagens (@fig-acf_pacf_total_vol).
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-acf_pacf_total_vol
-#| fig-cap: 'Volume total exportado - ACF e PACF.'
-
-ts_total |> plot_acf_diagnostics(date, volume, .interactive = T, .lags = 0:48,
-                                 .title = 'Volume total exportado - ACF e PACF.')
-
-```
-
-Nos gráficos acima, as decomposições mostram que não existem autocorrelação e autocorrelação parcial estatisticamente significativas para a série de volume exportado.
-Ademais, a ACF é truncada na primeira defasagem e a PACF parece decair, o que pode caracterizar um processo do tipo $MA(q)$, com $q = 1$[^exploratory_yearly-8].
-
-Porém, a inspeção visual é bastante limitada, o que nos motiva a aprofundar a análise.
-:::
-
-[^exploratory_yearly-1]: https://www.ibm.com/docs/pt-br/spss-modeler/18.4.0?t
-    opic=data-autocorrelation-partial-autocorrelation-functions
-
-[^exploratory_yearly-2]: https://ichi.pro/pt/autocorrelacao-e-autocorrelacao-parcial-em-dados-de-serie-temporal-32975526028430
-
-[^exploratory_yearly-3]: https://analisemacro.com.br/estatistica-e-econometria/estacionariedade-de-series-temporais/
-
-[^exploratory_yearly-4]: https://medium.com/data-hackers/series-temporais-parte-1-a0e75a512e72
-
-[^exploratory_yearly-5]: https://tutoriais.edu.lat/pub/time-series/time-series-moving-average/serie-temporal-media-movel
-
-[^exploratory_yearly-6]: https://support.minitab.com/pt-br/minitab/20/help-and-how-to/statistical-modeling/time-series/how-to/autocorrelation/interpret-the-results/autocorrelation-function-acf/
-
-[^exploratory_yearly-7]: da Silveira Bueno, Rodrigo de Losso.
-    Econometria De Séries Temporais.
-    Cengage Learning; 2ª Edição Revista E Atualizada (28 julho 2011),pp.
-    47.
-
-[^exploratory_yearly-8]: da Silveira Bueno, Rodrigo de Losso.
-    Econometria De Séries Temporais.
-    Cengage Learning; 2ª Edição Revista E Atualizada (28 julho 2011),pp.
-    47.
-
-### Decomposição da série temporal
-
-::: {style="text-align: justify"}
-A decomposição da série de *valor total exportado* em suas componentes de tendência, sazonalidade e resíduos.
-O gráfico da componente de sazonalidade mostra um comportamento cíclico, em que se tem um pico após dois anos, seguido de três anos de queda até o vale.
-Já a componente de tendência mostra que, *após 2005, há um tendência de contínuo crescimento do valor total exportado* (@fig-acf_pacf_total_val_decomp).
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-acf_pacf_total_val_decomp
-#| fig-cap: 'Decomposição da série de valor total exportado (em US$)'
-
-ts_total |> 
-    plot_stl_diagnostics(
-        date, value,
-        .feature_set = c("observed", "season", "trend", "remainder"),
-        .trend = "auto",
-        .frequency = "auto",
-        .interactive = T,
-        .title = 'Decomposição da série de valor total exportado (em US$)'
-    )
-
-```
-
-Já a decomposição da série de *volume total exportado* (@fig-acf_pacf_total_vol_decomp) mostra que a componente sazonal possui comportamento cíclico distinto da série anterior, com alternância mais frequente em vales e picos.
-Também a tendência segue comportamento distinto pois, *em que pese haver a mesma tendência de crescimento a partir de 2005, esta foi interrompida por uma tendência de queda a partir de 2011, cuja reversão ocorreu somente a partir de 2016*.
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-acf_pacf_total_vol_decomp
-#| fig-cap: 'Decomposição da série de volume total exportado (em L)'
-
-ts_total |> 
-    plot_stl_diagnostics(
-        date, volume,
-        .feature_set = c("observed", "season", "trend", "remainder"),
-        .trend = "auto",
-        .frequency = "auto",
-        .interactive = T,
-        .title = 'Decomposição da série de volume total exportado (em L)'
-    )
-
-```
-:::
-
-### Teste de raiz unitária, quebras estruturais e modelos de previsão
-
-::: {style="text-align: justify"}
-Como ressaltamos na seção anterior, a estacionariedade é uma propriedade importante na análise de séries temporais.
-Um grande número de modelos assumem a estacionariedade do processo (como os modelos ARMA e ARIMA) e, além disso,um modelo de série temporal que não é estacionário irá variar a sua acurácia à medida que as métricas da série de tempo variarem[^exploratory_yearly-9].
-
-Assim, na análise de séries temporais é possível se utilizar de estratégias como a transformação logarítimica, a transformação quadrática ou ainda a diferenciação.
-Vale dizer que as duas primeiras buscam atacar a alteração da variância no tempo, enquanto que a última foca na remoção da tendência[^exploratory_yearly-10].
-
-Nas séries em questão, aplicaremos a transformação logarítima e, em seguida analisaremos a ACF e PACF para verificar o impacto de tal transformação nas observações feitas na seção anterior.
-:::
-
-[^exploratory_yearly-9]: Nielsen, Aileen.Practical Time Series Analysis: Prediction with Statistics and Machine Learning.O'Reilly Media; 1ª edição (19 novembro 2019).pp.
-    85
-
-[^exploratory_yearly-10]: Nielsen, Aileen.Practical Time Series Analysis: Prediction with Statistics and Machine Learning.O'Reilly Media; 1ª edição (19 novembro 2019).pp.
-    85
-
-### Transformação logarítimica, ACF e PACF
-
-::: {style="text-align: justify"}
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-acf_pacf_logval
-#| fig-cap: "Log do valor total exportado - ACF e PACF."
-
-# transforma a série para log 
-ts_lval <- ts_total |> 
-  dplyr::mutate(lval = log(value)) |> 
-  dplyr::select(c(date,lval)) 
-
-ts_lval |> plot_acf_diagnostics(date, lval, .interactive = T, .lags = 0:48,
-                                 .title = 'Log do valor total exportado - ACF e PACF.')
-
-```
-
-Após a transformação da série de **(**$log$) valor total exportado podemos verificar (@fig-acf_pacf_logval) que a primeira defasagem permanece positiva e significativa, não alterando as conclusões da seção anterior.
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-acf_pacf_logvol
-#| fig-cap: "Log do volume total exportado - ACF e PACF."
-
-
-# transforma a série para log 
-ts_lvol <- ts_total |> 
-  dplyr::mutate(lvol = log(volume)) |> 
-  dplyr::select(c(date,lvol)) 
-
-ts_lvol |> plot_acf_diagnostics(date, lvol, .interactive = T, .lags = 0:48,
-                                 .title = 'Log do volume total exportado - ACF e PACF.')
-
-```
-
-Em contrapartida, a transformação da série de **(**$log$) volume total exportado resultou da identificação de defasagens (levemente) estatisticamente significativas nas defasagens 2, 3 e 6 para a PACF e 6 na ACF.
-
-Em que pese os indícios fornecido pelas ACFs e PACFs apontarem para a estacionariedade das séries, para se ter uma análise mais conclusiva, devemos realizar os testes de raiz unitária para verificar se as séries são ou não estacionárias.
-:::
-
-### Testes de raiz unitária
-
-::: {style="text-align: justify"}
-Para identificar a existência de raiz unitária, isto é, não estacionariedade, os testes que utilizaremos são: - Augmented Dickey-Fuller (ADF) - Hipótese nula ($H_0$): a série **possui** uma raiz unitária, logo não é estacionária[^exploratory_yearly-11]; - Kwiatkowski–Phillips–Schmidt–Shin (KPSS) - Hipótese nula ($H_0$): a série **não possui** uma raiz unitária, logo é estacionária[^exploratory_yearly-12]
-;
-
-Primeiro aplicaremos os testes às séries em nível e, caso seja necessário, posteriormente à séries em $log$.
-Se a série em nível for estacionária, não será necessária a transformação.
-Eventual transformação necessariamente implica em perda de informação (o $log$ reduz a diferença entre extremos, o que pode afetar a compreensão do fenômeno objeto de análise).
-
-O resultado a seguir se referece à aplicação dos testes ADF e KPSS à série de valor exportado, considerando um modelo com tendência.
-
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: unit_root_val
-ts <- ts(ts_total |> 
-           select(value),
-         frequency = 1, 
-         start = c(2000), 
-         end = c(2022)
-         )
-
-ur_test(ts, type_adf = "trend", type_kpss = "tau")
-```
-
-No teste ADF o p-valor mostra que a hipótese $H_0$ **pode ser rejeitada** considerando 5% de nível de significância - 0,01 \< 0,05 e o módulo das estatísticas $\tau_3$, $\phi_2$ e $\phi_3$ é maior que o módulo dos valores críticos.
-No teste KPSS o resultado indica que a hipótese $H_0$ **não pode ser rejeitada** a 5% de significância, visto que 0,089 \< 0,146.
-Neste sentido, a série não possui raiz unitária.
-
-Abaixo está o resultado dos testes de raiz unitária para a série de volume exportado.
-
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: unit_root_vol
-
-
-ts <- ts(ts_total |> 
-           select(volume),
-         frequency = 1, 
-         start = c(2000), 
-         end = c(2022)
-         )
-
-ur_test(ts, type_adf = "drift", type_kpss = "mu")
-```
-
-No teste ADF o p-valor mostra que a hipótese $H_0$ **pode ser rejeitada** considerando 5% de nível de significância, ainda que 0,059 \> 0,05, uma vez que o módulo das estatísticas $\tau_2$ e $\phi_1$ é maior que o módulo dos valores críticos.
-No teste KPSS o resultado indica que a hipótese $H_0$ **não pode ser rejeitada** a 5% de significância, visto que 0,1 \< 0,463.
-Neste sentido, a série não possui raiz unitária.
-
-Ante o exposto, podemos afirmar que as séries em questão são estacionárias.
-:::
-
-[^exploratory_yearly-11]: https://en.wikipedia.org/wiki/Augmented_Dickey%E2%80%93Fuller_test
-
-[^exploratory_yearly-12]: https://en.wikipedia.org/wiki/KPSS_test
-
-### Testes de raiz unitária das séries em log
-
-::: {style="text-align: justify"}
-
-Dando seguimento à metodologia da seção anterior, realizamos abaixo os testes para as série de valor exportado com a transformação logarítimica.
-
-Os resultados corroboram as observações da seção [Testes de raiz unitária] no sentido de que as séries são estacionárias.
-
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: unit_root_lval
-ts <- ts(ts_total |> 
-           dplyr::select(value) |> 
-           dplyr::mutate(value = log(value)),
-         frequency = 1, 
-         start = c(2000), 
-         end = c(2022)
-         ) 
-
-ur_test(ts, type_adf = "trend", type_kpss = "tau")
-```
-
-De igual modo os resultados dos testes vão ao encontro do observado na seção [Testes de raiz unitária], ou seja, a série de volume exportado é estacionária.
-
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: unit_root_lvol
-ts <- ts(ts_total |> 
-           dplyr::select(volume) |> 
-           dplyr::mutate(volume = log(volume)),
-         frequency = 1, 
-         start = c(2000), 
-         end = c(2022)
-         ) 
-
-ur_test(ts, type_adf = "drift", type_kpss = "mu")
-```
-:::
-
-### Testes de quebra estrutural
-::: {style="text-align: justify"}
-
-A existência de quebras estruturais^[https://en.wikipedia.org/wiki/Structural_break#:~:text=Structural%20break%20tests,-A%20single%20break&text=For%20linear%20regression%20models%2C%20the,...%2CT%5D.] nas séries temporais além de serem eventual causa de existência de raiz unitária, também podem auxiliar a compreensão do fenômeno analisado, vez que indicam a existência, por exemplo, de alterações na tendência da série e, deste modo, podem ajudar a corroborar hipóteses levantadas por quem está realizando a análise.
-
-O iremos aplicar os métodos de Chow^[G. C. Chow. Tests of equality between sets of coefficients in two linear regressions. Econometrica,
-28:591–605, 1960.
-], Zeileis^[A. Zeileis, F. Leisch, K. Hornik, and C. Kleiber. strucchange: An R package for testing for
-structural change in linear regression models. Journal of Statistical Software, 7(2):1–38, 2002.
-doi: 10.18637/jss.v007.i02] e Brown^[R. L. Brown, J. Durbin, and J. M. Evans. Techniques for testing the constancy of regression
-relationships over time. Journal of the Royal Statistical Society B, 37:149–163, 1975.]. Todos os testes estão implementados na biblioteca **strucchange** do **R**^[https://cran.r-project.org/web/packages/strucchangeRcpp/vignettes/strucchange-intro.pdf].
-
-:::
-
-#### Série de valor exportado em US$ 
-
-::: {style="text-align: justify"}
-
-Os resultados dos testes abaixo **são** estatisticamente significativos e mostram que existe uma quebra estrutural na série de valor exportado em **2014**.
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: build_ts_val
-
-# converte os dados para série temporal
-ts_val <- ts(ts_total |> 
-            dplyr::select(value),
-            frequency = 1, 
-            start = c(2000), 
-            end = c(2022)
-          )
-```
-
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-chow_ts_val
-#| fig-cap: "Estatísticas do teste de quebras estruturais - valor total exportado em US$."
-
-
-fs <- Fstats(ts_val ~ 1)
-
-par(mfrow = c(1, 2))
-plot(fs, xlab = "Ano", title = "Estatística F")
-plot(fs, pval = TRUE, xlab = "Ano", title = "p-valor")
-```
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-efp_ts_val
-#| fig-cap: "Teste de flutuação empírica para quebras estruturais - valor total exportado em US$."
-
-plot(efp(ts_val ~ 1, data = ts_val, type="fluctuation"))
-```
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-breakpoints_ts_val
-#| fig-cap: "Identificação gráfica de quebras estruturais - valor total exportado em US$."
-
-plot(fs)
-lines(breakpoints(fs))
-```
-
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: summ_breakpoints_ts_val
-sctest(ts_val ~ 1, type = "Chow")
-
-```
-
-:::
-
-#### Série de volume exportado em L (1L = 1kg) 
-
-::: {style="text-align: justify"}
-
-
-Os resultados dos testes abaixo **não são** estatisticamente significativos e mostram que **não** existe uma quebra estrutural na série de volume exportado, ao contrário do que ocorreu na série de valor exportado. 
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: build_ts_vol
-
-# converte os dados para série temporal
-ts_vol <- ts(ts_total |> 
-            dplyr::select(volume),
-            frequency = 1, 
-            start = c(2000), 
-            end = c(2022)
-          )
-```
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-chow_ts_vol
-#| fig-cap: "Estatísticas do teste de quebras estruturais - volume total exportado em L."
-
-
-fs <- Fstats(ts_vol ~ 1)
-
-par(mfrow = c(1, 2))
-plot(fs, xlab = "Ano", title = "Estatística F")
-plot(fs, pval = TRUE, xlab = "Ano", title = "p-valor")
-```
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-efp_ts_vol
-#| fig-cap: "Teste de flutuação empírica para quebras estruturais - volume total exportado em L."
-
-plot(efp(ts_vol ~ 1, data = ts_vol, type="fluctuation"))
-```
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-breakpoints_ts_vol
-#| fig-cap: "Identificação gráfica de quebras estruturais - volume total exportado em L."
-
-
-plot(fs)
-lines(breakpoints(fs))
-```
-
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: summ_breakpoints_ts_vol
-sctest(ts_vol ~ 1, type = "Chow")
-```
-:::
-
-###  Modelos preditivos
-::: {style="text-align: justify"}
-
-Os testes das seções anteriores indicam que modelos de previsão univariados do tipo $ARIMA$ ou $SARIMA$ (para os casos em que há sazonalidade) podem ser adequados para a modelagem das séries em questão.
-
-Para a construção do modelo preditivo, utilizaremos o algoritmo desenvolvido por Rob J. Hyndman e Yeasmin Khandakar^[https://www.jstatsoft.org/article/view/v027i03] e implementado em **R** na biblioteca **forecast**. O algoritmo define automaticamente os valores $p$, $q$ e $d$ do modelo $ARIMA(p,d,q)$ de modo que os resíduos sejam independentes.
-
-Para a série de valor exportado, o modelo selecionado pelo algoritmo é o $ARIMA(2,1,0)$, como pode ser verificado abaixo.
-
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: fig-arima-model-ts_val
-#| fig-cap: "Modelo auto-arima para o valor total exportado em US$."
-
-fit <- forecast::auto.arima(ts_val)
-forecast::checkresiduals(fit)
-```
-
-A estatística do teste é $Q=5,5411$ e o p-valor é $0,1362$, que é muito maior que 0,05. Portanto, $H_0$ do teste não é rejeitada e os resíduos do modelo são independentes. Interessante notar que o modelo $ARIMA(2,1,0)$ vai ao encontro das conclusões dos testes realizados quanto aos valores de $p=2$ e $q=0$, exceto pelo valor de $d=1$, o qual equivale à ordem de integração 1. A necessidade de diferenciar a série para se obter a estacionariedade se deve à existência da quebra estrutural identificada na seção [Testes de quebra estrutural].
-
-Já para a série de volume exportado, o modelo selecionado pelo algoritmo é o $ARIMA(0,0,1)$, como pode ser verificado abaixo.
-
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: fig-arima-model-ts_vol
-#| fig-cap: "Modelo auto-arima para o volume total exportado em L."
-
-fit <- forecast::auto.arima(ts_vol)
-forecast::checkresiduals(fit)
-```
-
-A estatística do teste é $Q=6,6192$ e o p-valor é $0,1574$, que é muito maior que 0,05. Portanto, $H_0$ do teste não é rejeitada e os resíduos do modelo são independentes. Neste caso, o modelo $ARIMA(0,0,1)$ gerado automaticamente vai ao encontro dos testes realizados na seções anteriores.
-
-:::
 

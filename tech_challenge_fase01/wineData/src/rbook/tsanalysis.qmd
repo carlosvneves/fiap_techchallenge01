@@ -1,0 +1,733 @@
+# Análise de Séries Temporais
+
+```{r import_libs}
+#| echo: false
+#| message: false
+#| warning: false
+
+source('utils.R')
+
+```
+
+::: {style="text-align: justify"}
+
+Para analisar o comportamento das séries temporais, o ideal é poder contar com o maior número de dados possível. Neste caso, é razoável optarmos por analisar as séries mensais ao invés das séries anuais. Inclusive, com as séries mensais é possível realizarmos a análise de curto-prazo e médio-prazo.
+
+Inicialmente iremos avaliar o comportamento das séries em termos agregados (soma de todos os países) para buscarmos _insights_ sobre o mercado como um todo. Posteriormente, realizaremos a análise considerando somente os 5 maiores importadores de vinhos brasileiros: Paraguai, Rússia, China, Estados Unidos, Espanha e China.
+:::
+
+## Análise das séries agregadas
+
+::: {style="text-align: justify"}
+```{r}
+#| echo: false
+#| warning: true
+#| message: false
+
+# agregação dos dados mensais por data
+data_exp_mc_by_date <- data_exp_mc  |> 
+                        group_by(date) |> 
+                        summarise(sum_val = sum(value), 
+                                  sum_vol = sum(volume),
+                                  # mean_val = mean(value),
+                                  # mean_vol = mean(volume),
+                                  ) |> 
+                        arrange(desc(date))
+
+
+# dados mensais para os 5 países mais relevantes
+data_exp_mc_by_date_top5 <- data_exp_mc  |> 
+                        filter(country %in% c('Paraguai',
+                                              'Rússia',
+                                              'Estados Unidos',
+                                              'Espanha',
+                                              'China')) |>
+                                        group_by(date) |> 
+                        summarise(sum_val = sum(value), 
+                                  sum_vol = sum(volume),
+                                  mean_val = mean(value),
+                                  mean_vol = mean(volume),
+                                  ) |> 
+                        arrange(desc(date))
+```
+
+As séries de valor exportado mensal total permite identificar vales e picos como em março de 2009 e julho de 2013 (@fig-monthly_val_agg).
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_val_agg
+#| fig-cap: 'Valor total exportado mensal (US\$)'
+
+data_exp_mc_by_date |> timetk::plot_time_series(date, sum_val, 
+                                                .interactive = T, 
+                                                .smooth_span = 0.15,
+                                 .title = 'Valor total')
+
+# data_exp_mc_by_date |> timetk::plot_time_series(date, mean_val, .interactive = T, 
+#                                                 .smooth_span = 0.15, .line_color = "red",
+#                                  .title = 'Valor médio')
+
+```
+Igualmente, nos gráficos da @fig-monthly_vol_agg em julho de 2009 e abril de 2013.
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_vol_agg
+#| fig-cap: 'Volume total mensal (Kg.L)'
+
+data_exp_mc_by_date |> timetk::plot_time_series(date, sum_vol, 
+                                                .interactive = T, 
+                                                .smooth_span =  0.15,
+                                 .title = 'Volume total')
+
+# data_exp_mc_by_date |> timetk::plot_time_series(date, mean_vol, 
+#                                                 .interactive = T, 
+#                                                 .line_color = "red",
+#                                                 .smooth_span = 0.15,
+#                                  .title = 'Volume médio')
+
+```
+Porém, para realizar uma análise mais apurada, inclusive identificando de modo sistemático eventos anômalos, podemos utilizar algorítmos de identificação de anomalias, como será exposto a seguir.
+
+:::
+
+### Detecção de anomalias
+
+::: {style="text-align: justify"}
+
+
+O primeiro passo para a detecção de anomalias é a decomposição da série em suas componentes de tendência e sazonalidade, além de podermos também verificar os resíduos das séries. 
+
+Os gráficos da @fig-monthly_decomp_val mostra que existe um forte componente sazonal atuando e a tendência é crescente.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_decomp_val
+#| fig-cap: 'Decomposição da série de valor total'
+
+anomalize_sum_val <-  data_exp_mc_by_date |>  
+                                          timetk::anomalize(
+                                              .date_var      = date, 
+                                              .value         = sum_val,
+                                              .iqr_alpha     = 0.05,
+                                              .max_anomalies = 0.20,
+                                              .message       = FALSE
+                                          )
+        
+# anomalize_mean_val <-  data_exp_mc_by_date |>  
+#                                           timetk::anomalize(
+#                                               .date_var      = date, 
+#                                               .value         = mean_val,
+#                                               .iqr_alpha     = 0.05,
+#                                               .max_anomalies = 0.20,
+#                                               .message       = FALSE
+#                                           )
+#         
+anomalize_sum_val |> timetk::plot_anomalies_decomp(.date_var = date,
+                                                   .interactive = TRUE,
+                                                   .title = "Valor total")
+
+# anomalize_mean_val |> timetk::plot_anomalies_decomp(.date_var = date, 
+#                                                     .interactive = TRUE,
+#                                                     .title = "Valor médio")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_decomp_val
+#| fig-cap: 'Decomposição da série de volume total'
+
+anomalize_sum_vol <-  data_exp_mc_by_date |>  
+                                          timetk::anomalize(
+                                              .date_var      = date, 
+                                              .value         = sum_vol,
+                                              .iqr_alpha     = 0.05,
+                                              .max_anomalies = 0.20,
+                                              .message       = FALSE
+                                          )
+        
+# anomalize_mean_vol <-  data_exp_mc_by_date |>  
+#                                           timetk::anomalize(
+#                                               .date_var      = date, 
+#                                               .value         = mean_vol,
+#                                               .iqr_alpha     = 0.05,
+#                                               .max_anomalies = 0.20,
+#                                               .message       = FALSE
+#                                           )
+        
+anomalize_sum_vol |> timetk::plot_anomalies_decomp(.date_var = date, 
+                                                   .interactive = TRUE, 
+                                                   .title = "Volume total")
+
+# anomalize_mean_vol |> timetk::plot_anomalies_decomp(.date_var = date, 
+#                                                     .interactive = TRUE,
+#                                                     .title = "Valor médio")
+```
+
+
+Os gráficos da @fig-monthly_anomalize_plot-1 e @fig-monthly_anomalize_plot-2 permitem identicar as anomalias das séries. Enquanto na série de valors total foram identificadas 8 anomalias. Já na série de volume total from identificadas 25. Coincidem entre as séries as anomalias identificadas em dois meses de 2009, um em 2012 e três em 2013 (@tbl-monthly_anomalize_summary). 
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-monthly_anomalize_summary
+#| tbl-cap: "Principais dados sobre as anomalias identificadas" 
+
+dt_val <- anomalize_sum_val |> filter(anomaly == "Yes") |> select(date) 
+dt_vol <- anomalize_sum_vol |> filter(anomaly == "Yes") |> select(date) 
+
+
+DT::datatable(merge(dt_val, dt_vol), 
+                          filter = "bottom", 
+                          colnames = 'Data',
+                          extensions = 'Buttons', 
+                          options = list(
+                          dom = 'Bfrtip',
+                          buttons = c('copy','excel', 'csv', 'pdf'))) |>  DT::formatDate(columns = c('date'),
+                               'toLocaleDateString')
+    
+```
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_anomalize_plot
+#| fig-cap: 
+#| - 'Detecção de anomalias - valor total'
+#| - 'Detecção de anomalias - volume total'
+#| layout-nrow: 2 
+
+
+anomalize_sum_val |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Valor total")
+
+
+anomalize_sum_vol |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Volume total")
+
+```
+
+Para série da valor as anomalias ocorrem entre junho de 2009 e setembro de 2017. Já para série de volume, as anomalias ocorrem entre setembro de 2008 e agosto de 2013.
+
+Detectar as anomalias e quando estas ocorrem pode ser bastante útil para tentar relacioná-las a eventos extremos que se tenha conhecimento de que ocorreram no mesmo período em que ocorrem as anomalias.
+
+
+
+:::
+
+
+
+
+
+
+## Funções de autocorrelação (ACF) e autorrelação parcial (PACF)
+
+::: {style="text-align: justify"}
+
+A função de autocorrelação (ACF) e a função de autocorrelação parcial (PACF) são medidas de associação entre valores autais e valores pregressos em séries temporais[^exploratory_yearly-1]. Portanto, indicam em que medida um valor $x_t$ é dependente do valor $x_{t-1}$ e, consequentemente, o passado é últil para prever o futuro.
+
+A autocorrelação parcial é mais útil durante o processo de especificação de um modelo autoregressivo. Ela ajuda a avaliar as propriedades de uma série temporal.
+
+As funções de autocorrelação e autocorrelação parcial também servem para estudar a estacionariedade de uma série temporal[^exploratory_yearly-2].Uma série temporal estacionária tem funções de média, variância e autocorrelação que são essencialmente constantes ao longo do tempo[^exploratory_yearly-3]. A função de autocorrelação diminui para quase zero rapidamente para uma série temporal estacionária (decaimento exponencial).
+
+Os modelos matemáticos mais comuns e que têm como premissa apresentar a estacionariedade são modelos auto-regressivos - AR (p), auto-regressivo e de média móvel - ARMA (p,q) - e modelo auto—regressivo integrado e de média móvel - ARIMA(p,d,q)[^exploratory_yearly-4].
+
+Para uma série temporal estacionária, um modelo de média móvel vê o valor de uma variável no tempo $t$ como uma função linear de erros residuais de $q$ defasagens. Já um processo auto-regressivo de ordem $p$ é um modelo que utiliza os próprios valores passados como preditores[^exploratory_yearly-5]. O termo $d$ especifica a ordem de integração da série (ou seja, quantas vezes a série deve ser diferenciada para se tornar estacionária).
+
+As ordens dos processos em termos de $p$ e $q$ são definidas com base na análise das funções de autocorrelação e autocorrelação parcial. A ordem $p$ do processo auto-regressivo é determinada pela função de autocorrelação parcial, enquanto a ordem $q$ do processo de média móvel é indicada pelo número de correlações estatisticamente significativas na função de autocorrelação[^exploratory_yearly-6].
+
+Estabelecidos os conceitos e aplicações da ACF e da PACF, passemos à análise das séries de interesse.
+
+Para a série de *valor exportado* temos os gráficos da @fig-acf_pacf_total_value-1 e @fig-acf_pacf_total_value-2 de ACF e PACF, considerando 48 defasagens.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-acf_pacf_total_value
+#| fig-cap: 'Valor exportado mensal (US\$) - ACF e PACF.'
+#| fig-subcap: 
+#| - "Valor total"
+#| - "Valor médio"
+
+data_exp_mc_by_date |> timetk::plot_acf_diagnostics(date, sum_val, .interactive = T, .lags = 0:48,
+                                 .title = 'Valor total exportado - ACF e PACF.')
+
+data_exp_mc_by_date |> timetk::plot_acf_diagnostics(date, mean_val, .interactive = T, .lags = 0:48,
+                                 .title = 'Valor médio exportado - ACF e PACF.')
+
+```
+
+Nos gráficos acima, as decomposições mostram que existem autocorrelação e autocorrelação parcial estatisticamente significativas ao menos na primeira defasagem.
+Mais precisamente, ambas as funções são trucadas e decaem a partir de certa defasagem o que pode caracterizar um processo do tipo $ARMA(p,q)$[^exploratory_yearly-7], com $p = 1$ e $q = 2$.
+
+Para a série de *volume total exportado* temos os seguintes gráficos de ACF e PACF, considerando 48 defasagens (@fig-acf_pacf_total_vol).
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-acf_pacf_total_vol
+#| fig-cap: 'Volume exportado mensal (Kg.L) - ACF e PACF.'
+#| fig-subcap: 
+#| - "Volume total"
+#| - "Volume médio"
+
+data_exp_mc_by_date |> timetk::plot_acf_diagnostics(date, sum_vol, .interactive = T, .lags = 0:48,
+                                 .title = 'Valor total exportado - ACF e PACF.')
+
+data_exp_mc_by_date |> timetk::plot_acf_diagnostics(date, mean_vol, .interactive = T, .lags = 0:48,
+                                 .title = 'Valor médio exportado - ACF e PACF.')
+
+```
+
+Nos gráficos acima, as decomposições mostram que não existem autocorrelação e autocorrelação parcial estatisticamente significativas para a série de volume exportado.
+Ademais, a ACF é truncada na primeira defasagem e a PACF parece decair, o que pode caracterizar um processo do tipo $MA(q)$, com $q = 1$[^exploratory_yearly-8].
+
+Porém, a inspeção visual é bastante limitada, o que nos motiva a aprofundar a análise.
+:::
+
+[^exploratory_yearly-1]: https://www.ibm.com/docs/pt-br/spss-modeler/18.4.0?t
+    opic=data-autocorrelation-partial-autocorrelation-functions
+
+[^exploratory_yearly-2]: https://ichi.pro/pt/autocorrelacao-e-autocorrelacao-parcial-em-dados-de-serie-temporal-32975526028430
+
+[^exploratory_yearly-3]: https://analisemacro.com.br/estatistica-e-econometria/estacionariedade-de-series-temporais/
+
+[^exploratory_yearly-4]: https://medium.com/data-hackers/series-temporais-parte-1-a0e75a512e72
+
+[^exploratory_yearly-5]: https://tutoriais.edu.lat/pub/time-series/time-series-moving-average/serie-temporal-media-movel
+
+[^exploratory_yearly-6]: https://support.minitab.com/pt-br/minitab/20/help-and-how-to/statistical-modeling/time-series/how-to/autocorrelation/interpret-the-results/autocorrelation-function-acf/
+
+[^exploratory_yearly-7]: da Silveira Bueno, Rodrigo de Losso.
+    Econometria De Séries Temporais.
+    Cengage Learning; 2ª Edição Revista E Atualizada (28 julho 2011),pp.
+    47.
+
+[^exploratory_yearly-8]: da Silveira Bueno, Rodrigo de Losso.
+    Econometria De Séries Temporais.
+    Cengage Learning; 2ª Edição Revista E Atualizada (28 julho 2011),pp.
+    47.
+
+## Decomposição da série temporal
+
+::: {style="text-align: justify"}
+A decomposição da série de *valor total exportado* em suas componentes de tendência, sazonalidade e resíduos.
+O gráfico da componente de sazonalidade mostra um comportamento cíclico, em que se tem um pico após dois anos, seguido de três anos de queda até o vale.
+Já a componente de tendência mostra que, *após 2005, há um tendência de contínuo crescimento do valor total exportado* (@fig-acf_pacf_total_val_decomp).
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-acf_pacf_total_val_decomp
+#| fig-cap: 'Decomposição da série de valor total exportado (em US$)'
+
+ts_total |> 
+    plot_stl_diagnostics(
+        date, value,
+        .feature_set = c("observed", "season", "trend", "remainder"),
+        .trend = "auto",
+        .frequency = "auto",
+        .interactive = T,
+        .title = 'Decomposição da série de valor total exportado (em US$)'
+    )
+
+```
+
+Já a decomposição da série de *volume total exportado* (@fig-acf_pacf_total_vol_decomp) mostra que a componente sazonal possui comportamento cíclico distinto da série anterior, com alternância mais frequente em vales e picos.
+Também a tendência segue comportamento distinto pois, *em que pese haver a mesma tendência de crescimento a partir de 2005, esta foi interrompida por uma tendência de queda a partir de 2011, cuja reversão ocorreu somente a partir de 2016*.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-acf_pacf_total_vol_decomp
+#| fig-cap: 'Decomposição da série de volume total exportado (em L)'
+
+ts_total |> 
+    plot_stl_diagnostics(
+        date, volume,
+        .feature_set = c("observed", "season", "trend", "remainder"),
+        .trend = "auto",
+        .frequency = "auto",
+        .interactive = T,
+        .title = 'Decomposição da série de volume total exportado (em L)'
+    )
+
+```
+:::
+
+## Teste de raiz unitária, quebras estruturais e modelos de previsão
+
+::: {style="text-align: justify"}
+Como ressaltamos na seção anterior, a estacionariedade é uma propriedade importante na análise de séries temporais.
+Um grande número de modelos assumem a estacionariedade do processo (como os modelos ARMA e ARIMA) e, além disso,um modelo de série temporal que não é estacionário irá variar a sua acurácia à medida que as métricas da série de tempo variarem[^exploratory_yearly-9].
+
+Assim, na análise de séries temporais é possível se utilizar de estratégias como a transformação logarítimica, a transformação quadrática ou ainda a diferenciação.
+Vale dizer que as duas primeiras buscam atacar a alteração da variância no tempo, enquanto que a última foca na remoção da tendência[^exploratory_yearly-10].
+
+Nas séries em questão, aplicaremos a transformação logarítima e, em seguida analisaremos a ACF e PACF para verificar o impacto de tal transformação nas observações feitas na seção anterior.
+:::
+
+[^exploratory_yearly-9]: Nielsen, Aileen.Practical Time Series Analysis: Prediction with Statistics and Machine Learning.O'Reilly Media; 1ª edição (19 novembro 2019).pp.
+    85
+
+[^exploratory_yearly-10]: Nielsen, Aileen.Practical Time Series Analysis: Prediction with Statistics and Machine Learning.O'Reilly Media; 1ª edição (19 novembro 2019).pp.
+    85
+
+## Transformação logarítimica, ACF e PACF
+
+::: {style="text-align: justify"}
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-acf_pacf_logval
+#| fig-cap: "Log do valor total exportado - ACF e PACF."
+
+# transforma a série para log 
+ts_lval <- ts_total |> 
+  dplyr::mutate(lval = log(value)) |> 
+  dplyr::select(c(date,lval)) 
+
+ts_lval |> plot_acf_diagnostics(date, lval, .interactive = T, .lags = 0:48,
+                                 .title = 'Log do valor total exportado - ACF e PACF.')
+
+```
+
+Após a transformação da série de **(**$log$) valor total exportado podemos verificar (@fig-acf_pacf_logval) que a primeira defasagem permanece positiva e significativa, não alterando as conclusões da seção anterior.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-acf_pacf_logvol
+#| fig-cap: "Log do volume total exportado - ACF e PACF."
+
+
+# transforma a série para log 
+ts_lvol <- ts_total |> 
+  dplyr::mutate(lvol = log(volume)) |> 
+  dplyr::select(c(date,lvol)) 
+
+ts_lvol |> plot_acf_diagnostics(date, lvol, .interactive = T, .lags = 0:48,
+                                 .title = 'Log do volume total exportado - ACF e PACF.')
+
+```
+
+Em contrapartida, a transformação da série de **(**$log$) volume total exportado resultou da identificação de defasagens (levemente) estatisticamente significativas nas defasagens 2, 3 e 6 para a PACF e 6 na ACF.
+
+Em que pese os indícios fornecido pelas ACFs e PACFs apontarem para a estacionariedade das séries, para se ter uma análise mais conclusiva, devemos realizar os testes de raiz unitária para verificar se as séries são ou não estacionárias.
+:::
+
+## Testes de raiz unitária
+
+::: {style="text-align: justify"}
+Para identificar a existência de raiz unitária, isto é, não estacionariedade, os testes que utilizaremos são: - Augmented Dickey-Fuller (ADF) - Hipótese nula ($H_0$): a série **possui** uma raiz unitária, logo não é estacionária[^exploratory_yearly-11]; - Kwiatkowski–Phillips–Schmidt–Shin (KPSS) - Hipótese nula ($H_0$): a série **não possui** uma raiz unitária, logo é estacionária[^exploratory_yearly-12]
+;
+
+Primeiro aplicaremos os testes às séries em nível e, caso seja necessário, posteriormente à séries em $log$.
+Se a série em nível for estacionária, não será necessária a transformação.
+Eventual transformação necessariamente implica em perda de informação (o $log$ reduz a diferença entre extremos, o que pode afetar a compreensão do fenômeno objeto de análise).
+
+O resultado a seguir se referece à aplicação dos testes ADF e KPSS à série de valor exportado, considerando um modelo com tendência.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: unit_root_val
+ts <- ts(ts_total |> 
+           select(value),
+         frequency = 1, 
+         start = c(2000), 
+         end = c(2022)
+         )
+
+ur_test(ts, type_adf = "trend", type_kpss = "tau")
+```
+
+No teste ADF o p-valor mostra que a hipótese $H_0$ **pode ser rejeitada** considerando 5% de nível de significância - 0,01 \< 0,05 e o módulo das estatísticas $\tau_3$, $\phi_2$ e $\phi_3$ é maior que o módulo dos valores críticos.
+No teste KPSS o resultado indica que a hipótese $H_0$ **não pode ser rejeitada** a 5% de significância, visto que 0,089 \< 0,146.
+Neste sentido, a série não possui raiz unitária.
+
+Abaixo está o resultado dos testes de raiz unitária para a série de volume exportado.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: unit_root_vol
+
+
+ts <- ts(ts_total |> 
+           select(volume),
+         frequency = 1, 
+         start = c(2000), 
+         end = c(2022)
+         )
+
+ur_test(ts, type_adf = "drift", type_kpss = "mu")
+```
+
+No teste ADF o p-valor mostra que a hipótese $H_0$ **pode ser rejeitada** considerando 5% de nível de significância, ainda que 0,059 \> 0,05, uma vez que o módulo das estatísticas $\tau_2$ e $\phi_1$ é maior que o módulo dos valores críticos.
+No teste KPSS o resultado indica que a hipótese $H_0$ **não pode ser rejeitada** a 5% de significância, visto que 0,1 \< 0,463.
+Neste sentido, a série não possui raiz unitária.
+
+Ante o exposto, podemos afirmar que as séries em questão são estacionárias.
+:::
+
+[^exploratory_yearly-11]: https://en.wikipedia.org/wiki/Augmented_Dickey%E2%80%93Fuller_test
+
+[^exploratory_yearly-12]: https://en.wikipedia.org/wiki/KPSS_test
+
+## Testes de raiz unitária das séries em log
+
+::: {style="text-align: justify"}
+
+Dando seguimento à metodologia da seção anterior, realizamos abaixo os testes para as série de valor exportado com a transformação logarítimica.
+
+Os resultados corroboram as observações da seção [Testes de raiz unitária] no sentido de que as séries são estacionárias.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: unit_root_lval
+ts <- ts(ts_total |> 
+           dplyr::select(value) |> 
+           dplyr::mutate(value = log(value)),
+         frequency = 1, 
+         start = c(2000), 
+         end = c(2022)
+         ) 
+
+ur_test(ts, type_adf = "trend", type_kpss = "tau")
+```
+
+De igual modo os resultados dos testes vão ao encontro do observado na seção [Testes de raiz unitária], ou seja, a série de volume exportado é estacionária.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: unit_root_lvol
+ts <- ts(ts_total |> 
+           dplyr::select(volume) |> 
+           dplyr::mutate(volume = log(volume)),
+         frequency = 1, 
+         start = c(2000), 
+         end = c(2022)
+         ) 
+
+ur_test(ts, type_adf = "drift", type_kpss = "mu")
+```
+:::
+
+## Testes de quebra estrutural
+::: {style="text-align: justify"}
+
+A existência de quebras estruturais^[https://en.wikipedia.org/wiki/Structural_break#:~:text=Structural%20break%20tests,-A%20single%20break&text=For%20linear%20regression%20models%2C%20the,...%2CT%5D.] nas séries temporais além de serem eventual causa de existência de raiz unitária, também podem auxiliar a compreensão do fenômeno analisado, vez que indicam a existência, por exemplo, de alterações na tendência da série e, deste modo, podem ajudar a corroborar hipóteses levantadas por quem está realizando a análise.
+
+O iremos aplicar os métodos de Chow^[G. C. Chow. Tests of equality between sets of coefficients in two linear regressions. Econometrica,
+28:591–605, 1960.
+], Zeileis^[A. Zeileis, F. Leisch, K. Hornik, and C. Kleiber. strucchange: An R package for testing for
+structural change in linear regression models. Journal of Statistical Software, 7(2):1–38, 2002.
+doi: 10.18637/jss.v007.i02] e Brown^[R. L. Brown, J. Durbin, and J. M. Evans. Techniques for testing the constancy of regression
+relationships over time. Journal of the Royal Statistical Society B, 37:149–163, 1975.]. Todos os testes estão implementados na biblioteca **strucchange** do **R**^[https://cran.r-project.org/web/packages/strucchangeRcpp/vignettes/strucchange-intro.pdf].
+
+:::
+
+### Série de valor exportado em US$ 
+
+::: {style="text-align: justify"}
+
+Os resultados dos testes abaixo **são** estatisticamente significativos e mostram que existe uma quebra estrutural na série de valor exportado em **2014**.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: build_ts_val
+
+# converte os dados para série temporal
+ts_val <- ts(ts_total |> 
+            dplyr::select(value),
+            frequency = 1, 
+            start = c(2000), 
+            end = c(2022)
+          )
+```
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-chow_ts_val
+#| fig-cap: "Estatísticas do teste de quebras estruturais - valor total exportado em US$."
+
+
+fs <- Fstats(ts_val ~ 1)
+
+par(mfrow = c(1, 2))
+plot(fs, xlab = "Ano", title = "Estatística F")
+plot(fs, pval = TRUE, xlab = "Ano", title = "p-valor")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-efp_ts_val
+#| fig-cap: "Teste de flutuação empírica para quebras estruturais - valor total exportado em US$."
+
+plot(efp(ts_val ~ 1, data = ts_val, type="fluctuation"))
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-breakpoints_ts_val
+#| fig-cap: "Identificação gráfica de quebras estruturais - valor total exportado em US$."
+
+plot(fs)
+lines(breakpoints(fs))
+```
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: summ_breakpoints_ts_val
+sctest(ts_val ~ 1, type = "Chow")
+
+```
+
+:::
+
+### Série de volume exportado em L (1L = 1kg) 
+
+::: {style="text-align: justify"}
+
+
+Os resultados dos testes abaixo **não são** estatisticamente significativos e mostram que **não** existe uma quebra estrutural na série de volume exportado, ao contrário do que ocorreu na série de valor exportado. 
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: build_ts_vol
+
+# converte os dados para série temporal
+ts_vol <- ts(ts_total |> 
+            dplyr::select(volume),
+            frequency = 1, 
+            start = c(2000), 
+            end = c(2022)
+          )
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-chow_ts_vol
+#| fig-cap: "Estatísticas do teste de quebras estruturais - volume total exportado em L."
+
+
+fs <- Fstats(ts_vol ~ 1)
+
+par(mfrow = c(1, 2))
+plot(fs, xlab = "Ano", title = "Estatística F")
+plot(fs, pval = TRUE, xlab = "Ano", title = "p-valor")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-efp_ts_vol
+#| fig-cap: "Teste de flutuação empírica para quebras estruturais - volume total exportado em L."
+
+plot(efp(ts_vol ~ 1, data = ts_vol, type="fluctuation"))
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-breakpoints_ts_vol
+#| fig-cap: "Identificação gráfica de quebras estruturais - volume total exportado em L."
+
+
+plot(fs)
+lines(breakpoints(fs))
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: summ_breakpoints_ts_vol
+sctest(ts_vol ~ 1, type = "Chow")
+```
+:::
+
+##  Modelos preditivos
+::: {style="text-align: justify"}
+
+Os testes das seções anteriores indicam que modelos de previsão univariados do tipo $ARIMA$ ou $SARIMA$ (para os casos em que há sazonalidade) podem ser adequados para a modelagem das séries em questão.
+
+Para a construção do modelo preditivo, utilizaremos o algoritmo desenvolvido por Rob J. Hyndman e Yeasmin Khandakar^[https://www.jstatsoft.org/article/view/v027i03] e implementado em **R** na biblioteca **forecast**. O algoritmo define automaticamente os valores $p$, $q$ e $d$ do modelo $ARIMA(p,d,q)$ de modo que os resíduos sejam independentes.
+
+Para a série de valor exportado, o modelo selecionado pelo algoritmo é o $ARIMA(2,1,0)$, como pode ser verificado abaixo.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: fig-arima-model-ts_val
+#| fig-cap: "Modelo auto-arima para o valor total exportado em US$."
+
+fit <- forecast::auto.arima(ts_val)
+forecast::checkresiduals(fit)
+```
+
+A estatística do teste é $Q=5,5411$ e o p-valor é $0,1362$, que é muito maior que 0,05. Portanto, $H_0$ do teste não é rejeitada e os resíduos do modelo são independentes. Interessante notar que o modelo $ARIMA(2,1,0)$ vai ao encontro das conclusões dos testes realizados quanto aos valores de $p=2$ e $q=0$, exceto pelo valor de $d=1$, o qual equivale à ordem de integração 1. A necessidade de diferenciar a série para se obter a estacionariedade se deve à existência da quebra estrutural identificada na seção [Testes de quebra estrutural].
+
+Já para a série de volume exportado, o modelo selecionado pelo algoritmo é o $ARIMA(0,0,1)$, como pode ser verificado abaixo.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: fig-arima-model-ts_vol
+#| fig-cap: "Modelo auto-arima para o volume total exportado em L."
+
+fit <- forecast::auto.arima(ts_vol)
+forecast::checkresiduals(fit)
+```
+
+A estatística do teste é $Q=6,6192$ e o p-valor é $0,1574$, que é muito maior que 0,05. Portanto, $H_0$ do teste não é rejeitada e os resíduos do modelo são independentes. Neste caso, o modelo $ARIMA(0,0,1)$ gerado automaticamente vai ao encontro dos testes realizados na seções anteriores.
+
+:::
+

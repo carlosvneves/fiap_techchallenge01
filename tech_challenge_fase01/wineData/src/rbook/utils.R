@@ -70,7 +70,7 @@ tbl_render <- function(tbl, header){
         if( 'date' %in% colnames(tbl)) {
             DT::datatable(tbl, filter = "bottom", 
                           colnames = tbl_col_names,
-                          caption = header, 
+                          # caption = header, 
                           extensions = 'Buttons', 
                           options = list(
                               dom = 'Bfrtip',
@@ -85,7 +85,7 @@ tbl_render <- function(tbl, header){
         } else if('kpi' %in% colnames(tbl)){
             DT::datatable(tbl, filter = "bottom", 
                           colnames = tbl_col_names,
-                          caption = header, 
+                          # caption = header, 
                           extensions = 'Buttons', 
                           options = list(
                               dom = 'Bfrtip',
@@ -103,7 +103,7 @@ tbl_render <- function(tbl, header){
         } else {
             DT::datatable(tbl, filter = "bottom", 
                           colnames = tbl_col_names,
-                          caption = header, 
+                          # caption = header, 
                           extensions = 'Buttons', 
                           options = list(
                               dom = 'Bfrtip',
