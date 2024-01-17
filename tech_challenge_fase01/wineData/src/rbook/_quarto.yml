@@ -13,6 +13,7 @@ book:
     - index.qmd
     - context.qmd
     - explore.qmd
+    - tsanalysis.qmd
     #- exploratory_yearly.qmd
     # - exploratory_monthly.qmd
     # - analysis.qmd

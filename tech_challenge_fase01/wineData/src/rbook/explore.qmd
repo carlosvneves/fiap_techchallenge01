@@ -194,6 +194,11 @@ data_exp_mc <- ts_tbl_m |>
   mutate(value = value * correction) |> 
   select(-c('cpi','correction'))
 
+
+save(data_exp_yc, file = 'data_exp_yc.RData')
+save(data_exp_mc, file = 'data_exp_mc.RData')
+
+
 ```
 
 O gráfico @fig-cpi demonstra que entre 2000 e 2022 houve um **crescimento acumulado do índice na ordem de aproximadamente 52%**.

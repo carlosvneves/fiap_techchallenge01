@@ -131,7 +131,7 @@ ur_test <- function(ts, type_adf, type_kpss){
     rownames(stats) <- c("cvals","stats")
     colnames(stats) <- cnames
     
-    pvalue <- fUnitRoots::adfTest(ts, type = "ct")@test$p.value
+    pvalue <- fUnitRoots::adfTest(ts, type = "nc")@test$p.value
     
     resp_adf <- paste(
     "############################
