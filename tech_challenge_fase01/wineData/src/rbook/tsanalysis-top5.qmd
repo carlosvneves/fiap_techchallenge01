@@ -1,0 +1,256 @@
+---
+code-fold: true
+editor: 
+  markdown: 
+    wrap: sentence
+tbl-cap-location: bottom
+---
+
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
+```{r import_libs}
+#| echo: false
+#| message: false
+#| warning: false
+
+source('utils.R')
+
+```
+# Análise das séries temporais - Paraguai e Rússia
+
+
+::: {style="text-align: justify"}
+
+Como visto na seção [Análise Exploratória](), Paraguai e Rússia emergiram como os dois mais importantes países para o Brasil quando o assunto é exportação de vinho.
+
+A ideia desta seção é tentar olhar um pouco mais de perto como se comportam as séries de valor exportados em US$ e de volume exportado em Kg.L, especialmente para verificar se há algum tipo de comportamento anômalo que possa eventualmente auxiliar a entender o porquê desses países ocuparem tal espaço.
+
+:::
+
+## Análise comparativa
+
+::: {style="text-align: justify"}
+```{r}
+#| echo: false
+#| warning: true
+#| message: false
+
+load('data_exp_mc.RData')
+
+
+# dados mensais para os 5 países mais relevantes
+data_exp_mc_by_date_top <- data_exp_mc  |> 
+                        filter(country %in% c('Paraguai',
+                                              'Rússia'
+                                              # 'Estados Unidos',
+                                              # 'Espanha',
+                                              # 'China')
+                                              )) |>
+                                        group_by(date) |> 
+                        summarise(sum_val = sum(value), 
+                                  sum_vol = sum(volume),
+                                  mean_val = mean(value),
+                                  mean_vol = mean(volume),
+                                  ) |> 
+                        arrange(desc(date))
+
+data_paraguai <-  data_exp_mc  |> 
+                        filter(country == ('Paraguai')) |> mutate(sum_val=value, sum_vol=volume)
+                                              
+
+data_russia <-  data_exp_mc  |> 
+                        filter(country == ('Rússia')) |> mutate(sum_val=value, sum_vol=volume)
+                                              
+
+```
+
+As séries de valor exportado mensal total permite identificar vales e picos como em março de 2009 e julho de 2013 (@fig-monthly_val_agg).
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_val_agg
+#| fig-cap: 'Valor exportado mensal (US\$)'
+
+
+data_paraguai |> timetk::plot_time_series(date, sum_val, 
+                                                .interactive = T, 
+                                                .smooth_span = 0.15,
+                                 .title = 'Valor exportado - Paraguai') 
+
+data_russia |> timetk::plot_time_series(date, sum_val, 
+                                                .interactive = T, 
+                                                .smooth_span = 0.15,
+                                 .title = 'Valor exportado - Rússia') 
+
+
+
+
+```
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_vol_agg
+#| fig-cap: 'Volume exportado mensal (Kg.L)'
+
+
+data_paraguai |> timetk::plot_time_series(date, sum_vol, 
+                                                .interactive = T, 
+                                                .smooth_span = 0.15,
+                                 .title = 'Volume exportado - Paraguai') 
+
+data_russia |> timetk::plot_time_series(date, sum_vol, 
+                                                .interactive = T, 
+                                                .smooth_span = 0.15,
+                                 .title = 'Volume exportado - Rússia') 
+
+
+```
+
+Ao observarmos a @fig-monthly_val_agg e a @fig-monthly_vol_agg notamos que a Rússia destaca-se como compradora de vinhos somente em dois períodos: entre 2008 e 2010, e entre 2012 e 2013, deixando de ser um destinatário relevante especialmente a partir de 2015. Por outro lado, o Paraguai apresenta uma trajetória de razoavelmente estável, mas que ganhou tração a partir de 2015. 
+
+:::
+
+### Detecção de anomalias
+
+::: {style="text-align: justify"}
+
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_decomp_val
+#| fig-cap: 'Decomposição da série de valor total'
+#| layout-nrow: 2
+
+anomalize_sum_val_paraguai <-  data_paraguai |>  
+                                          timetk::anomalize(
+                                              .date_var      = date, 
+                                              .value         = sum_val,
+                                              .iqr_alpha     = 0.05,
+                                              .max_anomalies = 0.20,
+                                              .message       = FALSE
+                                          )
+
+
+anomalize_sum_val_russia <-  data_russia |>  
+                                          timetk::anomalize(
+                                              .date_var      = date, 
+                                              .value         = sum_val,
+                                              .iqr_alpha     = 0.05,
+                                              .max_anomalies = 0.20,
+                                              .message       = FALSE
+                                          )
+
+        
+anomalize_sum_val_paraguai |> timetk::plot_anomalies_decomp(.date_var = date,
+                                                   .interactive = TRUE,
+                                                   .title = "Valor mensal - Paraguai")
+
+anomalize_sum_val_russia |> timetk::plot_anomalies_decomp(.date_var = date,
+                                                   .interactive = TRUE,
+                                                   .title = "Valor mensal - Rússia")
+
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_decomp_vol
+#| fig-cap: 'Decomposição da série de volume total'
+#| layout-nrow: 2
+
+anomalize_sum_vol_paraguai <- data_paraguai |>  
+                                          timetk::anomalize(
+                                              .date_var      = date, 
+                                              .value         = sum_vol,
+                                              .iqr_alpha     = 0.05,
+                                              .max_anomalies = 0.20,
+                                              .message       = FALSE
+                                          )
+anomalize_sum_vol_russia <-  data_russia |>  
+                                          timetk::anomalize(
+                                              .date_var      = date, 
+                                              .value         = sum_vol,
+                                              .iqr_alpha     = 0.05,
+                                              .max_anomalies = 0.20,
+                                              .message       = FALSE
+                                          )
+
+
+anomalize_sum_vol_paraguai |> timetk::plot_anomalies_decomp(.date_var = date, 
+                                                   .interactive = TRUE, 
+                                                   .title = "Volume mensal - Paraguai")
+
+
+anomalize_sum_vol_russia |> timetk::plot_anomalies_decomp(.date_var = date, 
+                                                   .interactive = TRUE, 
+                                                   .title = "Volume mensal - Rússia")
+
+
+```
+A decomposição das séries permitem verificar que existe no caso do Paraguai uma componente sazonal relevante com a tendência nos últimos anos de aumento das importação por aquele país. Por outro lado, a Rússia claramente segue uma trajetória de queda, assim como os picos ocorridos parecem ser realmente anomalias.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_anomalize_plot_paraguai
+#| fig-cap: 
+#| - 'Detecção de anomalias - valor total - Paraguai'
+#| - 'Detecção de anomalias - volume total - Paraguai'
+#| layout-nrow: 2 
+
+
+anomalize_sum_val_paraguai |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Valor - Paraguai")
+
+
+anomalize_sum_vol_paraguai |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Volume - Paraguai")
+
+```
+
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-monthly_anomalize_plot_russia
+#| fig-cap: 
+#| - 'Detecção de anomalias - valor total - Rússia'
+#| - 'Detecção de anomalias - volume total - Rùssia'
+#| layout-nrow: 2 
+
+
+anomalize_sum_val_russia |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Valor - Rússia")
+
+
+anomalize_sum_vol_russia |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Volume - Rússia")
+
+```
+
+No caso da Rússia, de fato, outubro de 2009 e julho de 2013 foram meses em que foram detectadas anomalias, conforme esperado. Quanto ao Paraguai, o algoritmo identificou várias anomalias ao longo de todo período analisado, porém a maior parte ocorreu a partir de 2015.
+
+:::{.callout-note}
+As observações desta seção, juntamente com aquelas da seção anterior fornecem diversas informações interessantes sobre o fenômeno analisado,porém ainda não está completa, uma vez que as razões para o comportamento observado ainda não estão claras. Falaremos um pouco mais sobre isso na próxima seção. 
+:::
+

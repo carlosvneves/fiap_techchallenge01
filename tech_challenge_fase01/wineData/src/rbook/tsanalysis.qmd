@@ -20,14 +20,14 @@ tbl-cap-location: bottom
 source('utils.R')
 
 ```
-# Análise de Séries Temporais
+# Análise das séries temporais agregadas
 
 
 ::: {style="text-align: justify"}
 
 Para analisar o comportamento das séries temporais, o ideal é poder contar com o maior número de dados possível. Neste caso, é razoável optarmos por analisar as séries mensais ao invés das séries anuais. Inclusive, com as séries mensais é possível realizarmos a análise de curto-prazo e médio-prazo.
 
-Inicialmente iremos avaliar o comportamento das séries em termos agregados (soma de todos os países) para buscarmos _insights_ sobre o mercado como um todo. Posteriormente, realizaremos a análise considerando somente os 5 maiores importadores de vinhos brasileiros: Paraguai, Rússia, China, Estados Unidos, Espanha e China.
+Inicialmente iremos avaliar o comportamento das séries em termos agregados (soma de todos os países) para buscarmos _insights_ sobre o mercado como um todo. Posteriormente, realizaremos a análise considerando somente os 2 maiores importadores de vinhos brasileiros: Paraguai e Rússia.
 :::
 
 ## Análise das séries agregadas
@@ -51,20 +51,6 @@ data_exp_mc_by_date <- data_exp_mc  |>
                         dplyr::arrange(desc(date))
 
 
-# dados mensais para os 5 países mais relevantes
-data_exp_mc_by_date_top5 <- data_exp_mc  |> 
-                        filter(country %in% c('Paraguai',
-                                              'Rússia',
-                                              'Estados Unidos',
-                                              'Espanha',
-                                              'China')) |>
-                                        group_by(date) |> 
-                        summarise(sum_val = sum(value), 
-                                  sum_vol = sum(volume),
-                                  mean_val = mean(value),
-                                  mean_vol = mean(volume),
-                                  ) |> 
-                        arrange(desc(date))
 ```
 
 As séries de valor exportado mensal total permite identificar vales e picos como em março de 2009 e julho de 2013 (@fig-monthly_val_agg).
@@ -191,7 +177,7 @@ anomalize_sum_vol |> timetk::plot_anomalies_decomp(.date_var = date,
 
 
 Os gráficos da @fig-monthly_anomalize_plot-1 e @fig-monthly_anomalize_plot-2 permitem identicar as anomalias das séries. Enquanto na série de valors total foram identificadas 8 anomalias. Já na série de volume total from identificadas 25. Coincidem entre as séries as anomalias identificadas em dois meses de 2009, um em 2012 e três em 2013 (@tbl-monthly_anomalize_summary). 
-
+:::{#tbl-monthly_anomalize_summary}
 ```{r}
 #| echo: false
 #| message: false
@@ -213,7 +199,7 @@ DT::datatable(merge(dt_val, dt_vol),
                                'toLocaleDateString')
     
 ```
-
+:::
 
 ```{r}
 #| echo: false
@@ -261,7 +247,7 @@ As ordens dos processos em termos de $p$ e $q$ são definidas com base na análi
 
 Estabelecidos os conceitos e aplicações da ACF e da PACF, passemos à análise das séries de interesse.
 
-Primeiramente, utilizaremos a série sem as anomalias detectadas na seção anterior, pois assim os valores anômalos não irão interferir na modelagem. A @tbl-data_exp_mc_clean, a @fig-data_exp_mc_clean-1 e a fig-data_exp_mc_clean-2 mostram o conjunto de dados contendo as séries originais e aquelas resultantes da exclusão das anomalias.
+Primeiramente, utilizaremos a série sem as anomalias detectadas na seção anterior, pois assim os valores anômalos não irão interferir na modelagem. A @tbl-data_exp_mc_clean, a @fig-data_exp_mc_clean-1 e a @fig-data_exp_mc_clean-2 mostram o conjunto de dados contendo as séries originais e aquelas resultantes da exclusão das anomalias.
 
 :::
 
@@ -377,7 +363,7 @@ ggplotly(
 #| message: false
 #| warning: false
 #| layout-nrow: 2 
-#| label: fig-data_exp_mc_clean
+#| label: fig-data_exp_mc_clean_acf_pacf
 #| fig-cap: 'Valor exportado mensal (US\$) - ACF e PACF.'
 #| fig-subcap: 
 #| - "Valor total"
@@ -399,7 +385,7 @@ Claramente a @fig-data_exp_mc_clean-1 e @fig-data_exp_mc_clean-2 demonstram que 
 
 ::: {style="text-align: justify"}
 
-Para a série de *valor exportado* temos os gráficos da @fig-acf_pacf_total-1 e @fig-acf_pacf_total-2 de ACF e PACF, considerando 48 defasagens.
+Para a série de *valor exportado* temos os gráficos da @fig-data_exp_mc_clean_acf_pacf-1 e @fig-data_exp_mc_clean_acf_pacf-2 de ACF e PACF, considerando 48 defasagens.
 
 ```{r}
 #| echo: false
@@ -442,7 +428,7 @@ Porém, a inspeção visual é bastante limitada, o que nos motiva a aprofundar 
 [^exploratory_yearly-8]: da Silveira Bueno, Rodrigo de Losso.Econometria De Séries Temporais.Cengage Learning; 2ª Edição Revista E Atualizada (28 julho 2011),pp.47.
 
     
-## Teste de raiz unitária, quebras estruturais e modelos de previsão
+### Teste de raiz unitária, quebras estruturais e modelos de previsão
 
 ::: {style="text-align: justify"}
 Como ressaltamos na seção anterior, a estacionariedade é uma propriedade importante na análise de séries temporais.
@@ -459,7 +445,7 @@ Nas séries em questão, verificar se existe raiz unitária e, portanto, é nece
 [^exploratory_yearly-10]: Nielsen, Aileen.Practical Time Series Analysis: Prediction with Statistics and Machine Learning.O'Reilly Media; 1ª edição (19 novembro 2019).pp.85
 
     
-## Testes de raiz unitária
+#### Testes de raiz unitária
     
 ::: {style="text-align: justify"}
 
@@ -517,13 +503,17 @@ Neste sentido, a série não possui raiz unitária.
 
 [^exploratory_yearly-12]: https://en.wikipedia.org/wiki/KPSS_test
 
-## Testes de quebra estrutural
+### Testes de quebra estrutural
 
 ::: {style="text-align: justify"}
 
 A existência de quebras estruturais^[https://en.wikipedia.org/wiki/Structural_break#:~:text=Structural%20break%20tests,-A%20single%20break&text=For%20linear%20regression%20models%2C%20the,...%2CT%5D.] nas séries temporais além de serem eventual causa de existência de raiz unitária, também podem auxiliar a compreensão do fenômeno analisado, vez que indicam a existência, por exemplo, de alterações na tendência da série e, deste modo, podem ajudar a corroborar hipóteses levantadas por quem está realizando a análise.
                                      
 O iremos aplicar os métodos de Chow^[G. C. Chow. Tests of equality between sets of coefficients in two linear regressions. Econometrica,28:591–605, 1960], Zeileis^[A. Zeileis, F. Leisch, K. Hornik, and C. Kleiber. strucchange: An R package for testing for structural change in linear regression models. Journal of Statistical Software, 7(2):1–38, 2002.doi: 10.18637/jss.v007.i02] e Brown^[R. L. Brown, J. Durbin, and J. M. Evans. Techniques for testing the constancy of regression relationships over time. Journal of the Royal Statistical Society B, 37:149–163, 1975.]. Todos os testes estão implementados na biblioteca **strucchange** do **R**^[https://cran.r-project.org/web/packages/strucchangeRcpp/vignettes/strucchange-intro.pdf].
+
+O teste aplicado verifica se a média das séries mudou ao longo do tempo. Caso tenha mudado, este é também um indício de que a série não é estacionária. 
+
+As propriedades estatísticas de uma série temporal estacionária são constantes ao longo do tempo, como a média, a variância e a auto correlação.
              
 :::
 
@@ -548,26 +538,11 @@ ts_val <- ts(
   end = c(2022,12,01)
 )
 ```
-                                     
-                                     
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-chow_ts_val
-#| fig-cap: "Estatísticas do teste de quebras estruturais - valor total exportado em US$."
+ 
+ 
+ 
+O modelo de quebra estrutural baseado em minimos quadrados e na soma acumulada (OLS/CUSUM) permite a divisão da série em dois segmentos, ou seja, permite que seja identificada uma quebra estrutural. 
 
-
-fs <- Fstats(ts_val ~ 1)
-
-par(mfrow = c(1, 2))
-plot(fs, xlab = "Ano", title = "Estatística F")
-plot(fs,
-     pval = TRUE,
-     xlab = "Ano",
-     title = "p-valor")
-```
-                                     
 ```{r}
 #| echo: false
 #| message: false
@@ -575,10 +550,55 @@ plot(fs,
 #| label: fig-efp_ts_val
 #| fig-cap: "Teste de flutuação empírica para quebras estruturais - valor total exportado em US$."
 
-plot(efp(ts_val ~ 1, data = ts_val, type =
-           "fluctuation"))
+ocus <- efp(ts_val ~ 1, data = ts_val, type="OLS-CUSUM")
+bound.ocus <- boundary(ocus, alpha=0.05)
+bp.ts_val_ocus <- breakpoints(Fstats(ts_val~1))
+
+
+plot(ocus, boundary = FALSE)
+lines(bound.ocus, col = 4)
+lines(-bound.ocus, col = 4)
+lines(bp.ts_val_ocus)
+
 ```
+
+O teste OLS/CUSUM mostra que o pico em que o processo ultrapassou a banda superior em março de 2015. Neste período existe evidência de que tenha ocorrido uma quebra estrutural (@fig-efp_ts_val).
+
+Ainda, o teste de Chow mostra que a quebra estrutural é estatisticamente significativa, pois o valor de F é muito maior que 1, e o p-valor é menor que 0,05, indicando assim que a $H_0$ de inexistência de quebra estrutural pode ser rejeitada[^https://www.jstatsoft.org/article/view/v007i02].
                                      
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: summ_breakpoints_ts_val
+sctest(ts_val~1, type = "Chow")
+```    
+
+Podemos então partir para um outro modelo em que permitimos a ocorrência de mais de uma quebra estrutural, o qual é baseado na estística F (*F Statistics*). 
+                                                                       
+                                     
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-chow_ts_val
+#| fig-cap: "Estatísticas do teste de quebras estruturais - valor total exportado em US$."
+#| layout-ncol: 3 
+
+fs <- Fstats(ts_val ~ 1)
+bp.ts_val <- breakpoints(ts_val ~ 1)
+
+
+
+#par(mfrow = c(1, 3))
+plot(fs, xlab = "Ano")
+plot(fs,
+     pval = TRUE,
+     xlab = "Ano")
+plot(bp.ts_val, xlab="Número de pontos de quebra")
+```
+Como podemos ver na @fig-chow_ts_val-3, o modelo nos sugere a existência de três pontos de quebra (valor mais baixo de BIC), com as quebras estruturais podendo ser identificadas na @fig-breakpoints_ts_val em: abril de 2005, setembro de  2008 e agosto de 2014.
+
 ```{r}
 #| echo: false
 #| message: false
@@ -587,19 +607,8 @@ plot(efp(ts_val ~ 1, data = ts_val, type =
 #| fig-cap: "Identificação gráfica de quebras estruturais - valor total exportado em US$."
 
 plot(fs)
-lines(breakpoints(fs))
+lines(bp.ts_val)
 ```
-                                     
-                                     
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| label: summ_breakpoints_ts_val
-sctest(ts_val ~ 1, type = "Chow")
-                               
-```
-                               
 :::
 
 ### Série de volume exportado em L (1L = 1kg) 
@@ -607,7 +616,7 @@ sctest(ts_val ~ 1, type = "Chow")
 ::: {style="text-align: justify"}
 
 
-Os resultados dos testes abaixo **não são** estatisticamente significativos, porém foi identificada existe uma quebra estrutural na série de volume exportado no ano de 2003. 
+Os testes de quebra estrutural identificaram inicialmente a existência de uma quebra em julho de 2003. Mas podemos observar que o pico não ultrapassa significativamente a banda superior. 
 
 ```{r}
 #| echo: false
@@ -628,25 +637,51 @@ end = c(2022,12,01)
 #| echo: false
 #| message: false
 #| warning: false
-#| label: fig-chow_ts_vol
-#| fig-cap: "Estatísticas do teste de quebras estruturais - volume total exportado em L."
+#| label: fig-efp_ts_vol
+#| fig-cap: "Teste de flutuação empírica para quebras estruturais - volume total exportado em L."
+
+ocus <- efp(ts_vol ~ 1, data = ts_vol, type="OLS-CUSUM")
+bound.ocus <- boundary(ocus, alpha=0.05)
+bp.ts_vol_ocus <- breakpoints(Fstats(ts_vol~1))
 
 
-fs <- Fstats(ts_vol ~ 1)
-
-par(mfrow = c(1, 2))
-plot(fs, xlab = "Ano", title = "Estatística F")
-plot(fs, pval = TRUE, xlab = "Ano", title = "p-valor")
+plot(ocus, boundary = FALSE)
+lines(bound.ocus, col = 4)
+lines(-bound.ocus, col = 4)
+lines(bp.ts_vol_ocus)
 ```
+O teste de Chow, por seu turno, indica que a quebra identificada não é estatisticamente significativa. O valor de F é maior que 1, porém o p-valor permite rejeitar a $H_0$ de existência de quebras estruturais ao nível de 5% de significância.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: summ_breakpoints_ts_vol
+sctest(ts_vol ~ 1, type = "Chow")
+```
+
+Em contrapartida, utilizando o modelo que permite mais de dois segmentos de reta na série, foi identificada existência de três quebras estruturais: julho de 2003, abril de 2012 e setembro de 2015.
 
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
-#| label: fig-efp_ts_vol
-#| fig-cap: "Teste de flutuação empírica para quebras estruturais - volume total exportado em L."
+#| label: fig-chow_ts_vol
+#| fig-cap: "Estatísticas do teste de quebras estruturais - volume total exportado em L."
+#| layout-ncol: 3 
 
-plot(efp(ts_vol ~ 1, data = ts_vol, type="fluctuation"))
+fs <- Fstats(ts_vol ~ 1)
+bp.ts_vol <- breakpoints(ts_vol ~ 1)
+
+
+
+plot(fs, xlab = "Ano")
+plot(fs,
+     pval = TRUE,
+     xlab = "Ano")
+plot(bp.ts_vol, xlab="Número de pontos de quebra")
+
+
 ```
 
 ```{r}
@@ -658,102 +693,237 @@ plot(efp(ts_vol ~ 1, data = ts_vol, type="fluctuation"))
 
 
 plot(fs)
-lines(breakpoints(fs))
+lines(bp.ts_vol)
+
 ```
 
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: summ_breakpoints_ts_vol
-sctest(ts_vol ~ 1, type = "Chow")
-```
+
 :::
 
-##  Modelos preditivos
+::: {.callout-note}
+É importante notar que os testes ademais de apontarem para a existência de fatores externos que alteraram a trajetória das séries, reforçam a hipótese de que as séries não são estacionárias, o que pode ser decorrente do efeito das componentes de tendência e sazonalidade. Vale ainda ressaltar que, mesmo tendo sido retiradas da série as anomalias, isto não foi suficiente para fazer com que a série se tornasse estacionária.
+:::
+
+::: {.callout-caution}
+Quando a série não é estacionária, não é recomendável realizar qualquer análise de correlação com outras séries sem que haja o devido tratamento da série e/ou o uso de métodos mais robustos de análise, visto que a existência de raizes unitárias (causadas por quebras estruturais, por exemplo) favorece a ocorrência das chamadas correlações espúrias. Existem vários exemplos de tais correlações que podem ser visualizados na página [Spurious Correlations](http://www.tylervigen.com/spurious-correlations).
+:::
+
+###  Modelos preditivos
+
+
+
+#### Modelos ARIMA
+
 ::: {style="text-align: justify"}
+Os testes das seções anteriores indicam que as séries não são estacionárias. Logo, o uso de modelos de previsão univariados do tipo $ARIMA$ ou $SARIMA$ (para os casos em que há sazonalidade) podem ser adequados para a a modelagem das séries em questão, desde que se proceda com a transformação das séries, seja por meio da aplicação de $log$, seja pela diferenciação da série.
 
-https://business-science.github.io/modeltime/articles/getting-started-with-modeltime.html
+Para a construção do primeiro modelo preditivo, utilizaremos o algoritmo desenvolvido por Rob J. Hyndman e Yeasmin Khandakar^[https://www.jstatsoft.org/article/view/v027i03] e implementado em **R** na biblioteca **forecast**. O algoritmo define automaticamente os parâmetros do modelo ARIMA de modo que os resíduos sejam independentes. Portanto: 
 
-Os testes das seções anteriores indicam que modelos de previsão univariados do tipo $ARIMA$ ou $SARIMA$ (para os casos em que há sazonalidade) podem ser adequados para a modelagem das séries em questão.
+$$
+\begin{align}
+ARIMA(p,d,q)(P,D,Q)_m \\ 
+\textrm{tal que:}\\ \textrm{p-ordem do modelo autorregressivo}\\ \textrm{d-ordem de diferenciação}\\ \textrm{q-ordem da média-móvel}\\ \textrm{P, D, Q- parte sazonal do modelo}\\ \textrm{m-número de observações por ano}
+\end{align}
+$$
 
-Para a construção do modelo preditivo, utilizaremos o algoritmo desenvolvido por Rob J. Hyndman e Yeasmin Khandakar^[https://www.jstatsoft.org/article/view/v027i03] e implementado em **R** na biblioteca **forecast**. O algoritmo define automaticamente os valores $p$, $q$ e $d$ do modelo $ARIMA(p,d,q)$ de modo que os resíduos sejam independentes.
+A parte sazonal do modelo consiste em termos que são similares às componentes não-sazonais do modelo, mas envolvem a defasagem do período sazonal.
 
-Para a série de valor exportado, o modelo selecionado pelo algoritmo é o $ARIMA(2,1,0)$, como pode ser verificado abaixo.
+O processo de construção de modelos preditivos pode inclusive auxiliar na melhor compreensão do processo gerador de dados das séries. Contudo, não será realizada uma discussão aprofundada sobre os modelos, uma vez que está fora do escopo deste trabalho.
 
+Para a série de valor exportado, o modelo selecionado pelo algoritmo é o $ARIMA(0,1,1)(0,0,1)_{12}$, ou seja, é integrado de ordem 1 ($p = 1$), média-móvel com $q=1$ e com compo, corroborando a hipótese de que a série é não estacionária. 
+
+Quanto à série de volume exportado, o modelo ajustado foi o $ARIMA(2,0,2)(2,0,0)_{12}$. Neste caso, o algoritmo não indicou a diferenciação da série, mas além de ter identificado a componente sazonal com ordem 2, é também um modelo autorregressivo e média-móvel de ordem 2.
+
+:::
 ```{r}
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
+#| cache: true
 #| label: fig-arima-model-ts_val
-#| fig-cap: "Modelo auto-arima para o valor total exportado em US$."
+#| fig-cap: 
+#|  -"Modelo auto-arima para o valor total exportado em US$"
+#|  -"Modelo auto-arima para o volume total exportado em Kg.L" 
+#| layout-nrow: 2
 
 
-fit <- forecast::auto.arima(ts_val)
-forecast::checkresiduals(fit)
+ts_val <- ts(data_exp_mc_by_date_clean |> 
+dplyr::select(sum_val_clean),
+frequency = 12, 
+start = c(2000,01,01), 
+end = c(2022,12,01)
+)
+
+ts_vol <- ts(data_exp_mc_by_date_clean |> 
+dplyr::select(sum_vol_clean),
+frequency = 12, 
+start = c(2000,01,01), 
+end = c(2022,12,01)
+)
+
+
+fit_ts_val <- forecast::auto.arima(ts_val)
+forecast::checkresiduals(fit_ts_val)
+
+fit_ts_vol <- forecast::auto.arima(ts_vol)
+forecast::checkresiduals(fit_ts_vol)
+
 ```
+ 
+#### Outros modelos
+
+::: {style="text-align: justify"}
+
+ A seguir, para enriquecermos a análise e passarmos para a elaboração de previsões sobre o mercado de exportação de vinhos brasileiros, vamos construir dois outros modelos da biblioteca biblioteca [modeltime](https://business-science.github.io/modeltime/):
+ - Arima boost (auto-arima XGBoost), e
+ - PROPHET model.
+
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
 library(xgboost)
 library(tidymodels)
 library(modeltime)
 library(tidyverse)
 library(timetk)
 
-ts_val <- data_exp_mc_by_date_clean |> 
-                               select(c('date','sum_val_clean')) |> 
+ts_val <- data_exp_mc_by_date_clean |>
+                               select(c('date','sum_val_clean')) |>
+                               arrange(date)
+ts_vol <- data_exp_mc_by_date_clean |>
+                               select(c('date','sum_vol_clean')) |>
                                arrange(date)
 
-
-splits <- initial_time_split(ts_val, prop = 0.85)
-
-# Model 1: auto_arima ----
-model_fit_arima_no_boost <- arima_reg()  |> 
-    set_engine(engine = "auto_arima") |> 
-    fit(sum_val_clean ~ date, data = training(splits))
+splits_val <- initial_time_split(ts_val, prop = 0.9)
+splits_vol <- initial_time_split(ts_vol, prop = 0.9)
+# 
+# # Model 1: auto_arima ----
+# model_fit_arima_no_boost <- arima_reg()  |> 
+#     set_engine(engine = "auto_arima") |> 
+#     fit(sum_val_clean ~ date, data = training(splits))
 
 ```
 
 
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| cache: true
+
 # Model 2: arima_boost ----
-model_fit_arima_boosted <- arima_boost(
+model_fit_arima_boosted_val <- arima_boost(
     min_n = 2,
     learn_rate = 0.025
 ) |> 
     set_engine(engine = "auto_arima_xgboost") %>%
     fit(sum_val_clean ~ date + as.numeric(date) + factor(month(date, label = TRUE), ordered = F),
-        data = training(splits))
+        data = training(splits_val))
+
+
+model_fit_arima_boosted_vol <- arima_boost(
+    min_n = 2,
+    learn_rate = 0.02,
+    non_seasonal_ma = 2
+) |> 
+    set_engine(engine = "auto_arima_xgboost") %>%
+    fit(sum_vol_clean ~ date + as.numeric(date) + factor(month(date, label = TRUE), ordered = F),
+        data = training(splits_vol))
+
 
 ```
+
+
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| cache: true
 
 # Model 4: prophet ----
-model_fit_prophet <- prophet_reg() %>%
+model_fit_prophet_val <- prophet_reg() %>%
     set_engine(engine = "prophet") %>%
-    fit(sum_val_clean ~ date, data = training(splits))
+    fit(sum_val_clean ~ date, data = training(splits_val))
+
+
+model_fit_prophet_vol <- prophet_reg() %>%
+    set_engine(engine = "prophet") %>%
+    fit(sum_vol_clean ~ date, data = training(splits_vol))
+
 
 ```
 
-```{r}
+Para a série de valor exportado, seguem os detalhes dos modelos calculados:  
 
-models_tbl <- modeltime_table(
-    model_fit_arima_no_boost,
-    model_fit_arima_boosted,
-    model_fit_prophet
+:::{#tbl-models-val}
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-models-val
+#| cache: true
+
+models_tbl_val <- modeltime_table(
+    model_fit_arima_boosted_val,
+    model_fit_prophet_val
 )
 
-models_tbl
+calibration_tbl_val <- models_tbl_val %>%
+    modeltime_calibrate(new_data = testing(splits_val))
+
+
+
+
+
+ models_tbl_val$.model[1]
+
+ models_tbl_val$.model[2]
+
+
+
 ```
+Modelos para a série de valor exportado.
+:::
+Para a série de volume exportado, seguem os detalhes dos modelos calculados:  
+
+:::{#tbl-models-vol}
 ```{r}
-calibration_tbl <- models_tbl %>%
-    modeltime_calibrate(new_data = testing(splits))
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-models-vol
+#| cache: true
+
+models_tbl_vol <- modeltime_table(
+    model_fit_arima_boosted_vol,
+    model_fit_prophet_vol
+)
+
+calibration_tbl_vol <- models_tbl_vol %>%
+    modeltime_calibrate(new_data = testing(splits_vol))
+
+
+
+models_tbl_vol$.model[1]
+models_tbl_vol$.model[2]
 ```
+Modelos para a série de volume exportado.
+
+:::
 
 ```{r}
+#| cache: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Série temporal de valor exportado observada e previsões por meio dos modelos ARIMA e PROPHET"
+#| label: fig-calibration_tbl_val
   
-calibration_tbl %>%
+calibration_tbl_val %>%
     modeltime_forecast(
-        new_data    = testing(splits),
+        new_data    = testing(splits_val),
         actual_data = ts_val
     ) %>%
     plot_modeltime_forecast(
@@ -763,45 +933,108 @@ calibration_tbl %>%
 ```
 
 ```{r}
-calibration_tbl %>%
+#| cache: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Série temporal de volume exportado observada e previsões por meio dos modelos ARIMA e PROPHET"
+#| label: fig-calibration_tbl_vol
+  
+calibration_tbl_vol %>%
+    modeltime_forecast(
+        new_data    = testing(splits_vol),
+        actual_data = ts_vol
+    ) %>%
+    plot_modeltime_forecast(
+      .legend_max_width = 25, # For mobile screens
+      .interactive      = TRUE
+    )
+```
+
+
+::: {#tbl-calibration_tbl_val}
+```{r}
+#| cache: true
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-calibration_tbl_val
+#| tbl-cap: "Métricas de acurácia - valor exportado"
+
+calibration_tbl_val %>%
     modeltime_accuracy() %>%
     table_modeltime_accuracy(
         .interactive = TRUE
     )
 ```
+Métricas de acurácia - valor exportado
+:::
 
+As métricas da @tbl-calibration_tbl_val mostram que o modelo que apresentou o melhor ajuste foi o modelo PROPHET, com os menores erros quando comparado ao modelo ARIMA.
+
+
+::: {#tbl-calibration_tbl_vol}
+```{r}
+#| cache: true
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-calibration_tbl_vol
+#| tbl-cap: "Métricas de acurácia - volume exportado"
+
+calibration_tbl_vol %>%
+    modeltime_accuracy() %>%
+    table_modeltime_accuracy(
+        .interactive = TRUE
+    )
+```
+Métricas de acurácia - volume exportado
+:::
+
+As métricas da @tbl-calibration_tbl_vol,por outro lado, mostram que o modelo ARIMA foi aquele que apresentou o melhor ajuste.
+
+A seguir temos a @fig-refit_tbl_val e @fig-refit_tbl_vol, pós refit, com a previsão para as séries até dezembro 2025. Em ambos os casos é interessante notarmos que os modelos indicam certa queda no valor e no volume exportados. É evidente que uma análise mais aprofundada, inclusive multivariada, poderia trazer resultados diferentes e até mais interessantes. Porém isto está fora do escopo deste trabalho. 
 
 ```{r}
+#| cache: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Refit da série original e previsão para três anos - valor exportado"
+#| label: fig-refit_tbl_val
 
-refit_tbl <- calibration_tbl %>%
+refit_tbl_val <- calibration_tbl_val %>%
     modeltime_refit(data = ts_val)
 
-refit_tbl %>%
+refit_tbl_val %>%
     modeltime_forecast(h = "3 years", actual_data = ts_val) %>%
     plot_modeltime_forecast(
-      .legend_max_width = 25, # For mobile screens
+      .legend_max_width = 15, # For mobile screens
+      .interactive      = TRUE
+    )
+
+```
+
+```{r}
+#| cache: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Refit da série original e previsão para três anos - volume exportado"
+#| label: fig-refit_tbl_vol
+
+refit_tbl_vol <- calibration_tbl_vol %>%
+    modeltime_refit(data = ts_vol)
+
+refit_tbl_vol %>%
+    modeltime_forecast(h = "3 years", actual_data = ts_vol) %>%
+    plot_modeltime_forecast(
+      .legend_max_width = 12, # For mobile screens
       .interactive      = TRUE
     )
 
 ```
 
 
-
-A estatística do teste é $Q=5,5411$ e o p-valor é $0,1362$, que é muito maior que 0,05. Portanto, $H_0$ do teste não é rejeitada e os resíduos do modelo são independentes. Interessante notar que o modelo $ARIMA(2,1,0)$ vai ao encontro das conclusões dos testes realizados quanto aos valores de $p=2$ e $q=0$, exceto pelo valor de $d=1$, o qual equivale à ordem de integração 1. A necessidade de diferenciar a série para se obter a estacionariedade se deve à existência da quebra estrutural identificada na seção [Testes de quebra estrutural].
-
-Já para a série de volume exportado, o modelo selecionado pelo algoritmo é o $ARIMA(0,0,1)$, como pode ser verificado abaixo.
-
-```{r}
-#| echo: true
-#| message: false
-#| warning: false
-#| label: fig-arima-model-ts_vol
-#| fig-cap: "Modelo auto-arima para o volume total exportado em L."
-
-fit <- forecast::auto.arima(ts_vol)
-forecast::checkresiduals(fit)
-```
-
-A estatística do teste é $Q=6,6192$ e o p-valor é $0,1574$, que é muito maior que 0,05. Portanto, $H_0$ do teste não é rejeitada e os resíduos do modelo são independentes. Neste caso, o modelo $ARIMA(0,0,1)$ gerado automaticamente vai ao encontro dos testes realizados na seções anteriores.
 
 :::
