@@ -87,36 +87,36 @@ Já o peso líquido da mercadoria permite que mesmo produtos com quqantidades es
 ## Ferramentas
 
 ::: {style="text-align: justify"}
-A partir dos dados,
 
--   Elaboração de relatório
-    -   Linguagem R:
-        -   Bibliotecas:
-            -   tidyverse
-            -   etc.
--   Elaboração de dashboard
-    -   Linguagem Python:
-        -   Bibliotecas:
-            -   Pandas;
-            -   Streamlit;
-            -   Plotly;
-            -   etc.
--   opções de ferramentas:
-    -   https://ipyvizzu-story.vizzuhq.com/latest/
-    -   http://gsap.com/
+Esta página/relatório foi elaborada utilizando o quarto como ferramenta de edição e publicação. A análise foi desenvolvida utilizando a linguagem R e algumas das inúmeras bibliotecas disponíveis no seu ecosistema:
+-Bibliotecas:
+    -   tidyverse
+    -   timetk
+    -   tidyverse
+    -   readr
+    -   lubridate
+    -   knitr
+    -   kableExtra
+    -   tseries
+    -   dplyr
+    -   ggplot2
+    -   strucchange
+    -   urca
+    -   ggthemes
+    -    plotly
+    -   treemapify
+    -   lmtest
+    -   datatable
 :::
 
-
 # Estrutura do relatório
-
 
 ::: {style="text-align: justify"}
 Este relatório está dividido da seguinte forma:
 
-  -   [Contextualização: produção de vinho no Rio Grande do Sul](): breve discussão sobre a história e o estado atual da produção de vinhos na região;
-  -   [Análise Exploratória de Dados](): principais informações que podem ser extraídas dos dados levantados sobre a exportação de vinhos, inclusive considerando a eventual interferência de fatores externos;
-  -   [Análise detalhada](): explicação mais detalhada sobre as técnicas empregadas para a produção das informações apresentadas na seção [Análise Exploratória de Dados];
-  -   [Conclusões](): apresentação das principais conclusões extraídas da análise de dados.
-
+-   [Contextualização: produção de vinho no Rio Grande do Sul](context.html): breve discussão sobre a história e o estado atual da produção de vinhos na região;
+-   [Análise Exploratória de Dados](explore.html): principais informações que podem ser extraídas dos dados levantados sobre a exportação de vinhos;
+-   [Análise das Séries Temporais agregadas](tsanalysis.html): análise detalhada sobre o comportamento das séries temporais de valor exportado e volume exportado;
+-   [Análise das Séries Temporais - Paraguai e Rússia](tsanalysistop.html): análise sobre o comportamento das séries temporais de valor exportado e volume exportado em relação aos dois países que se destacam;
+-   [Análise das Séries Temporais - Interação com fatores externos](exogenous.html): análise sobre o comportamento das séries temporais de valor exportado e volume exportado considerando a eventual interação com outras variáveis de interesse;
 :::
-

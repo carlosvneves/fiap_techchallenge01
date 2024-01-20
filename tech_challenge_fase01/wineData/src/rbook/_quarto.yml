@@ -4,7 +4,21 @@ project:
 
 toc: true 
 number-sections: true
-
+crossref:
+  custom:
+    - kind: float
+      reference-prefix: Video
+      key: vid
+    - kind: float
+      reference-prefix: Figura
+      key: fig
+    - kind: float
+      reference-prefix: Tabela
+      key: tbl
+    - kind: float
+      reference-prefix: Seção
+      key: sec
+      
 book:
   title: "Análise das Exportações de Vinhos do Brasil - Techchallenge 01 - 3DTAT - FIAP"
   author: "Carlos Eduardo Veras Neves"
@@ -14,7 +28,8 @@ book:
     - context.qmd
     - explore.qmd
     - tsanalysis.qmd
-    - tsanalysis-top5.qmd
+    - tsanalysistop.qmd
+    - exogenous.qmd
     #- exploratory_yearly.qmd
     # - exploratory_monthly.qmd
     # - analysis.qmd

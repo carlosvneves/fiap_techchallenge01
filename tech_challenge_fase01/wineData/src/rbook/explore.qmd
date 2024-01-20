@@ -12,7 +12,7 @@ tbl-cap-location: bottom
 }
 ```
 
-# Análise exploratória 
+# Análise exploratória {#sec-explore}
 
 ::: {style="text-align: justify"}
 <!--- begin section --->
@@ -443,14 +443,14 @@ max_vol_perc <- round(max(data_exp_yc_by_country_sum_no_out$perc_vol),0)
 ```
 
 
-A @tbl-data_yc_by_country_sum_noout, @fig-treemap_agg_by_country_val-1 e @fig-treemap_agg_by_country_val-2 mostram que Paraguai e Rússia foram os principais destinos das exportações de vinhos tanto em termos de valor exportado, como em termos de volume exportado entre 2000 e 2022. O valor exportado para o Paraguai foi de 58 milhões de US\$, equivalente a corresponde a aproximadamente 37% do valor total exportado. Por outro lado, a Rússia é a líder em termos de volume exportado com aproximadamente 60 milhões de Kg.L e 43%. O indicador de US\$/Kg.L mostra que o Paraguai é um destino melhor que a Rússia, pois 1,18 > 0,44. 
+A @tbl-data_yc_by_country_sum_noout, @fig-treemap_agg_by_country_val-1 e @fig-treemap_agg_by_country_val-2 mostram que Paraguai e Rússia foram os principais destinos das exportações de vinhos tanto em termos de valor exportado, como em termos de volume exportado entre 2000 e 2022. O valor exportado para o Paraguai foi de `r max_val` milhões de US\$, equivalente a corresponde a aproximadamente `r max_val_perc` do valor total exportado. Por outro lado, a Rússia é a líder em termos de volume exportado com aproximadamente `r max_vol` milhões de Kg.L e `r max_vol_perc`. O indicador de US\$/Kg.L mostra que o Paraguai é um destino melhor que a Rússia, pois 1,18 > 0,44. 
 
 ## Os 15 maiores importadores de vinhos do Brasil
 
 ```{r}
 #| echo: false
 #| warning: false
-#| label: 'fig-exp-yc-by-country-sum'
+#| label: fig-exp-yc-by-country-sum
 #| layout-nrow: 2
 #| fig-cap: 
 #|   - 'Top 15 maiores importadores de vinhos do Brasil em milhões de US$ totais'
@@ -626,7 +626,7 @@ list_countries <- toString(head(data_exp_yc_by_country_sum_no_out$country, 15)[-
 
 ```
 
-A comparação entre os dados da @fig-data_yc_mean_by_country e da @fig-exp-yc-by-country-sum' demonstra que existem apenas três países que não figuram no "top 15" países em ambos os casos: {list_countries}.
+A comparação entre os dados da @fig-data_yc_mean_by_country-1 e da @fig-exp-yc-by-country-sum-1 demonstra que existem apenas três países que não figuram no "top 15" países em ambos os casos: `r list_countries`.
 
 :::
 

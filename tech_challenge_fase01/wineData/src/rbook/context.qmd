@@ -14,9 +14,18 @@ source('utils.R')
 
 ```
 
-# Contextualização
+# Contextualização {#sec-context}
 
 [![](sunrise-landscape-wet-on-wet-watercolor-technique-vine-trees-laden-with-grapes-leading-to-the-hori.png){fig-align="center"}](playground.com)
+
+
+::: {style="text-align: justify"}
+
+Embora as regiões Nordeste e Sudeste produzam uva, essa produção é quase exclusivamente da fruta _in natura_. No Rio Grande do Sul, o grosso da produção vai para o fabrico de vinho e suco. O estado é responsável por 90% da produção nacional de vinho e suco de uva, emboa produza apenas 60% dessa fruta no país[^S. Klein, Herbert; Luna, V. Francisco (2020). Alimentando o Mundo - O surgimento da moderna economia agrícola no Brasil. FGV Editora]. 
+
+Nesta seção apresentaremos um pouco da história e do contexto da produção de uvas e vinhos no Rio Grande do Sul.
+
+:::
 
 ## História da produção de vinhos na Região Sul do Brasil
 
@@ -115,7 +124,7 @@ Do total de produtos industrializados, 42% são vinhos de mesa e 49% são sucos 
 
 Conforme o artigo "Exportações de vinhos brasileiros - uma pesquisa sobre o crescimento nas exportações de vinhos e espumantes brasileiros para a china"[^context-7], vários aspectos políticos, econômicos, sociais, demográficos, tecnológicos, ambientais e legais favoreceram o comércio internacional de vinhos brasileiros (especialmente para a China).
 
-Por exemplo, do ponto de vista tecnológico, o artigo cita avanços como;
+Do ponto de vista tecnológico, o artigo cita avanços como:
 
 - Introdução de sistemas avançados de gestão de vinhedos e técnicas de agricultura de precisão, como sensoriamento remoto e tecnologia GPS, para otimizar o cultivo de uvas e melhorar o rendimento e a qualidade das uvas;
 

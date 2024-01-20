@@ -20,7 +20,7 @@ tbl-cap-location: bottom
 source('utils.R')
 
 ```
-# Análise das séries temporais agregadas
+# Análise das séries temporais agregadas {#sec-tsexplore}
 
 
 ::: {style="text-align: justify"}
@@ -271,6 +271,8 @@ data_exp_mc_by_date_clean <- data_exp_mc_by_date |>
   select(c(date, sum_val, sum_vol, sum_val_clean, observed_clean)) |>
   rename(sum_vol_clean = observed_clean)
 
+save(data_exp_mc_by_date_clean,file='data_exp_mc_by_date_clean.RData')
+
 DT::datatable(
   data_exp_mc_by_date_clean,
   filter = "bottom",
@@ -455,6 +457,11 @@ Primeiro aplicaremos os testes às séries em nível e, caso seja necessário, p
 
 O resultado a seguir se referece à aplicação dos testes ADF e KPSS à série de valor exportado, considerando um modelo com tendência considerando o observado em @fig-monthly_decomp_val e @fig-monthly_decomp_vol.
 
+
+::: {.callout-note appearance="simple"}
+
+#### Resultado do teste:
+
 ```{r}
 #| echo: true
 #| message: false
@@ -470,11 +477,17 @@ ts <- ts(data_exp_mc_by_date_clean |>
 ur_test(ts, type_adf = "trend", type_kpss = "tau")
 ```
 
+:::
+
 No teste ADF o p-valor mostra que a hipótese $H_0$ **pode ser rejeitada** considerando 5% de nível de significância - 0,01 \< 0,05 e o módulo das estatísticas $\tau_3$, $\phi_2$ e $\phi_3$ é maior que o módulo dos valores críticos.
 No teste KPSS o resultado indica que a hipótese $H_0$ **pode ser rejeitada** a 5% de significância, visto que 0,089 \< 0,146.
 Os resultados dos testes são contraditórios e, em princípio poderíamos dizer que a série é estácionária em primeira diferença, ou seja, . Por outro lado, a rejeição da hipótese nula no KPSS se deu por uma pequena diferença em relação ao valor crítico. Mais adiante poderemos nos certificar de que a série não possui raiz unitária.
 
 Abaixo está o resultado dos testes de raiz unitária para a série de volume exportado.
+
+::: {.callout-note appearance="simple"}
+
+#### Resultado do teste:
 
 ```{r}
 #| echo: true
@@ -492,6 +505,7 @@ ts <- ts(data_exp_mc_by_date_clean |>
 
 ur_test(ts, type_adf = "drift", type_kpss = "mu")
 ```
+:::
 
 No teste ADF o p-valor mostra que a hipótese $H_0$ **pode ser rejeitada** considerando 5% de nível de significância, pois 0,01 \< 0,05 e o módulo das estatísticas $\tau_2$ e $\phi_1$ é maior que o módulo dos valores críticos.
 No teste KPSS o resultado indica que a hipótese $H_0$ **não pode ser rejeitada** a 5% de significância, visto que 0,203 \< 0,463.
@@ -562,10 +576,14 @@ lines(bp.ts_val_ocus)
 
 ```
 
-O teste OLS/CUSUM mostra que o pico em que o processo ultrapassou a banda superior em março de 2015. Neste período existe evidência de que tenha ocorrido uma quebra estrutural (@fig-efp_ts_val).
+O teste OLS/CUSUM mostra que o processo ultrapassou a banda superior logo no início do período, e atinge seu  pico em março de 2015. Assim, a série apresenta tanto evidências de não-estacionariedade, como de existência de quebras estruturais (@fig-efp_ts_val).
 
 Ainda, o teste de Chow mostra que a quebra estrutural é estatisticamente significativa, pois o valor de F é muito maior que 1, e o p-valor é menor que 0,05, indicando assim que a $H_0$ de inexistência de quebra estrutural pode ser rejeitada[^https://www.jstatsoft.org/article/view/v007i02].
-                                     
+
+
+::: {.callout-note appearance="simple"}
+
+#### Resultado do teste:                                     
 ```{r}
 #| echo: false
 #| message: false
@@ -573,6 +591,7 @@ Ainda, o teste de Chow mostra que a quebra estrutural é estatisticamente signif
 #| label: summ_breakpoints_ts_val
 sctest(ts_val~1, type = "Chow")
 ```    
+:::
 
 Podemos então partir para um outro modelo em que permitimos a ocorrência de mais de uma quebra estrutural, o qual é baseado na estística F (*F Statistics*). 
                                                                        
@@ -652,6 +671,10 @@ lines(bp.ts_vol_ocus)
 ```
 O teste de Chow, por seu turno, indica que a quebra identificada não é estatisticamente significativa. O valor de F é maior que 1, porém o p-valor permite rejeitar a $H_0$ de existência de quebras estruturais ao nível de 5% de significância.
 
+
+::: {.callout-note appearance="simple"}
+
+#### Resultado do teste:
 ```{r}
 #| echo: true
 #| message: false
@@ -659,6 +682,7 @@ O teste de Chow, por seu turno, indica que a quebra identificada não é estatis
 #| label: summ_breakpoints_ts_vol
 sctest(ts_vol ~ 1, type = "Chow")
 ```
+:::
 
 Em contrapartida, utilizando o modelo que permite mais de dois segmentos de reta na série, foi identificada existência de três quebras estruturais: julho de 2003, abril de 2012 e setembro de 2015.
 
@@ -669,6 +693,7 @@ Em contrapartida, utilizando o modelo que permite mais de dois segmentos de reta
 #| label: fig-chow_ts_vol
 #| fig-cap: "Estatísticas do teste de quebras estruturais - volume total exportado em L."
 #| layout-ncol: 3 
+#| cache: true
 
 fs <- Fstats(ts_vol ~ 1)
 bp.ts_vol <- breakpoints(ts_vol ~ 1)
@@ -763,10 +788,10 @@ end = c(2022,12,01)
 
 
 fit_ts_val <- forecast::auto.arima(ts_val)
-forecast::checkresiduals(fit_ts_val)
+#forecast::checkresiduals(fit_ts_val)
 
 fit_ts_vol <- forecast::auto.arima(ts_vol)
-forecast::checkresiduals(fit_ts_vol)
+#forecast::checkresiduals(fit_ts_vol)
 
 ```
  
@@ -782,6 +807,7 @@ forecast::checkresiduals(fit_ts_vol)
 #| echo: false
 #| message: false
 #| warning: false
+#| cache: true
 
 library(xgboost)
 library(tidymodels)

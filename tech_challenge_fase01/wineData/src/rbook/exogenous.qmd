@@ -1,0 +1,777 @@
+---
+code-fold: true
+editor: 
+  markdown: 
+    wrap: sentence
+tbl-cap-location: bottom
+---
+
+```{r import_libs}
+#| echo: false
+#| message: false
+#| warning: false
+
+source('utils.R')
+
+```
+
+# Análise de Séries Temporais - Interação com fatores externos {#sec-exogenous}
+
+::: {style="text-align: justify"}
+
+Nas seções @sec-tsexplore e @sec-tsexploretop, analisamos as séries temporais de modo isolado, ou seja, sem considerar a eventual interação com outros eventos e, portanto, podemos dizer que foi realizada uma análise univariada.
+
+Para a melhor compreensão do fenômeno de que estamos tratando seria necessário também a realização de uma análise multivariada, por meio da qual é possível entender melhor a interação das séries em estudo com outras séries que eventualmente possam auxiliar.Ocorre que uma análise multivariada está fora do escopo deste trabalho. 
+
+::: {.callout-caution}
+Também é importante ressaltar que, conforme exposto na @sec-tsexplore, as séries possuem raízes unitárias e, portanto, qualquer inferência realizada por meio de medidas de correlação entre as séries deve ser vista com extrema cautela, uma vez que podem ser simplesmente correlações espúrias.
+
+:::
+
+:::
+
+## Fatores climáticos
+
+::: {style="text-align: justify"}
+
+A @tbl-data_climate apresenta os dados médios mensais de precipitação, temperatura e vento, extraídos da página do INMET. Os dados são oriundos da estação de Bento Gonçalves, entre novembro de 2006 e dezembro de 2022. Os dados tiveram que passar por um tratamento, visto que havia uma quantidade significative de NAs: 18 na coluna de precipitação, 7 na coluna de temperatura e 8 na de velocidade do vento. Foi adotada então uma estratégia de aproximação por meio de interpolação linear e eliminação da primeira observação, uma vez que esta não pôde ser ajustada desta forma.  
+
+::: {#tbl-data_climate}
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-data_climate 
+
+# Codigo Estacao: A840				
+# Latitude: -29.164581				
+# Longitude: -51.534202				
+# Altitude: 623.27				
+# Situacao: Operante				
+# Data Inicial: 2006-11-30
+# Data Final: 2022-12-31
+# Periodicidade da Medicao: Mensal
+# Data Medicao;PRECIPITACAO TOTAL, MENSAL (AUT)(mm);TEMPERATURA MEDIA, MENSAL (AUT)(°C);VENTO, VELOCIDADE MEDIA MENSAL (AUT)(m/s);
+# 
+data_climate <- read_delim("~/projects/alura_postech/tech_challenge_fase01/wineData/data/dadosclima/dados_clima.csv", 
+    delim = ";", escape_double = FALSE, col_types = cols(`Data Medicao` = col_date(format = "%Y-%m-%d"), 
+        `PRECIPITACAO TOTAL, MENSAL (AUT)(mm)` = col_double(), 
+        `TEMPERATURA MEDIA, MENSAL (AUT)(°C)` = col_double(), 
+        `VENTO, VELOCIDADE MEDIA MENSAL (AUT)(m/s)` = col_double()), 
+    trim_ws = TRUE, skip = 9) |> 
+    dplyr::select(c(1:4)) |> 
+    rename(date = "Data Medicao", 
+           precip = "PRECIPITACAO TOTAL, MENSAL (AUT)(mm)",
+           temp = "TEMPERATURA MEDIA, MENSAL (AUT)(°C)",
+           wind = "VENTO, VELOCIDADE MEDIA MENSAL (AUT)(m/s)") |> 
+    mutate(precip = zoo::na.approx(precip, na.rm = FALSE)) |> 
+    mutate(across(temp, ~zoo::na.approx(temp, na.rm = FALSE))) |> 
+    mutate(across(wind, ~zoo::na.approx(temp, na.rm = FALSE))) |> 
+    drop_na() 
+
+##|> mutate(date=lubridate::make_date())
+
+DT::datatable(data_climate,   filter = "bottom", 
+                          colnames = c("Data", "Precipitação média mensal (mm)", 
+                                       "Temperatura Média Mensal (°C)", "Vento (m/s)"),
+                          extensions = 'Buttons', 
+                          options = list(
+                          dom = 'Bfrtip',
+                          buttons = c('copy','excel', 'csv', 'pdf'))) |>  
+                            DT::formatDate(columns = c('date'),
+                               'toLocaleDateString')
+   
+
+```
+
+Tabela de dados climáticos - estação de medição de Bento Gonçalves (INMET).
+:::
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-data_climate
+#| fig-cap: "Dados climáticos"
+#| layout-nrow: 3  
+
+data_climate |> timetk::plot_time_series(date, precip,  
+                                         .interactive = T, 
+                                         .smooth_span =  0.15,
+                                 .title = 'Precipitação média mensal (mm)') 
+
+data_climate |> timetk::plot_time_series(date, temp,  
+                                         .interactive = T, 
+                                         .smooth_span =  0.15,
+                                 .title = 'Temperatura média mensal (ºC)') 
+
+data_climate |> timetk::plot_time_series(date, wind,  
+                                         .interactive = T, 
+                                         .smooth_span =  0.15,
+                                 .title = 'Velocidade do vento (m/s)') 
+```
+
+
+### Análise de anomalias
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-data_climate_anom
+#| fig-cap: "Dados climáticos - anomalias"
+#| layout-nrow: 3  
+
+anomalize_precip <-  data_climate |>  
+                              timetk::anomalize(
+                                  .date_var      = date, 
+                                  .value         = precip,
+                                  .iqr_alpha     = 0.05,
+                                  .max_anomalies = 0.20,
+                                  .message       = FALSE
+                                  
+                              )
+
+anomalize_temp <-  data_climate |>  
+                              timetk::anomalize(
+                                  .date_var      = date, 
+                                  .value         = temp,
+                                  .iqr_alpha     = 0.05,
+                                  .max_anomalies = 0.20,
+                                  .message       = FALSE
+                              )
+anomalize_wind <-  data_climate |>  
+                              timetk::anomalize(
+                                  .date_var      = date, 
+                                  .value         = wind,
+                                  .iqr_alpha     = 0.05,
+                                  .max_anomalies = 0.20,
+                                  .message       = FALSE
+                              )
+
+
+
+anomalize_precip |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Anomalias - Precipitação")
+
+anomalize_temp |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Anomalias - Temperatura")
+anomalize_wind |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Anomalias - Vento")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-data_climate_summ
+#| tbl-cap: "Sumário dos dados de clima."
+
+
+knitr::kable(summary(data_climate), col.names = c("Data", "Precipitação média(mm)", 
+                                           "Temperatura média(ºC)", 
+                                           "Velocidade do Vento(m/s)"), 
+             booktabs = TRUE, valign = 't', digits = 2)
+```
+
+As @fig-data_climate-1 a @fig-data_climate_anom-3 mostram que não foram detectadas anomalias nas séries de precipitação, temperatura e vento. Inclusive os dados médios encontrados favorecem a produção de uva e, consequentemente de vinho. Além disso, tendo por base a literatura consultada, dos três fatores climáticos elencados, a temperatura e a precipitação são os mais relevantes.
+:::
+
+### Teste Granger de causalidade
+::: {style="text-align: justify"}
+
+
+:::{.callout-caution}
+
+Mais uma vez é importante sublinhar que para séries temporais a simples correlação não é um teste recomendado para testar a contribuição de uma série para o comportamento da outra, especialmente se as séries não forem estacionárias. Neste sentido, um teste relativamente simples de causalidade é o teste Granger, que por ser colocado da seguinte forma:
+
+**Hipótese Nula (H0):**
+
+A série temporal X _não causa_ a série temporal Y no sentido Granger.
+
+**Hipótese Alternativa (H1)**:
+
+A série temporal X _causa_ a série temporal Y no sentido Granger.
+
+Em resumo, o teste permite verificar se saber o valor da série X em determinado _lag_ é últil para realizar previsões osbre o comportamento da série Y em períodos subsequentes - esta é a _causalidade no sentido Granger_.
+
+:::
+
+O primeiro passo é verificar se as séries são estacionárias, uma vez que o teste tem como uma de suas premissas a não existência de raízes unitárias. 
+
+Aplicando os testes ADF e KPSS, verificamos que existem evidências de não-estacionariedade em ambas as séries.
+
+::: {.callout-note appearance="simple"}
+
+### Resultado do teste:
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# converte os dados para série temporal
+ts_precip <- ts(
+  data_climate |>
+    dplyr::select(precip),
+  frequency = 12,
+  start = c(2007,01,01),
+  end = c(2022,12,01)
+)
+
+
+# converte os dados para série temporal
+ts_temp <- ts(
+  data_climate |>
+    dplyr::select(temp),
+  frequency = 12,
+  start = c(2007,01,01),
+  end = c(2022,12,01)
+)
+
+#urca::ur.df(ts_precip, type="none", lags=12, selectlags = "AIC")@teststat
+#urca::ur.df(ts_precip, type="none", lags=12, selectlags = "AIC")@cval
+#
+cat(format("> Teste de raiz unitária para Precipitação\n"))
+ur_test(ts_precip, type_adf = "none", type_kpss = "mu")
+cat(format("\n\n"))
+cat(format("> Teste de raiz unitária para Temperatura\n"))
+ur_test(ts_temp, type_adf = "none", type_kpss = "mu")
+```
+:::
+
+Então, para realizar o teste de causalidade do tipo Granger, é necessário tornar as séries estacionárias, o que será feito por meio da primeira diferença.
+
+O teste de causalidade Granger é aplicado considerando 2 lags, em face da hipótese de que, em até 2 meses, determinado evento climático deverá ter impacto na variação da produção de uva, aqui traduzida em termos de valor e volume exportados.
+
+
+Teste Granger para a série de valor exportado
+- precipitação granger-causa valor exportado indica que não há causalidade (p-valor > 0,05);
+- temperatura granger-causa valor exportado indica  há causalidade (p-valor < 0,05).
+
+::: {.callout-note appearance="simple"}
+
+### Resultado do teste:
+
+```{r}
+#| echo: false
+#| warning: false
+
+load("data_exp_mc_by_date_clean.RData")
+
+# data_exp_mc_by_date_clean <- data_exp_mc  |>
+#   group_by(date) |>
+#   dplyr::summarise(sum_val = sum(value),
+#                    sum_vol = sum(volume),) |>
+#   dplyr::arrange(desc(date))
+
+ts_val_month <- data_exp_mc_by_date_clean |>
+  filter(date >= as.Date('2007-01-01')) |>
+  select(sum_val_clean) |>
+  ts(
+    dplyr::select(sum_val_clean),
+    frequency = 12,
+    start = c(2007, 01, 01),
+    end = c(2022, 12, 01)
+  )
+
+cat(format("> Precipitação -> Valor\n"))
+lmtest::grangertest(diff(ts_precip) ~ diff(ts_val_month), order = 2)
+cat(format("\n"))
+cat(format("> Temperatura -> Valor\n"))
+lmtest::grangertest(diff(ts_temp) ~ diff(ts_val_month), order = 2)    
+```
+:::
+
+O teste de causalidade Granger para volume exportado:
+
+- precipitação granger-causa volume exportado indica que não há causalidade(p-valor > 0,05);
+- temperatura granger-causa volume exportado indica que há causalidade(p-valor > 0,05).
+
+::: {.callout-note appearance="simple"}
+
+### Resultado do teste:
+```{r}
+#| echo: false
+#| warning: false
+
+ts_vol_month <- data_exp_mc_by_date_clean |> 
+  filter(date >= as.Date('2007-01-01'))|> 
+  select(sum_vol_clean) |> 
+   ts(dplyr::select(sum_vol_clean),
+  frequency = 12,
+  start = c(2007,01,01),
+  end = c(2022,12,01)
+)
+
+cat(format("> Precipitação -> Volume\n"))
+lmtest::grangertest(diff(ts_precip) ~ diff(ts_vol_month), order = 2)
+cat(format("\n"))
+cat(format("> Temperatura -> Volume\n"))
+lmtest::grangertest(diff(ts_temp) ~ diff(ts_vol_month), order = 2)    
+```
+:::
+
+:::{.callout-note}
+
+### Conclusão
+
+Interessante notarmos que, enquanto não encontramos evidências de que a precipitação afeta as nossas variáveis de interesse, encontramos evidência de que a temperatura pode afetar. Isto vai ao encontro do exposto na literatura consultada, uma vez que as variedades de uva cultivadas para a produção de vinho são bastante sensíveis às variações de temperatura.
+:::
+
+
+:::
+
+## Fatores socioeconômicos
+
+::: {style="text-align: justify"}
+
+Dada a natureza do fenômeno analisado, qual seja, exportação de vinhos, vários podem ser os fatores socioeconômicos que afetam o comportamento da série. 
+
+Como uma análise extensiva dos fatores está fora do escopo deste trabalho, vamos escolher somente as seguintes séries mensais para ilustrar a análise:
+
+- Taxa Real de Câmbio^[série 11752 do SGS/BCB - https://www3.bcb.gov.br/sgspub] (número índice): a taxa nominal de câmbio é um indicador freqüentemente consultado pelos agentes econômicos em suas decisões, mas, de fato, estas estão condicionadas à evolução da taxa real de câmbio. Esta taxa busca comparar os custos de produção ou o poder de compra dos consumidores considerando os mercados nacional e internacional, bem como simplesmente confrontar os incentivos à produção de bens comercializáveis e não comercializáveis na economia doméstica. É um número índice para tornar a comparação com a série de valor adequada;
+
+- Indice de Commodities^[série 27574 do SGS/BCB - https://www3.bcb.gov.br/sgspub] (número índice): em que pese o vinho não ser considerado uma commodity, sendo o Brasil grande exportador de commodities, é interessante avaliar se a trajetória de exportação de vinho acompanhou o movimento da maior parte da exportação nacional. O indicador é um número índice para tornar a comparação com a série de valor adequada;
+
+- Índice de Termos de Troca^[série FUNCEX-TTR12 do Ipeadata - http://www.ipeadata.gov.br/] (número índice): Os termos de troca são definidos como a relação entre os preços das exportações do país ($P_x$) e os das suas importações ($P_m$). Uma melhoria nos termos de troca – isto é, um aumento na razão $P_x/P_m$ –, tudo o mais constante, aumenta a renda real.Permite,
+por exemplo, que, com as mesmas exportações, se possa importar mais.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| cache: true
+#| label: fig-macroseries
+#| fig-cap: "Séries temporais de variáveis macroeconômicas" 
+
+# taxa real de câmbio
+er <- ts(rbcb::get_series(11752, start_date='2001-01-01')$`11752`,start=c(2000,01,01), end=c(2022,12,01), freq=12)
+
+# índice de commodities
+cib <- ts(rbcb::get_series(27574, start_date='2002-01-01')$`27574`,start=c(2000,01,01), end=c(2022,12,01), freq=12)
+
+# índice de termos de troca
+ttr <- ipeadatar::ipeadata('FUNCEX12_TTR12')
+ttr <- ts(ttr$value, start = c(2000,01,01), end = c(2022,12,01), frequency = 12)
+
+er_tbl <- tibble(date = lubridate::date_decimal(index(er)), er = er) |> mutate(date = as.Date(date))
+cib_tbl <- tibble(date = lubridate::date_decimal(index(cib)), cib = cib) |> mutate(date = as.Date(date))
+ttr_tbl <- tibble(date = lubridate::date_decimal(index(ttr)), ttr = ttr) |> mutate(date = as.Date(date))
+
+er_tbl |> timetk::plot_time_series(.value = er,.date_var = date, 
+                                   .interactive = T, 
+                                   .smooth_span =  0.15,
+                                   .title = 'Taxa Real de Câmbio (índice)', 
+                                   .y_lab = "Índice")
+
+cib_tbl |> timetk::plot_time_series(.value = cib,.date_var = date, 
+                                   .interactive = T, 
+                                   .smooth_span =  0.15,
+                                   .title = 'Índice de Commodities', 
+                                   .y_lab = "Índice")
+
+ttr_tbl |> timetk::plot_time_series(.value = ttr,.date_var = date, 
+                                   .interactive = T, 
+                                   .smooth_span =  0.15,
+                                   .title = 'Termos de Troca', 
+                                   .y_lab = "Índice")
+```
+
+
+:::
+
+### Análise de anomalias
+
+
+::: {style="text-align: justify"}
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-data_macro_anom
+#| fig-cap: "Séries macroeconômicas - anomalias"
+#| layout-nrow: 3  
+
+anomalize_er <-  er_tbl |>  
+                              timetk::anomalize(
+                                  .date_var      = date, 
+                                  .value         = er,
+                                  .iqr_alpha     = 0.05,
+                                  .max_anomalies = 0.20,
+                                  .message       = FALSE
+                                  
+                              )
+
+anomalize_cib <-  cib_tbl |>  
+                              timetk::anomalize(
+                                  .date_var      = date, 
+                                  .value         = cib,
+                                  .iqr_alpha     = 0.05,
+                                  .max_anomalies = 0.20,
+                                  .message       = FALSE
+                              )
+anomalize_ttr <-  ttr_tbl |>  
+                              timetk::anomalize(
+                                  .date_var      = date, 
+                                  .value         = ttr,
+                                  .iqr_alpha     = 0.05,
+                                  .max_anomalies = 0.20,
+                                  .message       = FALSE
+                              )
+
+
+
+anomalize_er |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Anomalias - Taxa Real de Câmbio")
+
+anomalize_cib |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Anomalias - Índice de Commodities")
+
+anomalize_ttr |> timetk::plot_anomalies(.date_var = date, 
+                                            .interactive = TRUE, 
+                                            .title = "Anomalias - Termos de Troca")
+```
+
+Conforme podemos verificar nas @fig-data_macro_anom-1 a @fig-data_macro_anom-3, foram detectadas poucas anomalias nas séries temporais em questão. Porém, chama a atenção o comportamento da série de Índice de Commodities (@fig-data_macro_anom2), em que o período da pandemia de COVID-19 fica bem demarcado. Ao mesmo tempo, no Índice dos Termos de Troca foram identificadas anomalias no perído da crise de 2008.
+
+:::
+
+### Teste Granger de Causalidade
+
+::: {style="text-align: justify"}
+
+Aplicando os testes ADF e KPSS, verificamos que existem evidências de não-estacionariedade nas séries.
+
+::: {.callout-note appearance="simple"}
+
+#### Resultado do teste:
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+
+cat(format("> Teste de raiz unitária para Taxa Real de Câmbio\n"))
+ur_test(er, type_adf = "trend", type_kpss = "tau")
+cat(format("\n\n"))
+cat(format("> Teste de raiz unitária para Índice de Commodities\n"))
+ur_test(cib, type_adf = "trend", type_kpss = "tau")
+cat(format("\n\n"))
+cat(format("> Teste de raiz unitária para Índice de Termos de Troca\n"))
+ur_test(ttr, type_adf = "trend", type_kpss = "tau")
+
+
+```
+
+:::
+
+Então, para realizar o teste de causalidade do tipo Granger, é necessário tornar as séries estacionárias, o que será feito por meio da primeira diferença.
+
+O teste de causalidade Granger é aplicado considerando 12 lags, em face da hipótese de que, em até 12 meses, variações nas séries selecionadas deverão ter impacto no valor e volume exportados.
+
+Teste Granger para a série de valor exportado indica que não há causalidade no sentido Granger para qualquer das séries(p-valor > 0,05).
+
+::: {.callout-note appearance="simple"}
+
+#### Resultado do teste:
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+ts_val_month <- data_exp_mc_by_date_clean |> 
+  select(sum_val_clean) |> 
+   ts(dplyr::select(sum_val_clean),
+  frequency = 12,
+  start = c(2000,01,01),
+  end = c(2022,12,01)
+)
+
+cat(format("> Taxa Real de Câmbio -> Valor\n"))
+lmtest::grangertest(diff(er) ~ diff(ts_val_month), order = 12)
+cat(format("\n"))
+cat(format("> Índice de Commodities -> Valor\n"))
+lmtest::grangertest(diff(cib) ~ diff(ts_val_month), order = 12)    
+cat(format("\n"))
+cat(format("> Índice de Termos de Troca -> Valor\n"))
+lmtest::grangertest(diff(ttr) ~ diff(ts_val_month), order = 12)    
+
+```
+
+:::
+
+O teste de causalidade Granger para volume exportado indica que não há causalidade(p-valor > 0,05) em relação a qualquer das séries.
+
+
+::: {.callout-note appearance="simple"}
+
+#### Resultado do teste:
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+ts_vol_month <- data_exp_mc_by_date_clean |> 
+  select(sum_vol_clean) |> 
+   ts(dplyr::select(sum_vol_clean),
+  frequency = 12,
+  start = c(2000,01,01),
+  end = c(2022,12,01)
+)
+
+cat(format("> Taxa Real de Câmbio -> Volume\n"))
+lmtest::grangertest(diff(er) ~ diff(ts_vol_month), order = 12)
+cat(format("\n"))
+cat(format("> Índice de Commodities -> Volume\n"))
+lmtest::grangertest(diff(cib) ~ diff(ts_vol_month), order = 12)    
+cat(format("\n"))
+cat(format("> Índice de Termos de Troca -> Volume\n"))
+lmtest::grangertest(diff(ttr) ~ diff(ts_vol_month), order = 12)     
+```
+:::
+
+:::{.callout-note}
+
+#### Conclusão
+
+Não encontramos evidências de que Taxa Real de Câmbio, o Índice de Commodities e o Índice de Termos de Troca não afetam as séries de interesse no sentido Granger.
+
+:::
+
+:::
+## Outros fatores socioeconômicos
+
+::: {style="text-align: justify"}
+
+### Consumo de vinho per-capita
+
+Os dados abaixo foram extraídos da base do [Our World in Data](https://ourworldindata.org/) e representam o consumo de vinho _per capita_ anual por país. Como Paraguai e Rússia são os países que representam a maior parte das exportações de vinho, faremos a análise em relação a eles.
+
+::: {#tbl-consump-per-capita}
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| label: tbl-consump-per-capita
+
+wine_consumption_per_person <-readr::read_csv(
+  "~/projects/alura_postech/tech_challenge_fase01/wineData/data/wine-consumption-per-person.csv"
+) |> rename(country = Entity,
+            consump_per_capita = 'Indicator:Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol) - Beverage Types:Wine'
+            ) |> 
+  filter(Year > 1999) |> mutate(date = lubridate::make_date(Year, 12, 31)) |>  
+  filter(country %in% c('Paraguay', 'Russia')) |> 
+  mutate(across('country', ~str_replace(., 'Paraguay', 'Paraguai'))) |> 
+  mutate(across('country', ~str_replace(., 'Russia', 'Rússia'))) |> 
+  select(c('date', 'country', 'consump_per_capita')) 
+
+DT::datatable(wine_consumption_per_person, filter = "bottom",
+  colnames = c(
+    'Data',
+    'País',
+    'Consumo per capita (L)'
+  ),
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'excel', 'csv', 'pdf')
+  )
+)
+
+```
+Consumo anual _per capital_ de vinho anual por país até 2019. 
+:::
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| layout-nrow: 2
+#| layout-ncol: 2
+#| fig-cap: "Valor e volume exportados por ano - Paraguai e Rússia"
+#| label: fig-val_vol-Paraguai-Russia
+
+load('data_exp_yc.RData')
+
+data_top2 <- data_exp_yc |> filter(country %in% c('Paraguai', 'Rússia')) |> filter(date < '2020-12-31')
+
+
+data_top2 |> filter(country == 'Paraguai') |> timetk::plot_time_series(.value = value,.date_var = date, 
+                                   .interactive = T, 
+                                   .smooth_span =  0.3,
+                                   .title = 'Valor exportado - Paraguai', 
+                                   .y_lab = "US$")
+
+data_top2 |> filter(country == 'Paraguai') |> timetk::plot_time_series(.value = volume,.date_var = date, 
+                                   .interactive = T, 
+                                   .smooth_span =  0.7,
+                                   .title = 'Volume exportado - Paraguai', 
+                                   .y_lab = "Kg.L")
+
+data_top2 |> filter(country == 'Rússia') |> timetk::plot_time_series(.value = value,.date_var = date, 
+                                   .interactive = T, 
+                                   .smooth_span =  0.3,
+                                   .title = 'Valor exportado - Rússia', 
+                                   .y_lab = "US$")
+
+data_top2 |> filter(country == 'Rússia') |> timetk::plot_time_series(.value = volume,.date_var = date, 
+                                   .interactive = T, 
+                                   .smooth_span =  0.7,
+                                   .title = 'Volume exportado - Rússia', 
+                                   .y_lab = "Kg.L")
+
+# transforma em série temporal e calcula a primeira diferença
+dts_vol_russia <- log(ts(data_top2 |> filter(country == "Rússia") |> select(volume)))
+dts_vol_paraguai <- log(ts(data_top2 |> filter(country == "Paraguai") |> select(volume)))
+
+dts_val_russia <- log(ts(data_top2 |> filter(country == "Rússia") |> select(value)))
+dts_val_paraguai <- log(ts(data_top2 |> filter(country == "Paraguai") |> select(value)))
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-cap: "Consumo de vinho per capita - Paraguai e Rússia"
+#| label: fig-consump-per-capita-top2
+#| layout-ncol: 2
+
+wine_consumption_per_person |> filter(country == "Paraguai") |> timetk::plot_time_series(.value = consump_per_capita, 
+                                                        .date_var = date, 
+                                                        .title = "Consumo per capita em litros - Paraguai",
+                                                        .y_lab = "L", .interactive = TRUE) 
+
+
+wine_consumption_per_person |> filter(country == "Rússia") |> timetk::plot_time_series(.value = consump_per_capita, 
+                                                        .date_var = date, 
+                                                        .title = "Consumo per capita em litros - Rússia",
+                                                        .y_lab = "L", .interactive = TRUE) 
+# transforma em série temporal e calcula a primeira diferença
+dts_russia_consump <- log(ts(wine_consumption_per_person |> 
+                                filter(country == "Rússia") |> 
+                                select(consump_per_capita)))
+
+dts_paraguai_consump <- log(ts(wine_consumption_per_person |> 
+                                  filter(country == "Paraguai") |> 
+                                  select(consump_per_capita)))
+```
+Os gráficos da @fig-val_vol-Paraguai-Russia-1 a @fig-consump-per-capita-top2-2 permitem supor que existe uma relação entre o consumo de vinho per capita e a o volume que é exportado, o que é confirmado pelo teste de causalidade Granger (neste caso o teste foi aplicados às séries com transformação logarítimica em face da sua não estacionariedade).
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+
+cat(format("> Consumo de Vinho per capita- Paraguai -> Volume - Paraguai \n"))
+lmtest::grangertest( dts_paraguai_consump ~ dts_val_paraguai, order = 1)
+cat(format("\n"))
+cat(format("> Consumo de Vinho per capita- Rússia -> Volume - Rússia \n"))
+lmtest::grangertest( dts_paraguai_consump ~ dts_val_paraguai, order = 1)
+cat(format("> Consumo de Vinho per capita- Paraguai -> Volume - Paraguai \n"))
+lmtest::grangertest( dts_paraguai_consump ~ dts_vol_paraguai, order = 1)
+cat(format("\n"))
+cat(format("> Consumo de Vinho per capita- Rússia -> Volume - Rússia \n"))
+lmtest::grangertest( dts_paraguai_consump ~ dts_vol_paraguai, order = 1 )
+```
+
+:::{.callout-note}
+
+#### Conclusão
+Encontramos evidências de o consumo _per capita_ do Paraguai e da Rússia causam no sentido Granger as séries correspondentes de volume exportado.
+
+:::
+
+### Avaliação de vinhos 
+
+Para entender como os vinhos brasileiros são recebidos pelo mercado consumidor internacional, buscamos dados de avaliação de vinhos. Neste caso utilizamos como referência o artigo ["X-Wines: A Wine Dataset for Recommender Systems and Machine Learning"](https://www.mdpi.com/2504-2289/7/1/20) o qual remete a uma extensa [base de dados de avaliação de vinhos](https://github.com/rogerioxavier/X-Wines/?tab=readme-ov-file).
+
+Para este trabalho utilizamos as bases *XWines_Slim_1k_wines* e *XWines_Slim_150k_ratings* as quais contém 150 mil dados de avaliações de usuários sobre 1000 vinhos distintos.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#|cache: true
+
+XWines_Slim_1K_wines <- read_csv("../../data/XWines_Slim_1K_wines_150K_ratings/XWines_Slim_1K_wines.csv")
+
+XWines_Slim_150K_ratings <- read_csv("../../data/XWines_Slim_1K_wines_150K_ratings/XWines_Slim_150K_ratings.csv")
+
+wines_ratings <- inner_join(XWines_Slim_150K_ratings, XWines_Slim_1K_wines,  join_by(WineID == WineID)) |> 
+  select(Date, WineID, Rating, WineName, Vintages, Country)
+
+wines_ratings_brazil <-  wines_ratings |> filter(Country == 'Brazil') |> arrange(Date)
+```
+
+Quando agregamos as notas por país e calculamos a média, verificamos que o Brasil ocupa a 20ª posíção no _ranking_ (abaixo da média da amostra @fig-boxplot-wines-ratings), enquanto que o 1º lugar pertence ao Reino Unido.
+ 
+::: {#tbl-rating-by-country}
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: tbl-rating-by-country
+
+wines_ratings_top50 <- wines_ratings |> 
+  group_by(Country) |> 
+  summarise(avg = mean(Rating)) |> 
+  arrange(desc(avg)) |>  top_n(50)
+
+DT::datatable(wines_ratings_top50, 
+              filter = "bottom",
+  colnames = c(
+    'País',
+    'Nota (0 a 5)'
+  ),
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'excel', 'csv', 'pdf')
+  )
+) |> DT::formatRound(c('avg'), digits = 2)
+ 
+```
+Top 50 países em termos de avaliação dos vinhos
+
+:::
+
+```{r}
+#| label: fig-boxplot-wines-ratings
+plotly::plot_ly( y = wines_ratings_top50$avg, type = "box", name = 'Nota Média') |> 
+  layout(xaxis = list(title='nota'), yaxis = list(title = 'Nota Média'))
+```
+
+
+Em que pese o Brasil ocupar a 20ª posição no _ranking_ de avaliação média dos vinhos, vemos pelo gráfico da @fig-rating-by-year que a avaliação dos vinhos brasileiros vem crescendo de modo persistente desde 2012. Isto pode ajudar a explicar a tendência de crescimento no volume e valor das exportações de vinho nos últimos anos.  
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-rating-by-year
+#| caption: "Série de avaliação média dos vinhos brasileiros de 2012 a 2021"
+
+
+wines_ratings_brazil_rating_date <- wines_ratings_brazil |> 
+  group_by(Date) |> 
+  group_by(date = lubridate::year(Date)) |> 
+  summarise(avg = mean(Rating))
+
+wines_ratings_brazil_rating_date |> 
+  timetk::plot_time_series(.value=avg, 
+  .date=date, 
+  .title = "Avaliação média dos vinhos brasileiros por ano - 2012 a 2021",
+  .y_lab = "nota", .interactive = TRUE)
+
+
+```
+
+:::

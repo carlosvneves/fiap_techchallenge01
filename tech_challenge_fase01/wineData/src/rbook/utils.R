@@ -123,7 +123,7 @@ ur_test <- function(ts, type_adf, type_kpss){
     
 
     # não rejeita a estacionariedade
-    adf_test <- urca::ur.df(ts, type = type_adf, selectlags = "AIC")
+    adf_test <- urca::ur.df(ts, type = type_adf, selectlags = "AIC", lags = 12)
     stats <- rbind(as.vector(adf_test@cval[,"5pct"]), 
                    as.vector(adf_test@teststat)
     )
@@ -143,6 +143,7 @@ ur_test <- function(ts, type_adf, type_kpss){
     cat(resp_adf)
     cat("\n\nEstatísticas do teste ADF (5% de significância):\n\n")
     print(stats)
+    
     
     
 
