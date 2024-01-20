@@ -16,7 +16,7 @@ source('utils.R')
 
 # Contextualização {#sec-context}
 
-[![](sunrise-landscape-wet-on-wet-watercolor-technique-vine-trees-laden-with-grapes-leading-to-the-hori.png){fig-align="center"}](playground.com)
+[![](fig-context.png){fig-align="center"}](playground.com)
 
 
 ::: {style="text-align: justify"}
