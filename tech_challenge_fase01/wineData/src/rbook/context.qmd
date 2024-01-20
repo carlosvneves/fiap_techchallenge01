@@ -3,6 +3,7 @@ code-fold: true
 editor: 
   markdown: 
     wrap: sentence
+prefer-html: true
 ---
 
 ```{r import_libs}

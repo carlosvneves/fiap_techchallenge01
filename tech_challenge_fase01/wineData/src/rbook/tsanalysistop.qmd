@@ -4,7 +4,7 @@ editor:
   markdown: 
     wrap: sentence
 tbl-cap-location: bottom
-
+prefer-html: true
 ---
 # Análise das séries temporais - Paraguai e Rússia {#sec-tsexploretop}
 

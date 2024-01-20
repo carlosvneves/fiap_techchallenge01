@@ -2,23 +2,11 @@ project:
   type: website
   output-dir: docs
 
+prefer-html: true
+
 toc: true 
 number-sections: true
-crossref:
-  custom:
-    - kind: float
-      reference-prefix: Video
-      key: vid
-    - kind: float
-      reference-prefix: Figura
-      key: fig
-    - kind: float
-      reference-prefix: Tabela
-      key: tbl
-    - kind: float
-      reference-prefix: Seção
-      key: sec
-      
+
 book:
   title: "Análise das Exportações de Vinhos do Brasil - Techchallenge 01 - 3DTAT - FIAP"
   author: "Carlos Eduardo Veras Neves"
@@ -30,17 +18,14 @@ book:
     - tsanalysis.qmd
     - tsanalysistop.qmd
     - exogenous.qmd
-    #- exploratory_yearly.qmd
-    # - exploratory_monthly.qmd
-    # - analysis.qmd
-    # - conclusion.qmd
+
   page-footer:
     left: |
       Exportações de Vinhos do Brasil - 3DTAT - FIAP
     right: |
       Este livro foi construído com <a href="https://quarto.org/">Quarto</a>.
   cover-image: cover.jpg
-# bibliography: refs.bib
+
 
 format:
   html:
@@ -52,7 +37,5 @@ format:
            - lux
            - custom.scss
       dark: darkly
-  pdf:
-    documentclass: scrreport
   epub:
     cover-image: cover.jpg

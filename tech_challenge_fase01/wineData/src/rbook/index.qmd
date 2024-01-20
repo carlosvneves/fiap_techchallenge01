@@ -3,6 +3,7 @@ code-fold: true
 editor: 
   markdown: 
     wrap: sentence
+prefer-html: true
 ---
 
 ```{r import_libs}
@@ -77,36 +78,56 @@ Já o peso líquido da mercadoria permite que mesmo produtos com quqantidades es
 ## Métodos
 
 ::: {style="text-align: justify"}
+-   Análise exploratória;
 -   Diagramas ACF e PACF: para estudar a autocorrelação, o que auxilia a escolha de modelos de previsão univariados;
 -   Testes de raiz unitária: para verificar se a série é estacionária e a ordem de diferenciação;
 -   Testes de quebra estrutural: para verificar mudanças de tendência e relacioná-las às questões conjunturais;
--   Teste de Granger: testar causalidade no sentido de precedência temporal entre a série de interesse e outras séries ("exógenas");
--   Estabelecimento de modelo VAR para testar o impacto das variáveis "exógenas" (outras séries)
+-   Análise de Anomalias;
+-   Modelos de previsão: ARIMA, XGBOOST-ARIMA, PROPHET
+-   Teste de Granger: testar causalidade no sentido de precedência temporal entre a série de interesse e outras séries ("exógenas").
 :::
 
 ## Ferramentas
 
 ::: {style="text-align: justify"}
+Esta página/relatório foi elaborada utilizando o quarto como ferramenta de edição e publicação.
+A análise foi desenvolvida utilizando a linguagem R e algumas das inúmeras bibliotecas disponíveis no seu ecosistema:
 
-Esta página/relatório foi elaborada utilizando o quarto como ferramenta de edição e publicação. A análise foi desenvolvida utilizando a linguagem R e algumas das inúmeras bibliotecas disponíveis no seu ecosistema:
 -Bibliotecas:
-    -   tidyverse
-    -   timetk
-    -   tidyverse
-    -   readr
-    -   lubridate
-    -   knitr
-    -   kableExtra
-    -   tseries
-    -   dplyr
-    -   ggplot2
-    -   strucchange
-    -   urca
-    -   ggthemes
-    -    plotly
-    -   treemapify
-    -   lmtest
-    -   datatable
+
+-   tidyverse
+
+-   timetk
+
+-   tidyverse
+
+-   readr
+
+-   lubridate
+
+-   knitr
+
+-   kableExtra
+
+-   tseries
+
+-   dplyr
+
+-   ggplot2
+
+-   strucchange
+
+-   urca
+
+-   ggthemes
+
+-   plotly
+
+-   treemapify
+
+-   lmtest
+
+-   datatable
 :::
 
 # Estrutura do relatório
