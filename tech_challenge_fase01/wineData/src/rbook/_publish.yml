@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: a98d86ce-6d0b-4672-9be9-3c3cc3350d7e
+      url: 'https://carlosveras.quarto.pub/fiap-3dtat-tech01-analise-exportacao-vinhos'

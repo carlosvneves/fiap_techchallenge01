@@ -6,7 +6,30 @@ prefer-html: true
 
 toc: true 
 number-sections: true
-
+website:
+  title: "Exportações de Vinhos do Brasil"
+  navbar:
+    search: true
+    background: light
+    tools:
+    - icon: github
+      menu:
+        - text: Source Code
+          url: https://github.com/carlosvneves/fiap_techchallenge01
+    left: 
+      - text: "Home"
+        file: index.qmd
+      - text: "Contextualização"
+        file: context.qmd
+      - text: "Análise exploratória"
+        file: explore.qmd
+      - text: "Análise das séries temporais agregadas"
+        file: tsanalysis.qmd
+      - text: "Análise das séries temporais - Paraguai e Rússia"
+        file: tsanalysistop.qmd
+      - text: "Análise das séries temporais - interações"
+        file: exogenous.qmd   
+      
 book:
   title: "Análise das Exportações de Vinhos do Brasil - Techchallenge 01 - 3DTAT - FIAP"
   author: "Carlos Eduardo Veras Neves"

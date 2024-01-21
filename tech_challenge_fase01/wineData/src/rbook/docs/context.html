@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.547">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exportações de Vinhos do Brasil</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Exportações de Vinhos do Brasil</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./context.html" aria-current="page"> 
+<span class="menu-text">Contextualização</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./explore.html"> 
+<span class="menu-text">Análise exploratória</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./tsanalysis.html"> 
+<span class="menu-text">Análise das séries temporais agregadas</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./tsanalysistop.html"> 
+<span class="menu-text">Análise das séries temporais - Paraguai e Rússia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./exogenous.html"> 
+<span class="menu-text">Análise das séries temporais - interações</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://github.com/carlosvneves/fiap_techchallenge01">
+            Source Code
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-context" id="toc-sec-context" class="nav-link active" data-scroll-target="#sec-context"><span class="header-section-number">1</span> Contextualização</a>
+  <ul class="collapse">
+  <li><a href="#história-da-produção-de-vinhos-na-região-sul-do-brasil" id="toc-história-da-produção-de-vinhos-na-região-sul-do-brasil" class="nav-link" data-scroll-target="#história-da-produção-de-vinhos-na-região-sul-do-brasil"><span class="header-section-number">1.1</span> História da produção de vinhos na Região Sul do Brasil</a></li>
+  <li><a href="#estado-atual-da-produção-de-vinhos-na-região-sul-do-brasil" id="toc-estado-atual-da-produção-de-vinhos-na-região-sul-do-brasil" class="nav-link" data-scroll-target="#estado-atual-da-produção-de-vinhos-na-região-sul-do-brasil"><span class="header-section-number">1.2</span> Estado atual da produção de vinhos na Região Sul do Brasil</a></li>
+  <li><a href="#premiações" id="toc-premiações" class="nav-link" data-scroll-target="#premiações"><span class="header-section-number">1.3</span> Premiações</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="context.epub"><i class="bi bi-file"></i>ePub</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="sec-context" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Contextualização</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="playground.com"><img src="fig-context.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
+</figure>
+</div>
+<div style="text-align: justify">
+<p>Embora as regiões Nordeste e Sudeste produzam uva, essa produção é quase exclusivamente da fruta <em>in natura</em>. No Rio Grande do Sul, o grosso da produção vai para o fabrico de vinho e suco. O estado é responsável por 90% da produção nacional de vinho e suco de uva, emboa produza apenas 60% dessa fruta no país[^S. Klein, Herbert; Luna, V. Francisco (2020). Alimentando o Mundo - O surgimento da moderna economia agrícola no Brasil. FGV Editora].</p>
+<p>Nesta seção apresentaremos um pouco da história e do contexto da produção de uvas e vinhos no Rio Grande do Sul.</p>
+</div>
+<section id="história-da-produção-de-vinhos-na-região-sul-do-brasil" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="história-da-produção-de-vinhos-na-região-sul-do-brasil"><span class="header-section-number">1.1</span> História da produção de vinhos na Região Sul do Brasil</h2>
+<div style="text-align: justify">
+<p>Conforme o artigo <a href="https://www.vinicolacampestre.com.br/blog/voce-conhece-a-historia-do-vinho-durante-a-colonizacao/">Você conhece a história do vinho durante a colonização?</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<hr>
+<p><u>A chegada</u></p>
+<p>É atribuído ao português Brás Cubas o crédito por ter sido o primeiro produtor de vinho brasileiro. Segundo os registros históricos, ele trouxe as primeiras mudas de parreira na expedição do também lusitano e donatário de terras Martim Afonso de Souza, no ano de 1532. As plantadas foram cultivadas, inicialmente, em regiões próximas ao litoral paulista. Com o passar do tempo, porém, as primeiras plantações foram subindo a serra em busca de condições climáticas mais favoráveis.</p>
+<p>Todavia, as plantas trazidas (originárias da Ilha da Madeira) não se adaptaram ao clima tropical e passaram a produzir melhor apenas quando encontraram um clima mais frio na região da Serra do Mar, localidade do atual município de Taubaté. Obviamente, as dimensões continentais do Brasil propiciariam outras introduções, dessa vez mais esparsas, em seu território.(…)</p>
+<p>Por volta de 1640, na Ata da Sessão de Implantação da Câmara de São Paulo, buscou-se regularizar as condições de produção, qualidade e padronização da produção do vinho, assim como a regulamentação do seu preço de comercialização. Fato que, por si só, evidencia o crescimento do consumo e do interesse dos primeiros colonizadores.</p>
+<p>Contudo, motivos políticos atrapalhariam a difusão da produção de vinho em nosso país. O crescimento da produção local passou a suprir o consumo da colônia. Consequentemente, não era mais necessário importar a bebida de Portugal, o que levou a corte portuguesa a proibir a produção do vinho brasileiro.</p>
+<p>(…)</p>
+<p><u>O vinho brasileiro</u></p>
+<p>As videiras de origem europeia apresentavam grande dificuldade de adaptação ao clima brasileiro. Naquele período, era um processo bastante dispendioso trazer mudas do velho continente até o novo mundo.</p>
+<p>A solução encontrada pelos produtores foi trazer as videiras da variedade Izabel de outras partes do continente americano, uma vez que elas se adaptavam melhor e, assim, aumentavam o nível de produtividade do trabalho realizado para a fabricação do vinho brasileiro.</p>
+<p>É importante, ademais, relembrar o papel do catolicismo na história do vinho no Brasil. Pelo fato de a bebida ser objeto de culto em algumas celebrações e ritos religiosos, a Igreja Católica tencionava garantir que o vinho chegasse a todas as colônias portuguesas.</p>
+<p>Foi, portanto, a partir da região sul que se iniciou o desenvolvimento da produção nacional de vinho. Não surgiram novos obstáculos políticos para deter sua evolução em direção ao atual status, qual seja, ser considerado um dos melhores vinhos de todo o mundo. Seja para celebrar alguma data especial ou, simplesmente, para harmonizar uma boa refeição, o vinho passou a ser um componente intrínseco à cultura brasileira.(…)</p>
+<hr>
+<p>De acordo com o artigo <a href="https://reserva85.com.br/vinho/historia-do-vinho/historia-vinho-brasil/">História do Vinho no Brasil</a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
+<hr>
+<p><u>Evolução da produção de vinho no Brasil</u></p>
+<p>A produção de vinho no Brasil cresceu consideravelmente desde que implantada no século XVI. No entanto, em 5 de janeiro de 1785, a rainha Dona Maria I, a Louca proibiu toda e qualquer atividade manufatureira na colônia. Incluindo a viticultura. A lei caiu apenas em 1808, por Dom João VI, com a chegada da família real portuguesa ao Brasil.</p>
+<p>Noventa e um anos depois, em 1899, desembarcava em Garibaldi, no Sul do País, o imigrante Manuel Peterlongo. O italiano foi responsável pela criação do primeiro espumante brasileiro. Em 1915, ele fundava a vinícola Peterlongo. Em 1929, depois da Grande Depressão que assolou o mundo, produtores se unirão para fortalecer a indústria do vinho e criaram cooperativas. Em 1931, surgem duas das mais importantes cooperativas vinícolas, a Aurora e a Garibaldi. Ambas seguem em atuação até os dias de hoje.</p>
+<p>Atentos a evolução do setor, grupos internacionais passam a apostar no País a partir de 1951. As produtoras Georges Aubert, Almadém, Chandon, Martini e Cinzano se instalam em terras sulistas e com isso ajudaram a consolidar a história da indústria vitivinícola no Brasil. A década seguinte foi marcada pela entrada do Nordeste no cenário viticultor. A Vinícola Vale do São Francisco produzindo o primeiro vinho fino fora da região Sul do Brasil.</p>
+<p>Após quase cinco séculos de história, só em 2012 o Brasil conquistou sua Primeira Denominação de Origem: D.O. Vale dos Vinhedos. Classificação para espumantes e vinhos tranquilos produzidos nos municípios de Bento Gonçalves, Garibaldi e Monte Belo do Sul, no Rio Grande do Sul, que seguem uma série de exigências pré-estabelecidas.</p>
+<hr>
+<p>Sobre a história da produção de vinho no Rio Grande do Sul especificamente, o artigo <a href="https://www.enologia.org.br/curiosidade/a-historia-do-vinho-no-brasil">História do Vinho no Brasil</a> esclarece que<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p>
+<hr>
+<p>No Rio Grande do Sul a videira chegou em 1626, trazida pelo jesuíta Roque Gonzáles que plantou videiras européias em São Nicolau, nos Sete Povos das Missões. Embora houvesse necessidade da produção de vinho para utilização na missa, a dificuldade de adaptação de variedades viníferas em nossas terras impediu a disseminação da vitivinicultura no Brasil. Em 1742, assinala-se o renascimento da vitivinicultura rio-grandense com a chegada de sessenta casais açorianos e madeirenses radicados em rio grande e porto alegre.</p>
+<p>No ano de 1813, D. João VI reconhece oficialmente a primazia de Manoel de Macedo Brum da Silveira no plantio de videiras e produção de vinho no Rio Grande. Por volta de 1840, a introdução da variedade americana Isabel, por Thomas Master, na ilha dos Marinheiros, foi sucedida de grande sucesso. Sua resistência e rusticidade fizeram que ela se implantasse preferencialmente na região em detrimento das cepas viníferas, mais frágeis. A uva Isabel foi-se disseminando nas áreas de colonização alemã, como São Leopoldo.<br>
+A partir de 1875 desponta o grande surto do crescimento da vitivinicultura gaúcha, graças á chegada da colonização italiana, pois os italianos traziam na bagagem além das cepas de uva européias da região de Vêneto, o hábito do consumo do vinho como um alimento, e o ainda chamado espírito vitivinícola. As cepas com o passar do tempo começaram a morrer por causa de doenças fúngicas, mas a força italiana e a vontade de manter sua tradição permitiram aos imigrantes que encontrasse uma cultivar que se adaptasse a região. A variedade de origem americana chamada de Isabel (vitis labrusca) foi encontrada na região no vale do rio dos Sinos, onde os imigrantes levaram para a encosta Superior do Nordeste, sendo que essa cultivar se adaptou muito bem aquelas condições, e permitiu a continuidade da produção de uvas e vinho.</p>
+<p>Há algumas décadas a preocupação com a melhoria de qualidade e as melhorias das técnicas agronômicas fizeram com que, novamente, se iniciasse o plantio de variedades viníferas. A partir de 1970, vinícolas multinacionais, como a Moet &amp; Chandon, a Martini &amp; Rossi e a Heublein estabeleceram-se na Serra Gaúcha trazendo equipamentos de alta tecnologia e técnicas viticulturais modernas. Essas empresas implementaram, também, junto aos calouros da Serra, um programa de estímulo à modificação do sistema de plantio, passando da latada à espaldeira. Estimularam, igualmente, a produção de cepas viníferas. Essas medidas tiveram como conseqüência um grande salto qualitativo no vinho brasileiro que hoje, a despeito das dificuldades de solo e clima, ostenta padrão internacional de qualidade.</p>
+<hr>
+</div>
+</section>
+<section id="estado-atual-da-produção-de-vinhos-na-região-sul-do-brasil" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="estado-atual-da-produção-de-vinhos-na-região-sul-do-brasil"><span class="header-section-number">1.2</span> Estado atual da produção de vinhos na Região Sul do Brasil</h2>
+<div style="text-align: justify">
+<p>A região sul do Brasil é a principal região produtora de vinhos do país, com o Rio Grande do Sul sendo o estado líder em produção de uvas e vinhos. A viticultura no Brasil ocupa uma área de aproximadamente 78 mil hectares, com vinhedos estabelecidos desde o extremo sul do país, em latitude de 30º 56’ 15’’S, até regiões situadas muito próximas ao equador, em latitude de 5º 11’ 15’’S<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
+<p>Em função da diversidade ambiental, existem polos com viticultura característica de regiões temperadas, com um período de repouso hibernal; polos em áreas subtropicais, onde a videira é cultivada com dois ciclos anuais, definidos em função de um período de temperaturas mais baixas, no qual há risco de geadas; e, polos de viticultura tropical, onde é possível a realização de podas sucessivas, com a realização de dois e meio a três ciclos vegetativos por ano<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p>
+<p>A produção de uvas é da ordem de 1,5 milhões de toneladas/ano. Deste volume, cerca de 50% é destinado ao processamento, para a elaboração de vinhos, sucos e outros derivados, e 50% comercializado como uvas de mesa.</p>
+<p>Do total de produtos industrializados, 42% são vinhos de mesa e 49% são sucos de uva, ambos elaborados a partir de uvas de origem americana, especialmente cultivares de Vitis labrusca, Vitis bourquina e híbridos interespecíficos diversos. Cerca de 7% são vinhos finos, elaborados com castas de Vitis vinifera; o restante dos produtos industrializados, 2% são outros derivados da uva e do vinho<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p>
+<p>Conforme o artigo “Exportações de vinhos brasileiros - uma pesquisa sobre o crescimento nas exportações de vinhos e espumantes brasileiros para a china”<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, vários aspectos políticos, econômicos, sociais, demográficos, tecnológicos, ambientais e legais favoreceram o comércio internacional de vinhos brasileiros (especialmente para a China).</p>
+<p>Do ponto de vista tecnológico, o artigo cita avanços como:</p>
+<ul>
+<li><p>Introdução de sistemas avançados de gestão de vinhedos e técnicas de agricultura de precisão, como sensoriamento remoto e tecnologia GPS, para otimizar o cultivo de uvas e melhorar o rendimento e a qualidade das uvas;</p></li>
+<li><p>Implementação de equipamentos e técnicas modernas de vinificação, incluindo fermentação controlada por temperatura, linhas de engarrafamento automatizadas e sistemas de filtração avançados, para garantir a consistência e a qualidade na produção de vinho;</p></li>
+<li><p>Adoção de tecnologias de envelhecimento e armazenamento de vinho de última geração, como tanques de aço inoxidável, barris de carvalho e adegas com controle de temperatura, para realçar o sabor, o aroma e o potencial de envelhecimento dos vinhos;</p></li>
+<li><p>Utilização de ferramentas analíticas avançadas e equipamentos de laboratório para controle de qualidade e monitoramento de vários parâmetros durante o processo de vinificação, garantindo a aderência a padrões e regulamentos internacionais;</p></li>
+<li><p>Integração de plataformas digitais e soluções de software para gestão de vinhedos, rastreamento de estoque, vendas e marketing, facilitando operações eficientes e aprimorando a comunicação entre vinícolas e consumidores.</p></li>
+</ul>
+</div>
+</section>
+<section id="premiações" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="premiações"><span class="header-section-number">1.3</span> Premiações</h2>
+<div style="text-align: justify">
+<p>Em praticamente todos os concursos internacionais de vinhos, há brasileiros na lista dos melhores.</p>
+<p>No final de abril de 2023, 31 distinções foram alcançadas no 47º Challenge International du Vin, realizado entre os dias 21 e 22 em Bordeaux, capital mundial do vinho. Organizado pela Asociación CDV – Concours Des Vins, o concurso é tido como a mais antiga competição de vinhos e destilados organizada na França<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.</p>
+<p>Dos 31 prêmios alcançados pelos vinhos e espumantes nacionais, dois são especiais de categoria, 23 são Medalhas de Ouro e seis de Prata – os prêmios especiais destacam a melhor pontuação de Medalha de Ouro de cada categoria, registrando de 95,33 a 100 pontos. Os exemplares são da Serra Gaúcha e de Campos de Cima da Serra. Ambos os prêmios especiais do Brasil foram para produtos da Vinícola Campestre, localizada em Vacaria, no Rio Grande do Sul. O Zanotto Espumante Moscatel levou o Prêmio Especial Espumante Branco, já o Zanotto Espumante Moscatel Rosé recebeu o Prêmio Especial Espumante Rosé<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>.</p>
+<p>No concurso Mondial des Vins Extrêmes (mundial de vinhos extremos, em tradução livre) edição 2023 não foi diferente. O país teve 13 rótulos premiados, entre brancos, tintos e espumantes<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>.</p>
+</div>
+
+
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>https://www.vinicolacampestre.com.br/blog/voce-conhece-a-historia-do-vinho-durante-a-colonizacao/<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>https://reserva85.com.br/vinho/historia-do-vinho/historia-vinho-brasil/<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>https://www.enologia.org.br/curiosidade/a-historia-do-vinho-no-brasil)<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>https://www.embrapa.br/cim-uva-e-vinho/a-viticultura-no-brasil<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>https://www.embrapa.br/cim-uva-e-vinho/a-viticultura-no-brasil<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>https://www.embrapa.br/cim-uva-e-vinho/a-viticultura-no-brasil<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>https://acertte.org/index.php/acertte/article/view/81/59<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>https://www.cnnbrasil.com.br/viagemegastronomia/noticias/vinhos-brasileiros-sao-premiados-com-ouro-e-prata-em-competicao-na-franca/<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>https://www.cnnbrasil.com.br/viagemegastronomia/noticias/vinhos-brasileiros-sao-premiados-com-ouro-e-prata-em-competicao-na-franca/<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>https://exame.com/casual/melhores-vinhos-brasileiros-segundo-mondial-des-vins-extremes/<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
