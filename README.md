@@ -1,67 +1,32 @@
-# alura_postech
-Respositório da jornada Alura+Pós-Tech
-Meu e-mail FIAP:rm353068@fiap.com.br
+# Alura+Pós-Tech - TechChallenge 01
 
-# Aula Inaugural
+Respositório da resposta ao TechChallenge 01 da turma 3DTAT-Pós-Tech.
 
-- 19/10/2023
+# Requisitos
 
-# Corpo Docente
+**Apresentar um análise sobre a exportação de vinhos do Brasil.**
 
-- Professores:
-Edgard Joseph
-Thiago Generoso
+Deverão ser fornecidas informações que permitam ao interessado ter uma compreensão sobre o processo de exportação de vinhos do Brasil, por meio de gráficos e tabelas interativas.
 
-- Coordenador:
-Matheus Pavani
+A análise parte dos seguintes dados:
+
+-   Países de destinatários dos vinhos produzidos no Brasil 🌎
+-   Quantidade em litros de vinho exportado (1KG =1L) 🍷
+-   Valor exportado em US\$ 💸
+
+Aleḿ dos dados acima, também fornecemos *insights* sobre a relação entre a exportação de vinhos e os dados abaixo:
+
+-   Dados climáticos 🌦️
+-   Dados demográficos 🧑‍🤝‍🧑
+-   Dados econômicos 📈
+-   Dados de avaliações de vinhos 🏅
+
+# Metodologia
+
+Foi desenvolvida uma aplicação web utilizando a [linguagem de programação R](https://www.r-project.org/) e o sistema de publicação [Quarto](https://quarto.org/). Esta opção permitiu que o código-fonte e as análises possam ser facilmente acessadas. Ao mesmo tempo, cumpre-se o requisito de interatividade de gráficos e tabelas.
 
 
-# Monitorias / Lives
-- Quinta-feira
+# Acesso à aplicação web
 
-# Fases
-
-## Data Analytic and Exploration
-
-- Estatística / Álgebra Linear
-- Análise Exploratória
-- Visualização de Dados
-
-## Machine Learning and Time Series
-
-- Machine Learning com Python
-- Machine Learning Avançado 
-- Séries Temporais
-
-## Big Data
-- Framework de Big Data
-- Bancos de Dados para Big Data 
-
-## DataViz and Production Models
-
-- Análise de Negócios
-- Deploy de Aplicações
-
-## Deep Learning and unstructured Data
-
-- Deep & Reinforcement Learning
-- Dados Gerados por Humanos
-
-## Datathon 
-- Projeto em 8h
-
-## Nota
-- Fast Test - 0 a 5  
-- TechChallenge - 0 a 60 
-- Hackaton - 0 a 30 
-- Atividade Presencial - 0 a 5 
-
-Nota Final > 70 
-
-## TechChallenge é em grupo de 5 pessoas
-- É obrigatório 
-- Se sozinho, formalizar por e-mail para:
-  -- atendimento.postech@fiap.com.br
-  -- Coordenador: profmatheus.pavani@fiap.com.br 
-  -- Professor: profthiago.generoso@fiap.com.br
+A aplicação desenvolvida está publicada na plataforma [Quarto Pub](quartopub.com) e pode ser acessada a partir do link: https://carlosveras.quarto.pub/fiap-3dtat-tech01-analise-exportacao-vinhos/ ou [clique aqui](https://carlosveras.quarto.pub/fiap-3dtat-tech01-analise-exportacao-vinhos/).
 
