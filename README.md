@@ -1,8 +1,8 @@
 # Alura+Pós-Tech - TechChallenge 01
 
-Respositório da resposta ao TechChallenge 01 da turma 3DTAT-Pós-Tech.
+[Respositório](https://github.com/carlosvneves/fiap_techchallenge01.git) da resposta ao TechChallenge 01 da turma 3DTAT-Pós-Tech.
 
-O trabalho foi desenvolvido de modo individual.
+**O trabalho foi desenvolvido de modo individual**.
 
 # Requisitos
 
