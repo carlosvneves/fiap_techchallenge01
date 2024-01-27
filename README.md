@@ -2,6 +2,8 @@
 
 Respositório da resposta ao TechChallenge 01 da turma 3DTAT-Pós-Tech.
 
+O trabalho foi desenvolvido de modo individual.
+
 # Requisitos
 
 **Apresentar um análise sobre a exportação de vinhos do Brasil.**
