@@ -124,22 +124,10 @@ anomalize_sum_val <-  data_exp_mc_by_date |>
                                               .message       = FALSE
                                           )
         
-# anomalize_mean_val <-  data_exp_mc_by_date |>  
-#                                           timetk::anomalize(
-#                                               .date_var      = date, 
-#                                               .value         = mean_val,
-#                                               .iqr_alpha     = 0.05,
-#                                               .max_anomalies = 0.20,
-#                                               .message       = FALSE
-#                                           )
-#         
 anomalize_sum_val |> timetk::plot_anomalies_decomp(.date_var = date,
                                                    .interactive = TRUE,
                                                    .title = "Valor total")
 
-# anomalize_mean_val |> timetk::plot_anomalies_decomp(.date_var = date, 
-#                                                     .interactive = TRUE,
-#                                                     .title = "Valor médio")
 ```
 
 ```{r}
@@ -158,49 +146,30 @@ anomalize_sum_vol <-  data_exp_mc_by_date |>
                                               .message       = FALSE
                                           )
         
-# anomalize_mean_vol <-  data_exp_mc_by_date |>  
-#                                           timetk::anomalize(
-#                                               .date_var      = date, 
-#                                               .value         = mean_vol,
-#                                               .iqr_alpha     = 0.05,
-#                                               .max_anomalies = 0.20,
-#                                               .message       = FALSE
-#                                           )
         
 anomalize_sum_vol |> timetk::plot_anomalies_decomp(.date_var = date, 
                                                    .interactive = TRUE, 
                                                    .title = "Volume total")
 
-# anomalize_mean_vol |> timetk::plot_anomalies_decomp(.date_var = date, 
-#                                                     .interactive = TRUE,
-#                                                     .title = "Valor médio")
 ```
 
 
 Os gráficos da @fig-monthly_anomalize_plot-1 e @fig-monthly_anomalize_plot-2 permitem identicar as anomalias das séries. Enquanto na série de valors total foram identificadas 8 anomalias. Já na série de volume total from identificadas 25. Coincidem entre as séries as anomalias identificadas em dois meses de 2009, um em 2012 e três em 2013 (@tbl-monthly_anomalize_summary). 
-:::{#tbl-monthly_anomalize_summary}
+
+
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
 #| label: tbl-monthly_anomalize_summary
-#| tbl-cap: "Principais dados sobre as anomalias identificadas" 
+#| tbl-cap: "Datas coincidentes no processo de identificação de anomalias." 
 
 dt_val <- anomalize_sum_val |> filter(anomaly == "Yes") |> select(date) 
 dt_vol <- anomalize_sum_vol |> filter(anomaly == "Yes") |> select(date) 
 
-
-DT::datatable(merge(dt_val, dt_vol), 
-                          filter = "bottom", 
-                          colnames = 'Data',
-                          extensions = 'Buttons', 
-                          options = list(
-                          dom = 'Bfrtip',
-                          buttons = c('copy','excel', 'csv', 'pdf'))) |>  DT::formatDate(columns = c('date'),
-                               'toLocaleDateString')
+knitr::kable(merge(dt_val,dt_vol), col.names = c("Data")) |> kableExtra::add_header_above("Datas coincidentes")
     
 ```
-:::
 
 ```{r}
 #| echo: false

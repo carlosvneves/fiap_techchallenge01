@@ -1,7 +1,6 @@
 project:
   type: website
   output-dir: docs
-
 prefer-html: true
 
 toc: true 
@@ -10,7 +9,7 @@ website:
   title: "Exportações de Vinhos do Brasil"
   navbar:
     search: true
-    background: light
+    background: primary
     tools:
     - icon: github
       menu:
@@ -19,17 +18,19 @@ website:
     left: 
       - text: "Home"
         file: index.qmd
-      - text: "Contextualização"
+      - text: "Contexto"
         file: context.qmd
-      - text: "Análise exploratória"
-        file: explore.qmd
-      - text: "Análise das séries temporais agregadas"
-        file: tsanalysis.qmd
-      - text: "Análise das séries temporais - Paraguai e Rússia"
-        file: tsanalysistop.qmd
-      - text: "Análise das séries temporais - interações"
-        file: exogenous.qmd   
-      
+      - text: "Análises"  
+        menu: 
+          - text: "Análise exploratória"
+            file: explore.qmd
+          - text: "Análise das séries temporais agregadas"
+            file: tsanalysis.qmd
+          - text: "Análise das séries temporais - Paraguai e Rússia"
+            file: tsanalysistop.qmd
+          - text: "Análise das séries temporais - interações"
+            file: exogenous.qmd   
+        
 book:
   title: "Análise das Exportações de Vinhos do Brasil - Techchallenge 01 - 3DTAT - FIAP"
   author: "Carlos Eduardo Veras Neves"

@@ -22,7 +22,7 @@ source('utils.R')
 
 ::: {style="text-align: justify"}
 
-Embora as regiões Nordeste e Sudeste produzam uva, essa produção é quase exclusivamente da fruta _in natura_. No Rio Grande do Sul, o grosso da produção vai para o fabrico de vinho e suco. O estado é responsável por 90% da produção nacional de vinho e suco de uva, emboa produza apenas 60% dessa fruta no país[^S. Klein, Herbert; Luna, V. Francisco (2020). Alimentando o Mundo - O surgimento da moderna economia agrícola no Brasil. FGV Editora]. 
+Embora as regiões Nordeste e Sudeste produzam uva, essa produção é quase exclusivamente da fruta _in natura_. No Rio Grande do Sul, o grosso da produção vai para o fabrico de vinho e suco. O estado é responsável por 90% da produção nacional de vinho e suco de uva, embora produza apenas 60% dessa fruta no país^[S. Klein, Herbert; Luna, V. Francisco (2020). Alimentando o Mundo - O surgimento da moderna economia agrícola no Brasil. FGV Editora]. 
 
 Nesta seção apresentaremos um pouco da história e do contexto da produção de uvas e vinhos no Rio Grande do Sul.
 

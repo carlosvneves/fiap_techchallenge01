@@ -24,7 +24,7 @@ source('utils.R')
 ```
 ::: {style="text-align: justify"}
 
-Como visto na seção @sec-tsexplore, Paraguai e Rússia emergiram como os dois mais importantes países para o Brasil quando o assunto é exportação de vinho.
+Como visto na seção [Análise de Séries Temporais agregadas](tsanalysis.qmd), Paraguai e Rússia emergiram como os dois mais importantes países para o Brasil quando o assunto é exportação de vinho.
 
 A ideia desta seção é tentar olhar um pouco mais de perto como se comportam as séries de valor exportados em US$ e de volume exportado em Kg.L, especialmente para verificar se há algum tipo de comportamento anômalo que possa eventualmente auxiliar a entender o porquê desses países ocuparem tal espaço.
 

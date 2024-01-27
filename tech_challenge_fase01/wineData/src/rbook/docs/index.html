@@ -95,24 +95,31 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./context.html"> 
-<span class="menu-text">Contextualização</span></a>
+<span class="menu-text">Contexto</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./explore.html"> 
-<span class="menu-text">Análise exploratória</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-análises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Análises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-análises">    
+        <li>
+    <a class="dropdown-item" href="./explore.html">
+ <span class="dropdown-text">Análise exploratória</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./tsanalysis.html"> 
-<span class="menu-text">Análise das séries temporais agregadas</span></a>
+        <li>
+    <a class="dropdown-item" href="./tsanalysis.html">
+ <span class="dropdown-text">Análise das séries temporais agregadas</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./tsanalysistop.html"> 
-<span class="menu-text">Análise das séries temporais - Paraguai e Rússia</span></a>
+        <li>
+    <a class="dropdown-item" href="./tsanalysistop.html">
+ <span class="dropdown-text">Análise das séries temporais - Paraguai e Rússia</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./exogenous.html"> 
-<span class="menu-text">Análise das séries temporais - interações</span></a>
+        <li>
+    <a class="dropdown-item" href="./exogenous.html">
+ <span class="dropdown-text">Análise das séries temporais - interações</span></a>
   </li>  
+    </ul>
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -166,8 +173,10 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introdução" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introdução</h1>
-<section id="apresentação" class="level2" style="text-align: justify" data-number="1.1">
+<p><img src="cover.jpg" class="img-fluid"></p>
+<section id="apresentação" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="apresentação"><span class="header-section-number">1.1</span> Apresentação</h2>
+<div style="text-align: justify">
 <p>Bem-vindo(a)</p>
 <hr>
 <p><strong>Este relatório tem por objetivo apresentar um análise sobre a exportação de vinhos do Brasil.</strong></p>
@@ -186,6 +195,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Dados de avaliações de vinhos 🏅</li>
 </ul>
 <hr>
+</div>
 </section>
 </section>
 <section id="metodologia" class="level1" data-number="2">

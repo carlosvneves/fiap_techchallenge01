@@ -128,7 +128,7 @@ Série dos dados mensais de volume e valor de vinho exportado pelo Brasil - jane
 :::
 <!--- end table --->
 
-Ocorre que, conforme citado na [introdução](), os valores de exportação estão expressos em dólares correntes, isto é, são valores nominais.
+Ocorre que, conforme citado na [introdução](index.qmd), os valores de exportação estão expressos em dólares correntes, isto é, são valores nominais.
 
 Para a correta comparação de valores no tempo é necessário considerar o efeito da inflação e, consequentemente realizar o reajuste dos valores de modo que possam todos estar na mesma data-base. 
 
@@ -251,7 +251,7 @@ Tendo os valores corrigidos para os preços de 2022, doravante, quando nos refer
 
 ## Definição de indicador de desempenho
 
-Para facilitar a análise comparativa, tanto no tempo como entre país, a criação de um indicador de desempenho pode facilitar a tarefa. Propomos a adoção de um indicador (kpi) do tipo $${Valor}\over{Quilograma\,Líquido}$$
+Para facilitar a análise comparativa, tanto no tempo como entre país, a criação de um indicador de desempenho pode facilitar a tarefa. Propomos a adoção de um indicador (kpi) do tipo ${Valor}/{Quilograma\,Liquido}$.
 
 O indicador deve traduzir quanto cada país paga por quilograma líquido de vinho brasileiro, transformando assim duas dimensões de análise em uma. Quanto maior o indicador, maior o retorno da exportação daquele determinado país parao Brasil. 
 

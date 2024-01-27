@@ -17,8 +17,12 @@ source('utils.R')
 
 # Introdução
 
-::: {style="text-align: justify"}
+![](cover.jpg)
+
+
 ## Apresentação
+
+::: {style="text-align: justify"}
 
 Bem-vindo(a)
 

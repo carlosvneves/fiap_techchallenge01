@@ -20,12 +20,12 @@ source('utils.R')
 
 ::: {style="text-align: justify"}
 
-Nas seções @sec-tsexplore e @sec-tsexploretop, analisamos as séries temporais de modo isolado, ou seja, sem considerar a eventual interação com outros eventos e, portanto, podemos dizer que foi realizada uma análise univariada.
+Nas seções [análise de séries temporais](tsanalysis.qmd) e [análise de séries temporais - Paraguai e Rússia](tsanalysistop.qmd), analisamos as séries temporais de modo isolado, ou seja, sem considerar a eventual interação com outros eventos e, portanto, podemos dizer que foi realizada uma análise univariada.
 
 Para a melhor compreensão do fenômeno de que estamos tratando seria necessário também a realização de uma análise multivariada, por meio da qual é possível entender melhor a interação das séries em estudo com outras séries que eventualmente possam auxiliar.Ocorre que uma análise multivariada está fora do escopo deste trabalho. 
 
 ::: {.callout-caution}
-Também é importante ressaltar que, conforme exposto na @sec-tsexplore, as séries possuem raízes unitárias e, portanto, qualquer inferência realizada por meio de medidas de correlação entre as séries deve ser vista com extrema cautela, uma vez que podem ser simplesmente correlações espúrias.
+Também é importante ressaltar que, conforme exposto na [análise de séries temporais](tsanalysis.qmd), as séries possuem raízes unitárias e, portanto, qualquer inferência realizada por meio de medidas de correlação entre as séries deve ser vista com extrema cautela, uma vez que podem ser simplesmente correlações espúrias.
 
 :::
 
@@ -54,7 +54,7 @@ A @tbl-data_climate apresenta os dados médios mensais de precipitação, temper
 # Periodicidade da Medicao: Mensal
 # Data Medicao;PRECIPITACAO TOTAL, MENSAL (AUT)(mm);TEMPERATURA MEDIA, MENSAL (AUT)(°C);VENTO, VELOCIDADE MEDIA MENSAL (AUT)(m/s);
 # 
-data_climate <- read_delim("~/projects/alura_postech/tech_challenge_fase01/wineData/data/dadosclima/dados_clima.csv", 
+data_climate <- read_delim("./../../data/dadosclima/dados_clima.csv", 
     delim = ";", escape_double = FALSE, col_types = cols(`Data Medicao` = col_date(format = "%Y-%m-%d"), 
         `PRECIPITACAO TOTAL, MENSAL (AUT)(mm)` = col_double(), 
         `TEMPERATURA MEDIA, MENSAL (AUT)(°C)` = col_double(), 
@@ -248,7 +248,8 @@ Então, para realizar o teste de causalidade do tipo Granger, é necessário tor
 O teste de causalidade Granger é aplicado considerando 2 lags, em face da hipótese de que, em até 2 meses, determinado evento climático deverá ter impacto na variação da produção de uva, aqui traduzida em termos de valor e volume exportados.
 
 
-Teste Granger para a série de valor exportado
+Teste Granger para a série de valor exportado:
+
 - precipitação granger-causa valor exportado indica que não há causalidade (p-valor > 0,05);
 - temperatura granger-causa valor exportado indica  há causalidade (p-valor < 0,05).
 
@@ -563,7 +564,7 @@ Os dados abaixo foram extraídos da base do [Our World in Data](https://ourworld
 #| label: tbl-consump-per-capita
 
 wine_consumption_per_person <-readr::read_csv(
-  "~/projects/alura_postech/tech_challenge_fase01/wineData/data/wine-consumption-per-person.csv"
+  "./../../data/wine-consumption-per-person.csv"
 ) |> rename(country = Entity,
             consump_per_capita = 'Indicator:Alcohol, recorded per capita (15+) consumption (in litres of pure alcohol) - Beverage Types:Wine'
             ) |> 
